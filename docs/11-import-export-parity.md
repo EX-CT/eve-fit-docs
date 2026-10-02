@@ -55,22 +55,24 @@ Checker: `python3 tools/check_formats.py --rpc "<variant> serve-stdio" --name X`
 | ESI | 181/194 | 52/194 | charges → cargo 121 (cargo 125), active counts 48, state 15, fighter squadron size 6, implants and boosters 6 |
 | XML | 185/194 | 54/194 | charges → cargo 121, active counts 48, state 15, implants and boosters 6 |
 
-## 3. Parity table — variant F (`EX-CT/eve-dogma-lab` `variant-f`, commit beefcfd)
+## 3. Parity table — variant F (`EX-CT/eve-dogma-lab` `variant-f`, commit 02257b7)
 
 Status: ✅ implemented and matching Pyfa · 🟡 implemented with differences · ⬜ not implemented.
+F exposes RPC `format_export {fit, name, format, options}` and `format_import {text, format, path?}` (plus the 1.8.0
+`eft_export` / `eft_parse`). Scorecard: `variant-f/bench/formats/scorecard.md` in the lab repo.
 
 | Format | Direction | F status | Suite result | Differences vs Pyfa |
 |---|---|---|---|---|
-| EFT (all options) | export | ✅ | 326/326 | Only the known data divergence: T3 cruisers get `maxSubSystems` 5 in SDE 3569502 and 4 in Pyfa's db, so there is one extra `[Empty Subsystem slot]`. |
-| EFT (options off) | export | ⬜ (options ignored) | 80/326 | `eft_export` has no option switches. |
-| EFT | import (`eft_parse`) | 🟡 | 138/326 (legal fits 138/194) | (1) No `activeStateLimit`: MJD, cloak, WCS, etc. import as active (Pyfa: online), and modules that can't be activated without a charge import as online (Pyfa: active). (2) Duplicate drone lines are not merged. (3) An invalid charge (one the module can't load) is kept. (4) Over-fitted modules are kept (Pyfa drops them; F reports them as violations at calc time instead). (5) A T3D mode is left null (= first mode by contract, a soft difference). (6) Drone `active` = quantity (Pyfa: 0 on EFT import, a soft difference). |
-| EFT config (`.cfg`) | import | ⬜ | – | |
-| DNA / DNA link / DNA alt | export, import | ⬜ | – | |
-| XML | export, import | ⬜ | – | |
-| ESI JSON | export, import | ⬜ | – | |
-| Multibuy | export | ⬜ | – | |
-| Ship stats text | export | ⬜ | – | Needs Pyfa `formatAmount`. The stats themselves are already 21051/21051. |
-| Mutant text / additions lists / auto-detect | import | ⬜ | – | |
+| EFT (all options) | export | ✅ | 326/326 | Only the known data divergence: T3 cruisers get `maxSubSystems` 5 in SDE 3569502 and 4 in Pyfa's db, so there is one extra `[Empty Subsystem slot]` (21 cases, accepted by the checker). |
+| EFT (options off) | export | ✅ | 326/326 | Same subsystem-slot note. |
+| EFT | import (`format_import eft`) | ✅ | 326/326 (legal 194/194) | Pyfa semantics: `activeStateLimit`, drone-stack merge, invalid charges dropped, over-fit dropped, first T3D mode, drones inactive. (The 1.8.0 `eft_parse` keeps its contract behaviour.) |
+| EFT config (`.cfg`) | import | ✅ | edge 1/1 | |
+| DNA / DNA link / DNA alt | export, import | ✅ | export 326/326 ×2, import 326/326 (legal 194/194) | Includes Pyfa's crash on a mutated drone type (reported as an import error). |
+| XML | export, import | ✅ | 326/326, 326/326 (legal 194/194) | |
+| ESI JSON | export, import | ✅ | 326/326 ×2, 326/326 (legal 194/194) | Item publicity follows Pyfa's database (Civilian modules public, abyssal/mutated types not). |
+| Multibuy | export | ✅ | 326/326 ×2 | Price optimisation not implemented (needs market data; not in the suite). |
+| Ship stats text | export | 🟡 | 324/326 | `esf_structure_bonus_1` (known structure-bonus exclusion, also excluded from the main bench) and `esf_items_7` (odd item; Pyfa capacitor 62.8k vs F 312 GJ, a capacitor value the main bench does not score). Uses no spool-up, like Pyfa's copy. |
+| Mutant text / additions lists / auto-detect | import | ✅ | edge 16/16 | Additions lists: `[n]` mutation references on drones are not resolved (not in the suite). |
 | EFS | export | ⬜ (not in suite) | – | |
 
 Other variants can be scored with the same checker. As of this writing only EFT export and import exist in the
