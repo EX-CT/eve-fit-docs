@@ -17,14 +17,17 @@ which combination of ideas) becomes the core of the EXCT toolkit (CLI, MCP serve
 All measurements come from one command in [EX-CT/eve-dogma-bench](https://github.com/EX-CT/eve-dogma-bench):
 
 ```bash
-python3 tools/evaluate.py --runs ⟨N⟩ --fresh-clones        # results/evaluation.md + results/evaluation.json
+python3 tools/evaluate.py --as-of 2026-10-03T10:15:00+08:00 --runs ⟨N⟩ --fresh-clones   # results/evaluation.{md,json}
 ```
 
-1. **Fetch** the latest head of each variant: A = `EX-CT/eve-dogma-rs@main`; B–K = `EX-CT/eve-dogma-lab@variant-<x>`
+0. **Version rule:** every variant is evaluated at its branch HEAD as of **2026-10-03 10:15 CST** (last commit at or
+   before the cutoff). Self-reported "final" versions are reference only. A commit that fails the correctness gate is
+   **disqualified** for the round; there is no fallback to an older commit.
+1. **Fetch** the head as of the cutoff for each variant: A = `EX-CT/eve-dogma-rs@main`; B–K = `EX-CT/eve-dogma-lab@variant-<x>`
    (directory `variant-<x>/`, commands from its `bench.yaml`). Full commit SHAs are recorded.
 2. **Build** with the variant's own `build` command (time recorded; fresh clone ⇒ fresh build).
 3. **Correctness + speed** with the official scorer (`run.py`, the same code `bench.py` uses), ⟨N⟩ runs per variant,
-   median of perf numbers, `loadavg` before/after every run. Variants run one at a time. Every child run has a hard
+   after one untimed warm-up batch; median of perf numbers, `loadavg` before/after every run. Variants run one at a time. Every child run has a hard
    timeout, so one broken variant cannot stall the evaluation.
 4. **Features** through the variant's `serve-stdio` RPC: EFT export (Pyfa byte-exact check), `eft_parse` round-trip,
    `calc` over RPC equal to the CLI, `meta`, unknown-method error, `search` (interim spec) and `type` probes.
@@ -38,6 +41,7 @@ comparable within the same run; the log scale in the speed formula softens noise
 
 ## 3. Scoring rules
 
+- **Version:** branch HEAD as of 10:15 CST; failing head ⇒ disqualified (no fallback).
 - **Gate:** a variant is ranked only if it builds, runs and passes **all 326 cases** (21 051 values) in every run.
 - **Total = 0.40·Speed + 0.35·Maintainability + 0.15·Features + 0.10·Portability** (each sub-score in [0, 1]).
 - `L(x, best, span) = clamp(1 − log10(x / best) / log10(span), 0, 1)` for lower-is-better `x`.
@@ -45,7 +49,7 @@ comparable within the same run; the log scale in the speed formula softens noise
 - **Maintainability** = 0.25·Tests + 0.20·DataDriven + 0.20·Size + 0.15·Docs + 0.10·Deps + 0.10·Build
   (Tests: passing suite 0.6 + 0.4·min(1, log10(1+n)/2), failing 0.2, timeout 0.3, none 0; DataDriven: L(h+10, h_min+10, 10)
   with h = effects special-cased by name; Size: L(core LOC, min, 10); Docs: 0.4 README + 0.4 DESIGN + 0.2 LICENSE;
-  Deps: 1/(1+n/5); Build: L(build s, best, 100)).
+  Deps: 1/(1+n/5); Build: L(build s, best, 100), only when all builds are fresh, else dropped and weights renormalised).
 - **Features** = mean(EFT, RPC, search, type).
 - **Portability** = WASM/browser build in code 1 · documented only 0.5 · none 0.
 
