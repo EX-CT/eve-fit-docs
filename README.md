@@ -27,5 +27,6 @@
 | 07 | [performance-plan](docs/07-performance-plan.md) | Language comparison, perf targets, benchmark method vs Pyfa |
 | 08 | [roadmap](docs/08-roadmap.md) | Milestones |
 | 09 | [engine-round-1-evaluation](docs/09-engine-round-1-evaluation.md) | Bake-off of engine variants A–K: method, scoring, results, decision (draft) |
+| 10 | [round-2-graphs-plan](docs/10-round-2-graphs-plan.md) | Round 2: Pyfa graphs — contract summary, four implementation approaches, bench plug-in (draft) |
 | — | [LICENSING](LICENSING.md) | License decisions (Pyfa GPLv3 / eos LGPL / CCP data) |
 | — | [PROGRESS](PROGRESS.md) | Done / next, for resuming work |
