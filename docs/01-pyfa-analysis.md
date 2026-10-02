@@ -42,11 +42,17 @@ Each item has `itemModifiedAttributes` (and `chargeModifiedAttributes`). Effects
 5. `val += postIncrease`; clamp by `minAttributeID`/`maxAttributeID` of the attribute (values read off *same item*).
 6. `cpu`, `power`, `cpuOutput`, `powerOutput` rounded to 2 dp.
 
-Notable: Pyfa merges CCP operators into 4 buckets (pre-assign, pre-inc, multiply, post-inc). CCP dogma has 10
-operators (PreAssign 0, PreMul 1, PreDiv 2, ModAdd 3, ModSub 4, PostMul 5, PostDiv 6, PostPercent 7,
-PostAssign 8, SkillLevelBased? / 9 = PostAssign variants); with the standard data the bucket collapse produces the
-same results because CCP data never mixes pre-mul and post-mul on one attribute in a way that interacts with adds.
-Our engine implements the **full CCP operator order** (as dogma-engine does) and tests equality with Pyfa.
+Notable: Pyfa merges CCP operators into 4 buckets (pre-assign, pre-inc, multiply, post-inc). CCP dogma
+`modifierInfo.operation` codes (verified against SDE build 3569502): **-1 PreAssign, 0 PreMul, 1 PreDiv, 2 ModAdd,
+3 ModSub, 4 PostMul, 5 PostDiv, 6 PostPercent, 7 PostAssign, 9 SkillLevel (SP→level, ignore)**. CCP's evaluation
+order is PreAssign → PreMul → PreDiv → ModAdd → ModSub → PostMul → PostDiv → PostPercent → PostAssign. Pyfa's
+collapse gives the same results for real data because adds and multiplies on the same attribute are rare and
+ordered consistently. Our engine implements the full CCP order (as dogma-engine does) and tests vs Pyfa.
+
+Skill levels are *data-driven* in the SDE: every skill has `skillEffect` and effects such as
+`gunnerySkillBoostTurretSpeeBonus` = `ItemModifier(itemID) PreMul attr441 by skillLevel(280)`, so setting
+attribute 280 on the skill item to the trained level is enough. Pyfa instead multiplies by `skill.level` in each
+handler (`level = container.level if 'skill' in context else 1`).
 
 Stacking-penalty rule: penalised iff the *modified attribute* is not `stackable` (SDE `dogmaAttributes.stackable=false`)
 **and** the source item category is not exempt (Ship, Skill, Implant, Subsystem, Charge in some cases, Booster) —
