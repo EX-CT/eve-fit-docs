@@ -98,7 +98,7 @@ some are older than the branch heads.
 |---|---|---|---|---|
 | I (reference, 349c6fd) | 93/93 | 93/93 | 99/99 | none |
 | A eve-dogma-rs | 86/93 | 73/93 | 96/99 | the full list below (I started from A's semantics) |
-| B data-oriented Rust | 84/93 | 73/93 | 96/99 | as A, plus `mm_ancillary_shield_booster_*` and `mm_propulsion_module_exct_crucifier` (a mutated AB/MWD or ASB attribute path) |
+| B data-oriented Rust | 84/93 | 73/93 | 96/99 | as A, plus `mm_ancillary_shield_booster_*` and `mm_propulsion_module_exct_crucifier` (cause not yet analysed) |
 | C Go, G Python, J C++ | 86/93 | 73/93 | 96/99 | as A |
 | D TypeScript | 86/93 | 83/93 | 96/99 | as A; EFT export is partly done |
 | E Pyfa-faithful port | 87/93 | 85/93 | 0/99 | slot rule; EFT export of validated values; `eft_parse` is missing (it has the 2791 override) |
