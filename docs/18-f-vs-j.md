@@ -155,8 +155,60 @@ No merging, no changes to `EX-CT/eve-dogma` (kept at `dd97e12`), until the user 
 ⟨pending⟩
 ### 4.2 WASM size and Node numbers (eve3)
 ⟨pending⟩
-### 4.3 WASM in a real browser (eve4)
-⟨placeholder for eve4's measurements⟩
+### 4.3 WASM in a real browser (eve4) — PARTIAL (stopped 11:11 CST when the comparison was cancelled)
+**Partial data. Not a full D3 run:** only 7 runs, on a shared box under load, with no repeat on an idle host.
+Use it as a speed reference only.
+
+- **Builds:** the deployed eve-fit-web artifacts (web `451c43e`). F is `variant-f` @ `af1c04b` (the branch head at build
+  time, not the round-1 `bc84e2b`). J is `variant-j` @ `3ab992d`, built with Emscripten 6.0.11. Dataset: sde-3569502-r5.
+- **Harness:** eve-fit-web `tools/bench-engines.mjs` (commit `6a08295`), run with
+  `node tools/bench-engines.mjs http://127.0.0.1:4173/eve-fit-web/ <bench 1.8.0 @3da9671> 7 20`.
+  - Both engines load on the same page, one after the other, in alternating order. Each run is a fresh headless Chrome
+    with an empty cache.
+  - The site is served locally by `python -m http.server`, uncompressed.
+  - Both engines run in the main thread (the site runs the same code in a Web Worker).
+  - Latency: for each of the 326 bench-1.8.0 FitRequests, 1 warm-up call, then the mean of 20 timed calls (Chrome
+    coarsens `performance.now()` to 0.1 ms).
+- **Host:** shared box with 8 vCPUs (Intel Xeon). The 1-minute loadavg was 4.9–6.1 throughout, so the box was busy
+  and timings are noisy.
+
+| | F | J |
+|---|---|---|
+| import JS glue (ms) | — | 13 |
+| fetch .wasm (ms, localhost) | 56 | 8.9 |
+| compile + instantiate (ms) | 115 | 9.6 |
+| dataset fetch (ms) | — (compiled in) | 17 |
+| dataset init: FS write + `evej_open` (ms) | — | 255 |
+| first calc (ms) | 21 | 15 |
+| **load total, median of 7 (ms)** | **192** | **390** |
+| load total, min–max (ms) | 58–363 | 292–734 |
+| calc per fit, median / p95 over 326 fits × 7 runs (ms) | 0.23 / 1.07 | 0.20 / 0.56 |
+| calc, one Rifter, 50 blocks × 20 calls × 7 runs: median / p95 (ms) | 0.21 / 0.28 | 0.18 / 0.33 |
+
+**Sizes** (gzip -9 and brotli q11 measured with Node zlib; GitHub Pages serves gzip):
+
+| file | raw | gzip | brotli |
+|---|---|---|---|
+| F `eve_dogma_f.wasm` (SDE compiled in) | 3 767 633 | 862 921 | 641 807 |
+| J `evej.wasm` | 948 622 | 329 029 | 253 723 |
+| J `evej.mjs` (Emscripten glue) | 73 753 | 19 188 | 17 191 |
+| dataset `dataset.json.gz` (J loads it at runtime; the web UI fetches it anyway) | 892 348 | — | — |
+
+**Reading the numbers:**
+- Load: F is faster because there is no dataset init. J spends about 255 ms turning the gzipped JSON dataset into its
+  image. J's download is smaller, but J also needs the dataset. In the web UI that fetch is a cache hit, because the UI
+  loads the same file.
+- Per-calc latency is about the same in the browser. Median: J 0.20 ms vs F 0.23 ms. J's p95 is lower (0.56 vs
+  1.07 ms). Both are far below a UI frame, so neither is a bottleneck on the page.
+- Correctness in the same browser build: both pass the bench 1.8.0 corpus, 326/326 cases and 21051/21051 values
+  (`tools/browser-dogma-bench.py`). Source: eve-fit-web CI run 37091912616 for J; a local run for F.
+
+**Integration code in eve-fit-web** (`src/engine/worker.ts`):
+- F: `initWasm` is 27 lines, a plain C-ABI wrapper (`alloc` / `calc` / `dealloc` / `rpc`) with no imports.
+- J: `initEmjs` is 15 lines, plus the 73.8 kB Emscripten JS glue that ships with J. The adapter needs one `case` line
+  for each engine.
+- CI build step: F needs `cargo` with the `wasm32-unknown-unknown` target. J needs emsdk 6.0.11 + CMake + Ninja, and
+  FetchContent downloads simdjson and libdeflate.
 
 ## 5. D4 Maintainability
 ⟨pending⟩
@@ -165,7 +217,14 @@ No merging, no changes to `EX-CT/eve-dogma` (kept at `dd97e12`), until the user 
 ⟨pending: J by eve3; F by the F bot⟩
 
 ## 7. D6 Portability
-⟨pending⟩
+⟨pending: not scored (comparison cancelled)⟩. **Partial observations from the browser work (eve4)** — measurements in §4.3:
+- **Checklist item 4 (browser WASM build from a clean clone, pinned toolchain, same output as native):** both engines
+  were built in eve-fit-web CI from pinned commits, and both pass 326/326 of bench 1.8.0 inside headless Chrome.
+- **Item 5 (no WASI runtime or special server headers):** both run on GitHub Pages with no COOP/COEP headers. F's
+  `wasm32-unknown-unknown` build has zero imports; J brings its own Emscripten JS glue.
+- **Item 6 (new SDE without recompiling):** J loads the dataset at runtime, so yes. F compiles the SDE in, so a new SDE
+  needs a rebuild. The site rebuilds F's WASM on each dataset release anyway.
+- **Size:** F's WASM is about 4× larger, because the data is inside it.
 
 ## 8. D7 J's speed techniques in F
 ### 8.1 F author's analysis
