@@ -55,8 +55,9 @@ items:
   name: Hand-written effects (eos/effects.py, 2402 classes)
   description: Pyfa overrides/complements SDE expressions with hand-written handlers (incl. runTime early/normal/late, projected-only, activeByDefault quirks)
   pyfa_src: eos/effects.py (class EffectNNNN)
-  f: partial
-  f_evidence: 'ED effects/ 2352/2378 (fail: ship 15, fitted-module 8, subsystem 2, drone 1); 109/112 handler-only effects'
+  f: have
+  f_evidence: 'eve-dogma d990818: effects/ 2378/2378 (every carrier kind full), handler-only 112/112, unverified handler-only 37/37 (bench results-1.11/ED-d990818.md) [2026-10-03 14:58: partial -> have;
+    2da8150 was 2352/2378]'
   mcp: partial
   mcp_evidence: 'engine pass-through [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
   web: partial

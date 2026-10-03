@@ -191,7 +191,7 @@ These are ordered by user impact. Effort and owners are in docs/20 §4.
 
 | column | have | partial | missing | n/a |
 |---|---|---|---|---|
-| F engine/CLI/WASM (eve-dogma) | 105 | 24 | 25 | 46 |
+| F engine/CLI/WASM (eve-dogma) | 106 | 23 | 25 | 46 |
 | eve-fit-mcp | 97 | 37 | 40 | 26 |
 | eve-fit-web | 84 | 81 | 29 | 6 |
 | eve-fit-formats (FMT-* only) | 10 | 1 | 2 | 1 |
@@ -200,7 +200,7 @@ Per area (have/partial/missing, n/a not counted):
 
 | area | items | F | MCP | WEB | FORMATS |
 |---|---|---|---|---|---|
-| ENG-CORE Engine core | 9 | 5/1/3 | 4/2/3 | 5/1/3 | - |
+| ENG-CORE Engine core | 9 | 6/0/3 | 4/2/3 | 5/1/3 | - |
 | ENG-MOD Modules | 14 | 9/2/1 | 10/2/2 | 5/8/1 | - |
 | ENG-SHIP Ships, modes, subsystems, structures | 6 | 5/1/0 | 5/1/0 | 2/4/0 | - |
 | ENG-DRN Drones | 5 | 4/0/0 | 3/1/1 | 1/3/1 | - |
@@ -243,7 +243,7 @@ Extras beyond Pyfa (3 items, `extra: true`; see the header rule):
 |---|---|---|---|---|---|
 | ENG-CORE-001 | **Dogma modifier engine**: Apply SDE effects/modifiers (ItemModifier, LocationModifier, LocationGroup/RequiredSkill, OwnerRequiredSkill) with all operators (preAssign, preMul, preDiv, modAdd, modSub, postMul, postDiv, postPercent, postAssign) | `eos/modifiedAttributeDict.py; eos/effects.py; eos/gamedata.py` | ✅ have: B19 330/331 (22044/22046 values), probe lab-fp f5b709f | ✅ have: compute_fit passes the full FitRequest to the engine backend (src/schemas.ts) | ✅ have: FitStats from engine worker (src/engine/adapter.ts) |
 | ENG-CORE-002 | **Stacking penalties**: Penalised multiplier chains per attribute/operator group, stackable-attribute exemptions, penalty groups | `eos/modifiedAttributeDict.py (calculateValue, penalized)` | ✅ have: B19 esf_stacking_per*, e_fz_cloak_wcs_penalty_group_ninazu (FZ 8/8) | ✅ have: compute_fit passes the full FitRequest to the engine backend (src/schemas.ts) [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150] | ✅ have: FitStats from engine worker (src/engine/adapter.ts) |
-| ENG-CORE-003 | **Hand-written effects (eos/effects.py, 2402 classes)**: Pyfa overrides/complements SDE expressions with hand-written handlers (incl. runTime early/normal/late, projected-only, activeByDefault quirks) | `eos/effects.py (class EffectNNNN)` | 🟡 partial: ED effects/ 2352/2378 (fail: ship 15, fitted-module 8, subsystem 2, drone 1); 109/112 handler-only effects | 🟡 partial: engine pass-through [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] | 🟡 partial: engine pass-through [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] |
+| ENG-CORE-003 | **Hand-written effects (eos/effects.py, 2402 classes)**: Pyfa overrides/complements SDE expressions with hand-written handlers (incl. runTime early/normal/late, projected-only, activeByDefault quirks) | `eos/effects.py (class EffectNNNN)` | ✅ have: eve-dogma d990818: effects/ 2378/2378 (every carrier kind full), handler-only 112/112, unverified handler-only 37/37 (bench results-1.11/ED-d990818.md) [2026-10-03 14:58: partial -> have; 2da8150 was 2352/2378] | 🟡 partial: engine pass-through [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] | 🟡 partial: engine pass-through [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] |
 | ENG-CORE-004 | **Skills as modifier sources**: Skill levels drive skill effects; per-skill level; character-wide skill bonuses | `eos/saveddata/character.py (Skill.calculateModifiedAttributes)` | ✅ have: B19 skills0/2/3/4_* (70 cases) | ✅ have: compute_fit character.skills; skill_requirements tool | ✅ have: src/ui/Character.tsx |
 | ENG-CORE-005 | **Attribute overrides**: User-set base attribute value overrides per type (Attribute Overrides menu/editor) | `eos/saveddata/override.py; gui/propertyEditor.py; mainMenuBar 'Attribute Overrides'` | ✅ have: request.overrides (src/request.rs, engine.rs) | ✅ have: v0.3.0 mcp.features.fleet-overrides | ✅ have: show-info override editor (e2e tools/e2e.mjs: 'attribute override raises weapon dps') |
 | ENG-CORE-006 | **Full modified attribute dump per item**: All modified attributes of ship/module/charge/drone/fighter (item stats Attributes tab) | `gui/builtinItemStatsViews/itemAttributes.py` | ✅ have: options.include_attributes (stats.rs attributes) | 🟡 partial: get_type gives base attrs; fitted values only via compute_fit include_attributes | ✅ have: Market show info with fitted values |
