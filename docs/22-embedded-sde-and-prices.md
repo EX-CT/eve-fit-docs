@@ -92,43 +92,57 @@ text sections `TRAI`, `ENVI`, `NAMZ`).
 | `CLON` | clone grades (alpha skill caps) `{grade u32, skill u32, level u8}` |
 | `TRAI`, `ENVI`, `NAMZ` | traits text (en/zh), environment (wormhole classes, beacons, system effects), zh names: zlib JSON, same shape as the dataset JSON sections |
 
-### 2.3 Version reporting
+### 2.3 Version reporting (eve rulings 14:56)
 
-- New top-level output key **`provenance`** on every `calc` / `batch` / RPC result (strip-listed like the other new
-  keys: added to `ci/round1-new-keys.txt`, so the round-1 identity check runs on the output minus `provenance`, and
-  `ci/round1.sha256` is updated once):
+- Top-level output key **`provenance`** on every `calc` output, every batch result and the BatchResponse (strip-listed
+  for the round-1 identity check: in `ci/round1-new-keys.txt`, `ci/round1.sha256` updated once):
 
 ```json
 "provenance": {
-  "engine": "eve-dogma 0.2.0",
+  "engine": "eve-dogma 0.1.0",
   "sde_build": 3569502, "sde_revision": 5, "sde_release": "2026-10-02T11:08:57Z",
-  "sde_hash": "sha256:6c12…", "sde_source": "embedded",
-  "price_source": "embedded", "price_snapshot_id": "jita44-20261003T060000Z",
-  "price_time": "2026-10-03T06:00:00Z", "price_hash": "sha256:…"
+  "sde_hash": "sha256:<content_sha256 of the edp pack, header bytes 24..56, §2.2>", "sde_source": "embedded",
+  "price_source": "snapshot", "snapshot_time": "2026-10-03T06:38:56Z",
+  "price_snapshot_id": "jita44-20261003T063856Z", "price_hash": "sha256:3dd6…"
 }
 ```
 
-  `sde_source`: `embedded` | `override` (then `sde_override_path` or `"rpc"`). `price_source`: `embedded` | `file` |
-  `request` (full table in the request) | `request+embedded` / `request+file` (partial override on top). With
-  `price_source = request`, `price_snapshot_id` / `price_time` / `price_hash` are null.
-- `eve-fit version` and RPC `version` return the same object without per-request fields, plus `pack_format`
-  (`1.0`), `snapshot_schema_version` and the build target (`native` / `wasm32-wasip1` / `wasm32-unknown-unknown`).
-  The existing `meta` command keeps its fields (features are only added).
+- `sde_hash` is the pack's `content_sha256` (§2.2), `"sha256:" + 64 lowercase hex`. It is **not** `meta.dataset_sha256`
+  (the hash of the source dataset JSON, which `meta` keeps reporting). Interim, until the build embeds the edp pack
+  (§2.1), `sde_hash` is computed with the §2.2 rule over the pack the pipeline would build; if no pack exists yet the
+  engine reports `"sha256:"` + the dataset JSON sha256 and `version.sde_hash_of = "dataset"` (`"pack"` once embedded).
+- `sde_source`: `embedded` | `override` (then also `sde_override_path`, or `"rpc"` for `pack_b64`).
+- `price_source` names only where the **base price table** came from, by precedence: `request` (a `prices.isk`
+  table in the request) > `file` (`--prices FILE` or RPC `prices_load`) > `snapshot` (the embedded snapshot) >
+  `none`. Overrides never change it (overrides + `--prices` is `file`); overrides show in each price line's `source`
+  (docs/23 §6). `snapshot_time` = the `market_time` of the file / embedded snapshot in use; with `request` or `none`,
+  `snapshot_time`, `price_snapshot_id` and `price_hash` are null. A batch variant whose own FitRequest brings a
+  different table carries its own `provenance`.
+- `eve-fit version` and RPC `version` return the same object without the per-request price fields resolved per
+  request (they report the process / session state), plus `pack_format` (`"1.0"`), `snapshot_schema_version` (1) and
+  `target` (`native` / `wasm32-wasip1` / `wasm32-unknown-unknown`). `meta` keeps its fields.
 
 ### 2.4 Override switch
 
-- CLI: `eve-fit --sde FILE.edp <command>` (all commands). The file is checked (magic, `format_major`,
-  `content_sha256`) before use; failure is an error, never a silent fallback to the embedded pack.
-- RPC (serve-stdio, WASM `rpc`): method `sde_override` `{"path": "…"}` (native) or `{"pack_b64": "…"}` (any), which
-  switches the session; `{"reset": true}` returns to the embedded pack. Result: the new `version` object.
-- An override pack with a newer `sde_build` than the engine knows is accepted; effects the pack contains whose
-  names are not in the engine's specials / quirk table are applied from their modifier rows only and listed once in
-  `warnings` (`"sde_override: N effects without engine handlers: …"`).
-- The override never changes the embedded price snapshot; prices are independent (§3).
+- **Interface (fixed):** `--sde FILE` and `--prices FILE` are **global CLI flags before the subcommand**
+  (`eve-fit --sde x.edp calc fit.json`); RPC `calc` `params` is the FitRequest itself.
+- CLI: `eve-fit --sde FILE.edp <command>`. RPC (serve-stdio, WASM `rpc`): `sde_override` `{"path"}` (native) or
+  `{"pack_b64"}` (any) switches the session; `{"reset": true}` returns to the embedded pack. Result: the `version`
+  object.
+- Load failure is an error, never a silent fallback: code **`SDE_LOAD_FAILED`** with `reason`:
+  `not_found` (path missing / unreadable), `corrupt` (bad magic, truncated header or directory, section out of
+  range, bad base64), `hash_mismatch` (`content_sha256` ≠ SHA-256 of bytes 64..EOF), `incompatible_version`
+  (`format_major` ≠ 1, or a pack this engine build cannot run). After a failed `sde_override` the session keeps its
+  previous data.
+- An override pack with a newer `sde_build` is accepted; effects without engine handlers are applied from their
+  modifier rows and listed once in `warnings`.
+- The override never changes the price data (§3).
 
 ## 3. Frozen prices (B)
 
 ### 3.1 Snapshot embedded per release
+- Source (eve ruling 14:56): eve4's **EX-CT/eve-market-prices** releases (`prices-jita44-<time>`, schema
+  `schema/eve-price-snapshot.v1.schema.json`); first embedded snapshot: `prices-jita44-20261003T063856Z`.
 - The release workflow takes the newest snapshot published by the updater (§4) at release time, checks it
   (schema, `content_hash`), and embeds it (`EVE_DOGMA_PRICES=path`, `include_bytes!`, gzip JSON). It is parsed
   lazily on first price use.
@@ -195,11 +209,12 @@ Produced by the updater (eve4), read by engines. UTF-8 JSON, optionally gzip (`.
 | `source` | object | yes | §4.3 |
 | `rule` | object | yes | §4.4 |
 | `currency` | string | yes | `"ISK"` |
-| `sde_build` | integer | yes | SDE build whose type list the updater priced |
+| `sde_build` | integer | yes | SDE build whose type list the updater priced (required; a different build than the engine's data is allowed with a warning) |
 | `type_count` | integer | yes | number of entries in `types` |
-| `types` | object | yes | type id as decimal string → §4.5 |
+| `types` | object | yes | type id as decimal string → §4.5 (the key is `types`) |
 | `missing` | array of integer | yes | type ids requested but without a qualifying order (sorted ascending) |
 | `updater` | object | yes | `{ "name": string, "version": string }` |
+| `coverage` | object | no | `{ "dataset": string, "dataset_sha256": 64 hex, "types_requested": integer }`: which type list was priced (accepted, eve4) |
 | `content_hash` | string | yes | `"sha256:<64 lowercase hex>"`, §4.6 |
 
 ### 4.3 `source`
@@ -214,6 +229,10 @@ Produced by the updater (eve4), read by engines. UTF-8 JSON, optionally gzip (`.
 
 A source that cannot supply per-order data (an aggregate feed) must still fill §4.5 per the rule; if it can only
 approximate the rule it says so in `notes` and sets `rule.exact: false`.
+- **Fuzzwork (accepted, eve4):** aggregate percentile prices are clamped into [p0, band_max]; Fuzzwork has no
+  `Last-Modified`, so `market_time` = fetch time; `rule.exact: false`, `notes` says so. Counts it cannot know
+  exactly are best effort but must still satisfy the §4.5 invariants.
+- The source is identified by **`source.kind`**.
 
 ### 4.4 `rule`
 | field | type | default | meaning |
@@ -232,20 +251,30 @@ approximate the rule it says so in `notes` and sets `rule.exact: false`.
 |---|---|---|---|
 | `price` | number | ISK per unit | the snapshot price, rounded to 0.01 ISK (round half to even) |
 | `p0` | number | ISK per unit | lowest price after the `min_units` filter |
-| `band_max` | number | ISK per unit | p0 × (1 + band) |
+| `band_max` | number | ISK per unit | p0 × (1 + band), computed in IEEE double and **rounded to 12 significant digits** (so 4.0 × 1.05 = 4.2 exactly); stored as that value and used as the inclusive band edge |
 | `units` | integer | units | Σ volume_remain of the orders in the band (the weights) |
 | `orders` | integer | orders | number of orders in the band |
 | `units_considered` | integer | units | Σ volume_remain of all orders left after the `min_units` filter |
 | `orders_considered` | integer | orders | orders left after the `min_units` filter |
 | `orders_total` | integer | orders | sell orders at the location before filtering |
 
-Invariants (validated by engines on load, `PRICE_SNAPSHOT_INVALID` otherwise): `p0 ≤ price ≤ band_max`,
-`0 < units ≤ units_considered`, `0 < orders ≤ orders_considered ≤ orders_total`, all numbers finite.
+Invariants (validated by engines on load, `PRICE_SNAPSHOT_INVALID` otherwise): `p0 − tol ≤ price ≤ band_max + tol`
+with `tol = max(0.005, 1e-9 × band_max)` (half a cent for the 0.01 rounding of `price`, plus float slack),
+`0 < units ≤ units_considered`, `0 < orders ≤ orders_considered ≤ orders_total`, all numbers finite and ≥ 0.
+
+**Type coverage (decision):** a snapshot should price **every published type with a market group** in the CCP SDE
+of `sde_build` (fits carry cargo such as minerals, fuel, ammo stacks), not only the pipeline dataset's type list.
+Until the pipeline dataset lists all marketable types, the updater may take the type list from CCP's SDE
+`types` directly; `coverage` says which list was used. Engines price any type id found in the snapshot, also
+ones absent from their own data (name null).
 
 ### 4.6 `content_hash`
-SHA-256 over the canonical JSON of the whole object without the `content_hash` key: keys sorted, no insignificant
-whitespace, UTF-8, integers without exponent, numbers as the shortest representation that round-trips an IEEE
-double (Python `repr` / Rust `ryu`), no trailing zeros. Engines recompute it on load.
+SHA-256 over the **RFC 8785 (JCS) canonical JSON** of the whole object without the `content_hash` key, as
+`"sha256:" + 64 lowercase hex`. JCS: UTF-8, no insignificant whitespace, object keys sorted by UTF-16 code units (so
+`"1000"` sorts before `"34"`; keys are compared as strings, never as numbers), strings escaped per JCS, numbers in
+ECMAScript `Number.prototype.toString` form (shortest round-trip, no trailing `.0`: `1240000`, `4988.83`, `1e+21`).
+Integers and integral floats are the same number (1240000 and 1240000.0 hash identically). Engines recompute it on
+load (`PRICE_SNAPSHOT_INVALID` on mismatch).
 
 ### 4.7 Example
 ```json
@@ -259,10 +288,10 @@ double (Python `repr` / Rust `ryu`), no trailing zeros. Engines recompute it on 
   "rule": { "name": "jita_sell_band_weighted", "version": 1, "order_side": "sell", "location_id": 60003760,
             "min_units": 10, "band": 0.05, "weighting": "units", "exact": true },
   "currency": "ISK", "sde_build": 3569502, "type_count": 1,
-  "types": { "2889": { "price": 1251234.56, "p0": 1240000.0, "band_max": 1302000.0, "units": 412, "orders": 9,
+  "types": { "2889": { "price": 1251234.56, "p0": 1240000, "band_max": 1302000, "units": 412, "orders": 9,
                        "units_considered": 2310, "orders_considered": 31, "orders_total": 37 } },
   "missing": [],
-  "updater": { "name": "eve-prices", "version": "0.1.0" },
+  "updater": { "name": "eve-market-prices", "version": "0.1.0" },
   "content_hash": "sha256:…"
 }
 ```
@@ -270,7 +299,7 @@ double (Python `repr` / Rust `ryu`), no trailing zeros. Engines recompute it on 
 ## 5. Errors and warnings
 | code | when |
 |---|---|
-| `SDE_PACK_INVALID` | `--sde` / `sde_override`: bad magic, unknown `format_major`, hash mismatch, truncated section |
+| `SDE_LOAD_FAILED` | `--sde` / `sde_override` failed; `reason`: `not_found` \| `corrupt` \| `hash_mismatch` \| `incompatible_version` (§2.4; replaces the earlier `SDE_PACK_INVALID`) |
 | `PRICE_SNAPSHOT_VERSION` | unknown `schema` / `schema_version` |
 | `PRICE_SNAPSHOT_INVALID` | `content_hash` mismatch or an invariant of §4.5 broken |
 | `BAD_PRICES` | request `prices`: unknown `mode`, non-numeric / negative / non-finite value, non-integer key |

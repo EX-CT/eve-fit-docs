@@ -213,7 +213,6 @@ Otherwise it is absent, so existing outputs stay unchanged.
   },
   "missing": [ { "section": "modules", "index": 3, "type_id": 2048, "name": "Damage Control II",
                  "quantity": 1, "reason": "no_price" } ],
-  "snapshot_time": null,             // L4 snapshot market_time when any line used it
   "sources": { "override:type": 2, "injected": 11, … }   // line count per source
 }
 Line = { "kind": "module", "index": 0, "type_id": 2873, "name": "125mm Gatling AutoCannon II", "quantity": 3,
@@ -259,7 +258,8 @@ has price inputs, `price: true`, or a `price.*` path in `fields` / `filter` / `s
     { "index": 7, "id": "v8", "label": "bad", "error": { "code": "PATCH_FAILED", "message": "/modules/9: no such index" } }
   ],
   "warnings": [ "field 'offense.foo' not found" ],
-  "provenance": { "engine": "...", "sde_build": 3569502, "price_sources": ["injected"], "snapshot_time": null }
+  "provenance": { "engine": "eve-dogma 0.1.0", "sde_build": 3569502, "sde_hash": "sha256:…", "price_source": "request",
+                  "snapshot_time": null, … }   // docs/22 §2.3 form; the batch base table
 }
 ```
 - `results` holds the selected results in final order (after filter, sort, top_n); errored results stay in
@@ -267,12 +267,29 @@ has price inputs, `price: true`, or a `price.*` path in `fields` / `filter` / `s
   filter is given.
 - With `fields`, the price block is not repeated unless a `price` path is requested or `price: true`.
 
+- **Provenance (eve ruling 14:56):** every `calc` output and every batch result (inside its calc output, so it is
+  visible as `stats.provenance` without `fields` and as the result's `provenance` key) carries the docs/22 §2.3
+  `provenance` object. The BatchResponse carries the batch-level one at top level. A variant whose price inputs give a
+  different base table (its FitRequest has its own `prices`) carries its own `price_source`.
+- `provenance.price_source` names only where the **base price table** came from, by precedence: `request` (a
+  `prices.isk` table in the request, FitRequest or BatchRequest) > `file` (`--prices` / `prices_load`) > `snapshot`
+  (embedded) > `none`. Overrides never change it (overrides + `--prices` is still `file`); they show in each line's
+  `source`. `snapshot_time` = the `market_time` of the file / embedded snapshot in use, null for `request` / `none`.
+  The price block has no separate `snapshot_time` / price-source list; lines keep their own `snapshot_time`.
+
 ## 8. Errors
 Per fit (in place, the rest of the batch continues): every `calc` error code (`BAD_REQUEST`, `UNKNOWN_TYPE`, …) and
 `PATCH_FAILED` (bad pointer / op). Whole request: `BATCH_BAD_REQUEST` (no or several fit sources, unknown option,
 `deltas` without reference), `BATCH_TOO_LARGE {count, limit}`, `BAD_PRICE_OVERRIDE`, `BAD_PRICES`.
 Market-group overrides need the SDE dataset with the market-group tree (pipeline r5+); with an older dataset a
 `market_group_id` override is ignored with the warning `market_group overrides unsupported until SDE dataset r5`.
+
+## 8a. Interface (fixed, for adapters)
+- `--sde FILE` and `--prices FILE` are **global CLI flags placed before the subcommand**:
+  `eve-fit --sde x.edp --prices p.json.gz calc fit.json`.
+- RPC `calc` `params` **is the FitRequest itself** (no wrapper). RPC `batch` `params` is the BatchRequest.
+- RPC session methods: `version` `{}`, `sde_override` `{"path"}` / `{"pack_b64"}` / `{"reset": true}`, `prices_load`
+  `{"path"}` / `{"snapshot"}` / `{"isk"}` / `{"clear": true}`.
 
 ## 9. Examples (copyable)
 
