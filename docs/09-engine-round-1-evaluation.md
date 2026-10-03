@@ -185,10 +185,74 @@ Not ranked (failed the gate): none.
 
 ## 6. Decision
 
-⟨Left for eve (coordinator).⟩ Questions to answer:
-- Which variant becomes the core engine (`eve-dogma-rs` main) for the CLI / MCP / web UI?
-- Is the winner also the WASM/browser engine, or is a second engine kept for the browser (D or F)?
-- Do we keep a second independent implementation as a cross-check oracle (differential testing)?
+**Round 1 result: J first (0.911), F second (0.854). No engine is adopted yet.** The user narrowed the choice to F and
+J on 2026-10-03 at about 11:00 CST, and the adoption decision is deferred to an F-vs-J head-to-head evaluation
+(docs/18, eve3). An earlier plan to promote J straight to mainline (a new repo `EX-CT/eve-dogma`, with MCP/web switching
+to J) is **paused** until docs/18 is decided.
+
+**Engine lines stopped.** On 2026-10-03 at about 11:05 CST the user stopped every other engine line: A, B, C, D, E, G,
+H, I and K. Only F and J continue. `eve-dogma-rs` (A) is **frozen as an archived reference**. Its last merged state is
+`d6043a7` (H's capacitor-simulation PR #1 on top of the round-1 commit `659737b`), and it gets no further engine
+work. Open A findings, such as the 5 bug classes in docs/15, are recorded there and not fixed.
+
+### Why J ranks first, and why it is not yet decisive
+
+| | weight | J | F | J − F (weighted) |
+|---|---|---|---|---|
+| Speed | 0.40 | 0.99 | 0.95 | +0.016 |
+| Maintainability | 0.35 | 0.75 | 0.64 | +0.039 |
+| Features | 0.15 | 1.00 | 1.00 | 0 |
+| Portability | 0.10 | 1.00 | 1.00 | 0 |
+| **Total** | | **0.911** | **0.854** | **+0.057** |
+
+- **Correctness is equal.** Both pass 326/326 cases and 21 051/21 051 values in every run, are deterministic, give
+  byte-exact EFT export, and pass every RPC probe.
+- **Speed is close.**
+  - J: 0.076 ms/calc, 28.6 k fits/s, 2.2 ms cold start.
+  - F: 0.101 ms/calc, 21.8 k fits/s, 1.8 ms cold start (the best cold start).
+  - J's lead is about 0.016 of the total.
+- **Most of the margin is maintainability**, about 0.039 of the total.
+  - J has 123 passing ctest tests, 2 dependencies and a 7.3 s build.
+  - F had no tests of its own found, a 78.8 s build, and generated code.
+  - This gap can be closed with ordinary engineering work. It is not an architectural difference.
+- **License.** Both ship LGPL v3 LICENSE texts and are mergeable into an LGPL-3.0-or-later mainline (§4, licensing
+  table). Neither has the GPL problem of E.
+- **Noise caveat.** The run used a shared, loaded host: 1-minute loadavg was 2.8 during J and 1.3–1.6 during F.
+  Latency spreads were up to 40 % on the single-CPU measurement, and every speed sub-score is log-scaled. J's speed lead
+  is within what the load difference could explain. The 0.057 total margin is real but mostly maintainability. A
+  head-to-head on an idle, pinned host with the current heads (docs/18) is the right basis for adoption.
+
+### Adoption plan (applies to whichever of F / J wins docs/18)
+
+1. **Mainline repo.** The winner moves to a new repo `EX-CT/eve-dogma`, created from its variant branch with filtered
+   history and no build directories. Preparation for J was started and is paused.
+2. **eve-dogma-rs (A)** is archived as a frozen reference. It can still serve as a second implementation for
+   differential testing, and the round-2 setup decides whether that cross-check runs against A, the docs/18 runner-up,
+   or E.
+3. **MCP / web UI** (eve-fit-mcp, eve-fit-web) switch their default engine to the winner after docs/18 (eve4). Until
+   then they keep their current engine.
+4. **P1 (docs/12, history rewrite of `variant-j/build-prof/` and `build-native/` in eve-dogma-lab).** If J wins, P1
+   is unnecessary for the new repo, because `EX-CT/eve-dogma` is created from filtered history without build
+   directories. P1 then only matters if the eve-dogma-lab pack itself has to shrink. If F wins, P1 stays as written in
+   docs/12.
+5. **Bench.** 1.9.0 is released (`v1.9.0`, 331 cases). The winner must pass 1.9.0 331/331 and the capacitor suite
+   (`cap-suite`, 150 cases) before the switch.
+
+### What the other variants contribute (ideas, not code merges)
+
+- **F (codegen):** build-time specialisation of effects and the baked dataset (cold start, WASM size). If J wins, these
+  are the main ideas to port.
+- **J (C++20):** precomputed relevance tables, the mmapped POD dataset image and the streaming writer. If F wins, these
+  are the main ideas to port.
+- **B (data-oriented Rust):** CSR flat modifier graph and data layout, with latency close to F in Rust.
+- **H (Rust ECS):** capacitor-simulation fidelity. Its Pyfa multiplier fold and incoming void-bomb drains (merged into A
+  as PR #1) score 150/150 on the cap suite, and its cap-suite fixtures are acceptance material for the winner.
+- **E (Pyfa-faithful Rust, GPL-3.0-or-later):** the most data-driven design (transpiled Pyfa handlers). It is not
+  mergeable into the LGPL mainline and stays a separate **GPL fidelity reference / differential oracle** (docs/15 fuzz
+  triage).
+- **C (Go):** the selector-tagged pull registry, and its 361-test suite as test material.
+- **A (eve-dogma-rs):** the incumbent contract, the oracle tooling, the documentation (DESIGN.md, contract) and the
+  WASI build path. It stays as the archived reference.
 
 ## 7. Merge plan
 
