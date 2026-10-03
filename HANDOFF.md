@@ -110,7 +110,7 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 
 ## eve3 / bench (executor bot; updated 2026-10-03 15:15 CST)
 
-### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 14:54 CST
+### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 15:13 CST
 **Current commits** (everything pushed)
 - eve-dogma-bench pending-1.11:
   - Gate + baseline: `98419df`, `b3a0957`, `07245e8`, `c2229b2`, `88ed590`, `32981f5`, `d151cb3` (d22 suites).
@@ -128,12 +128,13 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
   - optimizer-bench WIP: `13cb0d9`..`d48bbab`.
 - wip branches: `wip/eve3-batch-prices` (already merged).
 
-**In progress:** none. eve's task (steps 0-3) is done: `d4ed730`, `dfb4f49`, `48b1cb6`, `04f9ba5`, `d151cb3`, plus
-`32981f5` (ext 208).
+**In progress (eve's next task):**
+1. eve's rulings in d22/ + batch/: done in `ef17210`. This covers unified provenance, price_source as the base table
+   only, and SDE_LOAD_FAILED + reason. F d990818: batch 0/93, sde 0/18 (+5 pending), price_inject 0/32 (+1).
+2. Adopt eve4's rule (eve-market-prices e9781a5) in d22/rule.py: decimal half-even rounding, drop bad prices, clamp,
+   band_max at 12 significant digits, invalid rule = non-zero exit. Add cases and document it as the spec.
 
-**Next step:** wait for F's batch / price / docs/22 contract and change only `batch/adapter.py` and `d22/adapter.py`.
-When eve-sde-pipeline publishes an `.edp`, run with `SDE_PACK`. eve4 can point `PRICE_RULE_CMD` at the updater.
-Optimizer-bench is still shelved.
+**Next step:** 2, then re-record the gate totals.
 
 ### docs/19 + missing/partial cases (updated 2026-10-03 15:25 CST)
 **Current commits:** eve-dogma-bench pending-1.11: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5, 583f912, b34ebb9, 455aa53, 1fd7e37 (tip 1fd7e37). eve-fit-docs: ef6cdb6, 07341e3, eccb194, b6b8a6d, 295694a, c35c162. Nothing uncommitted; **no wip branches**.
