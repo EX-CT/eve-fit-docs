@@ -46,9 +46,9 @@ items:
   pyfa_src: eos/modifiedAttributeDict.py (calculateValue, penalized)
   f: have
   f_evidence: B19 esf_stacking_per*, e_fz_cloak_wcs_penalty_group_ninazu (FZ 8/8)
-  mcp: partial
+  mcp: have
   mcp_evidence: 'compute_fit passes the full FitRequest to the engine backend (src/schemas.ts) [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in
-    eve-dogma-bench inventory/mcp-web-gaps.md)]'
+    eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: FitStats from engine worker (src/engine/adapter.ts)
 - id: ENG-CORE-003
@@ -159,8 +159,9 @@ items:
   pyfa_src: module.py (reloadTime, forceReload); gui/builtinContextMenus/factorReload.py
   f: have
   f_evidence: options.factor_reload; B19 sustain_reload_*; CAP reload 8/8
-  mcp: partial
-  mcp_evidence: 'options passthrough [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'options passthrough [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40:
+    partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 20/20 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: options tab; no e2e (a08d943)
 - id: ENG-MOD-005
@@ -169,8 +170,9 @@ items:
   pyfa_src: module.py (getSpoolData); gui/builtinContextMenus/moduleSpool.py; eos/utils/spoolSupport.py
   f: have
   f_evidence: B19 esf_spool*, CAP spool 6/6, modules[].spool, options.default_spool
-  mcp: partial
-  mcp_evidence: 'FitRequest spool (eve4 draft a08d943: works, no dedicated MCP test)'
+  mcp: have
+  mcp_evidence: 'FitRequest spool (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 9/9 pass
+    on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: 'per-module spool (e2e tools/e2e.mjs: ''per-module spool 0% lowers disintegrator dps'')'
 - id: ENG-MOD-006
@@ -179,8 +181,9 @@ items:
   pyfa_src: module.py; effects overload*
   f: have
   f_evidence: B19 overheat_order*, CAP overheat 15/15, FZ e_fz_capsim_overheat_*
-  mcp: partial
-  mcp_evidence: 'state overheated [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'state overheated [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40:
+    partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 21/21 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: state toggle
 - id: ENG-MOD-007
@@ -230,8 +233,9 @@ items:
   pyfa_src: module.py (capUse, rawCycleTime, reactivationDelay, disallowRepeatingAction)
   f: have
   f_evidence: stats.rs modules cycle_time_ms/use; CAP 147/150
-  mcp: partial
-  mcp_evidence: 'via compute_fit [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'via compute_fit [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40:
+    partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 14/14 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: 'capacitorUse column [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
 - id: ENG-MOD-012
@@ -240,8 +244,8 @@ items:
   pyfa_src: module.py (isBreacher, getVolleyParameters)
   f: have
   f_evidence: ED core breacher_kestrel pass (core 339/339)
-  mcp: partial
-  mcp_evidence: depends on engine
+  mcp: have
+  mcp_evidence: 'depends on engine [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 1/1 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: depends on engine
 - id: ENG-MOD-013
@@ -270,8 +274,9 @@ items:
   pyfa_src: eos/saveddata/mode.py; ship.py (modes, validateModeItem); gui/builtinContextMenus/shipModeChange.py
   f: have
   f_evidence: B19 esf_tactical*, request.mode
-  mcp: partial
-  mcp_evidence: 'mode_type_id (eve4 draft a08d943: works, no dedicated MCP test)'
+  mcp: have
+  mcp_evidence: 'mode_type_id (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on
+    eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: mode selector; no e2e (a08d943)
 - id: ENG-SHIP-002
@@ -280,8 +285,9 @@ items:
   pyfa_src: eos/effects.py (subsystem effects); fit.py getNumSlots
   f: have
   f_evidence: B19 esf_slots*, Slot::Subsystem in validate
-  mcp: partial
-  mcp_evidence: 'subsystems (eve4 draft a08d943: works, no dedicated MCP test)'
+  mcp: have
+  mcp_evidence: 'subsystems (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 3/3 pass on eve-fit-mcp
+    8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: subsystem slots; no e2e (a08d943)
 - id: ENG-SHIP-003
@@ -290,8 +296,9 @@ items:
   pyfa_src: eos/saveddata/citadel.py; fit.py isStructure
   f: have
   f_evidence: B19 esf_structure*, standup_*
-  mcp: partial
-  mcp_evidence: 'structures supported (src/ grep citadel 8 files) [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'structures supported (src/ grep citadel 8 files) [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]
+    [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 8/8 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: structures
 - id: ENG-SHIP-004
@@ -300,8 +307,9 @@ items:
   pyfa_src: fit.py getPilotSecurity; gui/builtinContextMenus/fitPilotSecurity.py
   f: have
   f_evidence: B19 esf_security_status; character security
-  mcp: partial
-  mcp_evidence: 'character.security_status (eve4 draft a08d943: works, no dedicated MCP test)'
+  mcp: have
+  mcp_evidence: 'character.security_status (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py)
+    1/1 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: Character page; no e2e (a08d943)
 - id: ENG-SHIP-005
@@ -310,8 +318,9 @@ items:
   pyfa_src: fit.py getSystemSecurity; gui/builtinContextMenus/fitSystemSecurity.py
   f: have
   f_evidence: environment.system_security; B19 esf_security
-  mcp: partial
-  mcp_evidence: 'schema environment [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'schema environment [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40:
+    partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: environment security
 - id: ENG-SHIP-006
@@ -340,8 +349,8 @@ items:
   pyfa_src: drone.py getDps, getMiningYPS, getRemoteReps
   f: have
   f_evidence: ED ext mining_porpoise_drones, rr_vexor_light_bots pass (mining 11/11, outgoing 25/25)
-  mcp: partial
-  mcp_evidence: engine
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: engine
 - id: ENG-DRN-003
@@ -360,8 +369,9 @@ items:
   pyfa_src: drone.py maxRange, falloff
   f: have
   f_evidence: FZ e_fz_drone_speed_* 2/2; stats.rs control_range_m
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: 'drone pane [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
 - id: ENG-DRN-005
@@ -380,8 +390,9 @@ items:
   pyfa_src: eos/saveddata/fighter.py; fit.py fighterTubesUsed
   f: have
   f_evidence: B19 fighters_*, stats.rs fighter_tubes/squadron_size
-  mcp: partial
-  mcp_evidence: 'schema fighters [2026-10-03 13:50: have -> partial, only weak tests in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'schema fighters [2026-10-03 13:50: have -> partial, only weak tests in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03
+    14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 4/4 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: fighter pane
 - id: ENG-FTR-002
@@ -391,7 +402,8 @@ items:
   f: have
   f_evidence: B19 fighters_*, pfighter_*
   mcp: partial
-  mcp_evidence: 'FitRequest abilities (eve4 draft a08d943: works, no dedicated MCP test)'
+  mcp_evidence: 'FitRequest abilities (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: mcp-* suites 6/10 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected
+    fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)]'
   web: have
   web_evidence: 'Pyfa-default abilities (e2e tools/e2e.mjs: ''disabling an attack ability lowers fighter dps'')'
 - id: ENG-FTR-003
@@ -400,8 +412,9 @@ items:
   pyfa_src: fighter.py getDpsPerEffect, getCycleParametersPerEffect*
   f: have
   f_evidence: stats.rs fighter_dps; B19 fighters_*
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 4/4 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: engine
 - id: ENG-FTR-004
@@ -441,8 +454,9 @@ items:
   pyfa_src: eos/saveddata/booster.py, boosterSideEffect.py; gui/builtinContextMenus/boosterSideEffects.py
   f: have
   f_evidence: B19 booster_se_* (7), booster_*
-  mcp: partial
-  mcp_evidence: 'FitRequest side_effects (eve4 draft a08d943: works, no dedicated MCP test)'
+  mcp: have
+  mcp_evidence: 'FitRequest side_effects (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 18/18
+    pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: 'side effects (e2e tools/e2e.mjs: ''booster side effect lowers armor HP'')'
 - id: ENG-IMP-004
@@ -451,8 +465,8 @@ items:
   pyfa_src: fit.py; service/fit.py addImplant/addBooster (replace by slot)
   f: have
   f_evidence: ED mutated-suite 93/93 (slot_*, combo_two_boosters_dda_*)
-  mcp: partial
-  mcp_evidence: engine
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 11/11 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: engine
 - id: ENG-IMP-005
@@ -471,8 +485,9 @@ items:
   pyfa_src: fit.py capUsed, capRecharge, capDelta, calculateCapRecharge
   f: have
   f_evidence: CAP capacity/recharge/peak 150/150
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 12/12 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats capacitor
 - id: ENG-CAP-002
@@ -481,8 +496,9 @@ items:
   pyfa_src: eos/capSim.py; fit.py simulateCap, getCapSimData
   f: have
   f_evidence: CAP 147/150 (f5b709f); 150/150 on variant-f-capfix 9bf10a4
-  mcp: partial
-  mcp_evidence: 'options.cap_sim [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'options.cap_sim [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40:
+    partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 22/22 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats capacitor
 - id: ENG-CAP-003
@@ -491,8 +507,9 @@ items:
   pyfa_src: capSim.py; module charges
   f: have
   f_evidence: CAP injectors 14/14
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 14/14 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: engine
 - id: ENG-CAP-004
@@ -501,8 +518,9 @@ items:
   pyfa_src: fit.py addDrain/getCapRegenGainFromMod
   f: have
   f_evidence: CAP own_neut_nos 10/10; options.nos_no_target_cap
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 11/11 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: engine
 - id: ENG-CAP-005
@@ -511,8 +529,9 @@ items:
   pyfa_src: fit.py addDrain, iterDrains
   f: have
   f_evidence: ED cap-suite 150/150 (hard_*, incoming incl. void bombs)
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 14/14 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: engine
 - id: ENG-CAP-006
@@ -531,8 +550,9 @@ items:
   pyfa_src: fit.py hp; resistancesViewFull
   f: have
   f_evidence: B19 all cases (hp.*, resonance)
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, only weak tests in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, only weak tests in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40:
+    partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 34/34 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats defense
 - id: ENG-DEF-002
@@ -551,8 +571,9 @@ items:
   pyfa_src: fit.py tank, effectiveTank, sustainableTank, calculateSustainableTank; rechargeViewFull
   f: have
   f_evidence: stats.rs tank raw/sustained/sustained_effective; B19 sustain_*
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 11/11 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats
 - id: ENG-DEF-004
@@ -561,8 +582,9 @@ items:
   pyfa_src: eos/effects.py (Effect4928 adaptive armor hardener); gui/builtinContextMenus/moduleRahPattern.py
   f: have
   f_evidence: B19 esf_reactive_armor, dmgpattern_rah; options.rah
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: options tab RAH; no e2e (a08d943)
 - id: ENG-DEF-005
@@ -571,8 +593,9 @@ items:
   pyfa_src: effects; module charges
   f: have
   f_evidence: B19 esf_ancillary*, proj_aar_*
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 7/7 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: engine
 - id: ENG-DEF-006
@@ -581,8 +604,9 @@ items:
   pyfa_src: fit.py calculateShieldRecharge
   f: have
   f_evidence: stats.rs passive_shield
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 34/34 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats
 - id: ENG-DEF-007
@@ -591,8 +615,9 @@ items:
   pyfa_src: fit.py getRemoteReps (incoming via projected)
   f: have
   f_evidence: stats.rs incoming RR (MPF); B19 proj_ars/rar/rsb
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 4/4 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: engine
 - id: ENG-OFF-001
@@ -631,8 +656,9 @@ items:
   pyfa_src: effects; stats
   f: have
   f_evidence: stats.rs doomsday (engine.rs); covered in B19 exct_avatar?
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 1/1 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: engine
 - id: ENG-OFF-005
@@ -681,8 +707,9 @@ items:
   pyfa_src: fit.py maxSpeed, alignTime
   f: have
   f_evidence: B19 max_velocity/align_time_s
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 14:00 strict gate: have -> partial, only test mcp.integration.what-if is partial (velocity only)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 14:00 strict gate: have -> partial, only test mcp.integration.what-if is partial (velocity only)] [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through
+    compute_fit, bench tools/mcp_batch.py) 34/34 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats navigation
 - id: ENG-NAV-002
@@ -691,8 +718,9 @@ items:
   pyfa_src: fit.py warpSpeed, maxWarpDistance
   f: have
   f_evidence: stats.rs warp_speed_au_s, max_warp_distance_au
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 34/34 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats
 - id: ENG-NAV-003
@@ -701,8 +729,9 @@ items:
   pyfa_src: targetingMiscViewMinimal (Warp Core Strength)
   f: have
   f_evidence: stats.rs warp_scramble_status
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 24/24 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats
 - id: ENG-NAV-004
@@ -721,8 +750,9 @@ items:
   pyfa_src: fit.py maxTargets, maxTargetRange, scanStrength, scanType
   f: have
   f_evidence: stats.rs targeting
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 14:00 strict gate: have -> partial, only test mcp.features.compute-graph-stats is partial (lock time only)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 14:00 strict gate: have -> partial, only test mcp.features.compute-graph-stats is partial (lock time only)] [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases
+    through compute_fit, bench tools/mcp_batch.py) 34/34 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats targeting
 - id: ENG-TGT-002
@@ -741,8 +771,9 @@ items:
   pyfa_src: fit.py jamChance
   f: have
   f_evidence: stats.rs jam_chance_percent; B19 ecm_*
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 6/6 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats
 - id: ENG-TGT-004
@@ -751,8 +782,9 @@ items:
   pyfa_src: fit.py probeSize
   f: have
   f_evidence: stats.rs probe_size
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 10/10 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: 'Stats [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
 - id: ENG-TGT-005
@@ -761,8 +793,9 @@ items:
   pyfa_src: targetingMisc
   f: have
   f_evidence: stats.rs control_range_m
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 6/6 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats
 - id: ENG-TGT-006
@@ -792,7 +825,8 @@ items:
   f: have
   f_evidence: B19 proj_*drone*, pfighter_* (6)
   mcp: partial
-  mcp_evidence: 'FitRequest projected (eve4 draft a08d943: works, no dedicated MCP test)'
+  mcp_evidence: 'FitRequest projected (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: mcp-* suites 2/6 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected
+    fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)]'
   web: have
   web_evidence: projected
 - id: ENG-PROJ-003
@@ -802,7 +836,8 @@ items:
   f: have
   f_evidence: B19 projfit_* (10)
   mcp: partial
-  mcp_evidence: 'projected[kind=fit] (eve4 draft a08d943: works, no dedicated MCP test)'
+  mcp_evidence: 'projected[kind=fit] (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: mcp-* suites 0/10 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected
+    fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)]'
   web: partial
   web_evidence: nested toRequest (fit/model.ts); no e2e (a08d943)
 - id: ENG-PROJ-004
@@ -812,7 +847,8 @@ items:
   f: have
   f_evidence: projected distance; B19 *_falloff
   mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: mcp-* suites
+    4/6 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)]'
   web: have
   web_evidence: projected distance
 - id: ENG-PROJ-005
@@ -821,8 +857,9 @@ items:
   pyfa_src: effects
   f: have
   f_evidence: B19 esf_burst*, aoe_* (5), ecm_burst
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 10/10 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: engine
 - id: ENG-PROJ-006
@@ -841,8 +878,8 @@ items:
   pyfa_src: effects
   f: have
   f_evidence: ED cap-suite in_void_bomb pass (150/150)
-  mcp: partial
-  mcp_evidence: engine
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 1/1 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: engine
 - id: ENG-PROJ-008
@@ -872,7 +909,8 @@ items:
   f: have
   f_evidence: booster_fits; B19 fleet_two_boosters; stats strongest
   mcp: partial
-  mcp_evidence: 'fleet.booster_fits (eve4 draft a08d943: works, no dedicated MCP test)'
+  mcp_evidence: 'fleet.booster_fits (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: mcp-* suites 0/3 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected
+    fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)]'
   web: partial
   web_evidence: booster-fit picker; no e2e (a08d943)
 - id: ENG-ENV-001
@@ -881,8 +919,9 @@ items:
   pyfa_src: fit.py systemEffect; envEffectAdd
   f: have
   f_evidence: B19 env_* (8)
-  mcp: partial
-  mcp_evidence: v0.3.0 mcp.features.projected-environment, but the environment assertions are skipped silently inside an if (weak)
+  mcp: have
+  mcp_evidence: 'v0.3.0 mcp.features.projected-environment, but the environment assertions are skipped silently inside an if (weak) [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through
+    compute_fit, bench tools/mcp_batch.py) 8/8 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: environment
 - id: ENG-ENV-002
@@ -891,8 +930,9 @@ items:
   pyfa_src: envEffectAdd
   f: have
   f_evidence: B19 weather_* (6)
-  mcp: partial
-  mcp_evidence: 'environment (eve4 draft a08d943: works, no dedicated MCP test)'
+  mcp: have
+  mcp_evidence: 'environment (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 6/6 pass on eve-fit-mcp
+    8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: environment
 - id: ENG-ENV-003
@@ -901,8 +941,9 @@ items:
   pyfa_src: envEffectAdd
   f: have
   f_evidence: B19 incursion_* (3), cloud_* (3)
-  mcp: partial
-  mcp_evidence: 'environment (eve4 draft a08d943: works, no dedicated MCP test)'
+  mcp: have
+  mcp_evidence: 'environment (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 6/6 pass on eve-fit-mcp
+    8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: environment
 - id: ENG-ENV-004
@@ -911,8 +952,9 @@ items:
   pyfa_src: effects
   f: have
   f_evidence: B19 esf_beacons, esf_location_bonus_not_on
-  mcp: partial
-  mcp_evidence: 'environment (eve4 draft a08d943: works, no dedicated MCP test)'
+  mcp: have
+  mcp_evidence: 'environment (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on eve-fit-mcp
+    8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: 'beacon selector (e2e tools/e2e.mjs: ''environment beacon applied'')'
 - id: ENG-VAL-001
@@ -921,8 +963,9 @@ items:
   pyfa_src: fit.py cpuUsed, pgUsed, calibrationUsed, droneBandwidthUsed
   f: have
   f_evidence: validate CPU/POWER/CALIBRATION/DRONE_BANDWIDTH; FZ e_fz_cpu_round_tie_*
-  mcp: partial
-  mcp_evidence: 'validate_fit [2026-10-03 14:00 strict gate: have -> partial, only test mcp.integration.suggest-modules is partial (no overflow flagging)]'
+  mcp: have
+  mcp_evidence: 'validate_fit [2026-10-03 14:00 strict gate: have -> partial, only test mcp.integration.suggest-modules is partial (no overflow flagging)] [2026-10-03 14:40: partial -> have, mcp-* suites
+    (bench cases through compute_fit, bench tools/mcp_batch.py) 4/4 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: 'Problems section [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
 - id: ENG-VAL-002
@@ -941,8 +984,9 @@ items:
   pyfa_src: module.py fits; fit.py canFit
   f: have
   f_evidence: SHIP_RESTRICTION, RIG_SIZE, MAX_GROUP_*, MAX_TYPE_FITTED
-  mcp: partial
-  mcp_evidence: 'validate_fit [2026-10-03 14:00 strict gate: have -> partial, only test mcp.unit.can-fit is partial (rig size, no ship restriction)]'
+  mcp: have
+  mcp_evidence: 'validate_fit [2026-10-03 14:00 strict gate: have -> partial, only test mcp.unit.can-fit is partial (rig size, no ship restriction)] [2026-10-03 14:40: partial -> have, mcp-* suites (bench
+    cases through compute_fit, bench tools/mcp_batch.py) 7/7 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: 'Problems [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
 - id: ENG-VAL-004
@@ -961,8 +1005,9 @@ items:
   pyfa_src: gui/mainMenuBar.py 'Disable Fitting Restrictions'
   f: have
   f_evidence: violations reported, never block
-  mcp: partial
-  mcp_evidence: 'allow_violations [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'allow_violations [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40:
+    partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: fits always allowed; no strict mode toggle found
 - id: ENG-VAL-006
@@ -971,8 +1016,9 @@ items:
   pyfa_src: module.py isValidCharge
   f: have
   f_evidence: CHARGE_GROUP/SIZE/CAPACITY
-  mcp: partial
-  mcp_evidence: 'validate_fit [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'validate_fit [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 4/4 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
   web_evidence: 'charge picker filtered [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
 - id: ENG-VAL-007
@@ -1162,8 +1208,9 @@ items:
   pyfa_src: character.py secStatus
   f: have
   f_evidence: character security
-  mcp: partial
-  mcp_evidence: 'schema [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'schema [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 1/1 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Character.tsx
 - id: CHR-008
@@ -1855,8 +1902,9 @@ items:
   pyfa_src: gui/builtinStatsViews/resistancesViewFull.py
   f: have
   f_evidence: stats.rs resonance/hp/ehp
-  mcp: partial
-  mcp_evidence: 'compute_fit detail full [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'compute_fit detail full [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03
+    14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 34/34 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats.tsx Defense
 - id: UI-STAT-RCH
@@ -1865,8 +1913,9 @@ items:
   pyfa_src: gui/builtinStatsViews/rechargeViewFull.py
   f: have
   f_evidence: stats.rs tank raw/sustained
-  mcp: partial
-  mcp_evidence: 'compute_fit [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'compute_fit [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 11/11 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats.tsx
 - id: UI-STAT-FP
@@ -1885,8 +1934,9 @@ items:
   pyfa_src: gui/builtinStatsViews/capacitorViewFull.py
   f: have
   f_evidence: stats.rs capacitor (stable_percent, depletes_in_s, delta_gj_s)
-  mcp: partial
-  mcp_evidence: 'compute_fit [2026-10-03 13:50: have -> partial, only weak tests in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'compute_fit [2026-10-03 13:50: have -> partial, only weak tests in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40:
+    partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 12/12 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Stats.tsx Capacitor
 - id: UI-STAT-TGT
@@ -2028,8 +2078,9 @@ items:
   pyfa_src: module.py getVolleyParameters
   f: have
   f_evidence: stats.rs smartbomb (l.283/421); fighterAbilityLaunchBomb
-  mcp: partial
-  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
+    -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 1/1 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: engine
 - id: ENG-MISC-002
@@ -2059,7 +2110,7 @@ items:
   f: missing
   f_evidence: not named in F src (probe); see ENG-MOD-012; Pyfa-backed bench pending-1.11 cases ext:brdc_* 4 (0/4) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: partial
-  mcp_evidence: engine
+  mcp_evidence: 'engine [2026-10-03 14:40: mcp-* suites 0/4 on eve-fit-mcp 8c6b93d; F fails too]'
   web: partial
   web_evidence: engine
 - id: ENG-MISC-005
