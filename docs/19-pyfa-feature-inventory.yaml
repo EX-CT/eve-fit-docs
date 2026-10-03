@@ -540,8 +540,8 @@ items:
   pyfa_src: graphs/data/fitCapacitor
   f: have
   f_evidence: ED graphs-round2 capacitor 14/14 (cap_*, cap_time_*)
-  mcp: partial
-  mcp_evidence: sweep tool not time-series
+  mcp: have
+  mcp_evidence: 'sweep tool not time-series [2026-10-03 14:50: partial -> have, mcp-graphs (graphs suite through compute_graph, bench tools/mcp_batch.py) 10/10 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: Graphs capacitor
 - id: ENG-DEF-001
@@ -1047,8 +1047,9 @@ items:
   pyfa_src: graphs/data/fitApplicationProfile; graphFitAmmoPicker, graphAmmoOptimal*
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: partial
-  mcp_evidence: 'v0.3.0 compute_graph serves it (mcp.features.list-graphs: 10 graphs); no value test for this graph'
+  mcp: have
+  mcp_evidence: 'v0.3.0 compute_graph serves it (mcp.features.list-graphs: 10 graphs); no value test for this graph [2026-10-03 14:50: partial -> have, mcp-graphs (graphs suite through compute_graph, bench
+    tools/mcp_batch.py) 14/14 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
 - id: GRF-CAP-001
@@ -1057,8 +1058,9 @@ items:
   pyfa_src: graphs/data/fitCapacitor
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: partial
-  mcp_evidence: compute_graph serves it; mcp.features.compute-graph-target has no capacitor value check (weak)
+  mcp: have
+  mcp_evidence: 'compute_graph serves it; mcp.features.compute-graph-target has no capacitor value check (weak) [2026-10-03 14:50: partial -> have, mcp-graphs (graphs suite through compute_graph, bench
+    tools/mcp_batch.py) 13/13 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
 - id: GRF-ECM-001
@@ -1067,8 +1069,9 @@ items:
   pyfa_src: graphs/data/fitEcmBurstScanresDamps
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: partial
-  mcp_evidence: 'v0.3.0 compute_graph serves it (mcp.features.list-graphs: 10 graphs); no value test for this graph'
+  mcp: have
+  mcp_evidence: 'v0.3.0 compute_graph serves it (mcp.features.list-graphs: 10 graphs); no value test for this graph [2026-10-03 14:50: partial -> have, mcp-graphs (graphs suite through compute_graph, bench
+    tools/mcp_batch.py) 10/10 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: 40e6044 ECM burst graph (web.e2e.graph-ecm-burst, graph-ecm-damage)
 - id: GRF-EWAR-001
@@ -1077,8 +1080,9 @@ items:
   pyfa_src: graphs/data/fitEwarStats
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: partial
-  mcp_evidence: 'v0.3.0 compute_graph serves it (mcp.features.list-graphs: 10 graphs); no value test for this graph'
+  mcp: have
+  mcp_evidence: 'v0.3.0 compute_graph serves it (mcp.features.list-graphs: 10 graphs); no value test for this graph [2026-10-03 14:50: partial -> have, mcp-graphs (graphs suite through compute_graph, bench
+    tools/mcp_batch.py) 21/21 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
 - id: GRF-LOCK-001
@@ -1107,8 +1111,9 @@ items:
   pyfa_src: graphs/data/fitRemoteReps
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: partial
-  mcp_evidence: 'v0.3.0 compute_graph serves it (mcp.features.list-graphs: 10 graphs); no value test for this graph'
+  mcp: have
+  mcp_evidence: 'v0.3.0 compute_graph serves it (mcp.features.list-graphs: 10 graphs); no value test for this graph [2026-10-03 14:50: partial -> have, mcp-graphs (graphs suite through compute_graph, bench
+    tools/mcp_batch.py) 11/11 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
 - id: GRF-SHLD-001
@@ -1117,8 +1122,9 @@ items:
   pyfa_src: graphs/data/fitShieldRegen
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: partial
-  mcp_evidence: 'v0.3.0 compute_graph serves it (mcp.features.list-graphs: 10 graphs); no value test for this graph'
+  mcp: have
+  mcp_evidence: 'v0.3.0 compute_graph serves it (mcp.features.list-graphs: 10 graphs); no value test for this graph [2026-10-03 14:50: partial -> have, mcp-graphs (graphs suite through compute_graph, bench
+    tools/mcp_batch.py) 5/5 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
 - id: GRF-WARP-001
@@ -1127,8 +1133,9 @@ items:
   pyfa_src: graphs/data/fitWarpTime
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: partial
-  mcp_evidence: 'v0.3.0 compute_graph serves it (mcp.features.list-graphs: 10 graphs); no value test for this graph'
+  mcp: have
+  mcp_evidence: 'v0.3.0 compute_graph serves it (mcp.features.list-graphs: 10 graphs); no value test for this graph [2026-10-03 14:50: partial -> have, mcp-graphs (graphs suite through compute_graph, bench
+    tools/mcp_batch.py) 8/8 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: have
   web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
 - id: GRF-UI-001
