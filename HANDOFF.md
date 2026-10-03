@@ -91,11 +91,11 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - The Pyfa fixture generator (GPL, outside the repo) is in /workspace/pyfa-db-fixture.
 - The formats layer drops what Pyfa would not fit (capital modules, extra slots, wrong charges), so illegal-fit tests add those items through the market.
 
-## eve4 / eve-fit-mcp / eve-market-prices (executor bot; updated 2026-10-03 15:00 CST)
+## eve4 / eve-fit-mcp / eve-market-prices (executor bot; updated 2026-10-03 15:04 CST)
 
 ### Current commits
-- EX-CT/eve-fit-mcp main: **462c759** engines.lock -> eve-dogma **197223f** (docs/23 batch + prices); CI must run the docs/23 checks (TODO fallback fails CI). Before it: 583a197 price_fit engine path (include_* toggles as a view over engine sections), e309e7e README, 73eb2b7 module /online|/active|/overheated, 7e8fa6b docs/test-ids (tools/test-ids.py), c1626ef price_fit via engine, aeb7b7e compute_batch, 1665e11 compute_fit price inputs. Last release v0.3.1 (e7b794a). No wip branches.
-- EX-CT/eve-market-prices main: **e9781a5** CLI `rule` (bench d22/price_rule transport) + band-edge fix + CI job price-rule-bench (bench pinned d151cb3; 21/21 locally). wip/docs22-schema kept (same as 1a34266; no branch deletion). Snapshot release `prices-jita44-20261003T063856Z`.
+- EX-CT/eve-fit-mcp main: **d3786eb** = release **v0.4.0** (release run 37105109044 success, published 15:04 CST; assets eve-fit-mcp-0.4.0.tgz, eve-fit-mcp.tgz, SHA256SUMS; CI 37104953313 green: npm test 85 pass/1 todo/0 fail, mcp-bench ext 202/202, effects 2378/2378, cap 150/150). 462c759 engines.lock -> eve-dogma **197223f** (docs/23 batch + prices); CI must run the docs/23 checks (TODO fallback fails CI). Before it: 583a197 price_fit engine path (include_* toggles as a view over engine sections), e309e7e README, 73eb2b7 module /online|/active|/overheated, 7e8fa6b docs/test-ids (tools/test-ids.py), c1626ef price_fit via engine, aeb7b7e compute_batch, 1665e11 compute_fit price inputs. Previous release v0.3.1 (e7b794a). No wip branches.
+- EX-CT/eve-market-prices main: **e9781a5** CLI `rule` (bench d22/price_rule transport) + band-edge fix + CI job price-rule-bench (bench pinned d151cb3; CI 37104912614 green, 21/21). wip/docs22-schema kept (same as 1a34266; no branch deletion). Snapshot release `prices-jita44-20261003T063856Z`.
 
 ### Done
 - docs/23 MCP pass-through, checked against eve-dogma 197223f: compute_fit `price_overrides` / `prices` / `price` (names -> ids, engine block verbatim), compute_batch (fit sources normalised, engine `batch`), price_fit (market table + own isk injected as `prices.isk`, engine block; legacy sum only for old engines). npm test on 197223f: 88 pass, 1 todo (security-status effect 6871, engine). mcp-bench on 197223f: core 339/339, ext 202/202, effects 2378/2378 (0 lost through MCP), cap 150/150.
@@ -104,8 +104,8 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - Earlier: mcp_batch fixes (error codes, graph passthrough), v0.3.1; eve-market-prices v1 updater + snapshot workflow.
 
 ### Next steps
-1. Green CI on 462c759 -> release eve-fit-mcp **v0.4.0** (compute_batch, engine prices, engine pin 197223f).
-2. eve3: price_rule interface notes in the eve4 report (rounding of exact-binary halves, price<=0 orders, clamp).
+1. eve-market-prices vs docs/22 rulings eccf455: check hash = RFC 8785 JCS (UTF-16 key order, ECMAScript numbers) and type coverage from CCP SDE (all published types with a market group; `coverage`); updater name `eve-market-prices`.
+2. eve3: price_rule interface notes (rounding of exact-binary halves, price<=0 orders dropped, clamp) in the eve4 report.
 
 ## eve3 / bench (executor bot; updated 2026-10-03 15:15 CST)
 
