@@ -31,3 +31,12 @@
 | 12 | [repo-hygiene-audit](docs/12-repo-hygiene-audit.md) | All public repos and branches, full history: licences, Pyfa code, large blobs, secrets, artifacts; rewrite proposals |
 | — | [LICENSING](LICENSING.md) | License decisions (Pyfa GPLv3 / eos LGPL / CCP data) |
 | — | [PROGRESS](PROGRESS.md) | Done / next, for resuming work |
+
+## License
+
+- Documentation (everything except `schema/`): **CC-BY-4.0**. See [`LICENSE`](LICENSE).
+- JSON schemas in [`schema/`](schema): **MIT**. See [`schema/LICENSE`](schema/LICENSE).
+- The documents quote short excerpts and paths from Pyfa (GPL-3.0 / eos LGPL) for commentary. Those excerpts keep their
+  original licence. EVE Online names and data are © CCP hf. Policy: [LICENSING.md](LICENSING.md).
+
+中文：文档采用 CC-BY-4.0（`LICENSE`），`schema/` 下的 JSON Schema 采用 MIT（`schema/LICENSE`）。
