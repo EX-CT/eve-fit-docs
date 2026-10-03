@@ -16,7 +16,7 @@
   校验后的 EFT 导出数值。
 - 第 4 节列出各引擎需要的改动，第 5 节给出计分方法。
 
-Status: draft, 2026-10-03 ~09:20 CST.
+Status: **DRAFT**, 2026-10-03 (09:20 CST; §3/§5 updated ~10:00 CST).
 
 - **Contract:** `CONTRACT-MUTATED.md` draft 0.1 on the `EX-CT/eve-dogma-bench` branch **`mutated-suite`**, under
   `mutated/`. It is additive to bench contract 1.4.x.
@@ -84,8 +84,11 @@ No new fields are needed.
   - `expected_extra/eft_export.jsonl` holds Pyfa's `exportEft` output (93 rows);
   - `expected_extra/eft_import.jsonl` holds Pyfa's `importEft` results (99 rows): 91 exports plus 8 hand-written edge
     texts;
-  - two exports are excluded, because in this oracle setup Pyfa drops the mutated module when it re-imports them. The
-    cause is still open; see `eft_import_excluded.json`.
+  - two exports are excluded: `combo_mindflood_ham_se_exct_ishtar` and `state_web_overheated_exct_tengu`. The cause
+    is now known (CONTRACT-MUTATED §6.1). Pyfa's `importEft` drops every module that fails `Module.fits()`. Both
+    source corpus fits are overfilled: `exct_ishtar` has 5 mid modules on 4 mid slots, and `exct_tengu` has 6 mid
+    modules where Pyfa gives that subsystem set 4 at import. The last lines of the rack are dropped, and the mutated
+    module is last. The plain, unmutated MWD line is dropped the same way, so this is not a mutation rule.
 - **Licensing:** the oracle scripts are GPL-3.0-or-later test tools that import an unmodified Pyfa checkout. The
   generator, scorers, cases and expected files contain no Pyfa code.
 
@@ -145,6 +148,14 @@ The **EFT import** check compares the ship, the mutated modules in order with th
 and the implants and boosters after the slot rule. Unmutated-module import fidelity belongs to the formats suite
 (docs/11).
 
+**Pass rules** (CONTRACT-MUTATED §5.1):
+
+| part | a row passes when |
+|---|---|
+| stats value | `\|got - want\| <= max(1e-3, 1e-4·\|want\|)` (main-corpus rule); a case passes when all its values pass and the engine reports no error |
+| EFT export | the text is byte-identical (the T3C `[Empty Subsystem slot]` exception applies) |
+| EFT import | the compared fields are equal; effective mutation values within relative 1e-6 |
+
 **Gate:** 326/326 on the 1.8.0 corpus and no engine errors on the suite.
 
 **Proposed weighting** (open, to be settled when the suite freezes):
@@ -159,7 +170,8 @@ Performance is not scored. The suite is small and dominated by process start-up.
 
 **Open questions for 0.2:**
 
-- why Pyfa drops two re-imported mutated modules;
+- import drops modules that do not fit, in line order. Either make this a rule with dedicated rows (it may belong
+  in the formats suite), or keep overfilled source fits out of the generator;
 - an `overrides[]` × mutation case;
 - mutaplasmids from another module family, where Pyfa raises an error;
 - name-keyed `attributes` in requests (EFT style);
