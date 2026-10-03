@@ -17,6 +17,22 @@
 4. **No fresh clones; build time is not measured for scoring** (recorded for information only). Unlike round 1,
    the command has no `--fresh-clones`.
 
+**Scope change (user, via the main bot, 2026-10-03 ≈ 11:00):** round 2 evaluates only **F and J**: G4 (`graphs-g4`,
+on variant-f) and GJ (`graphs-j`, J's graph port on variant-j `3ab992d`, in progress). G1–G3 are no longer evaluated
+(their descriptions below are kept for reference). F baseline done (§5); side-by-side rerun when `graphs-j` exists:
+
+```bash
+python3 tools/evaluate_graphs.py --as-of 2026-10-03T11:00:00+08:00 --runs 3 --only G4,GJ
+```
+
+**Push-time check (added for round 2):** the `--as-of` pick (last first-parent commit with committer date ≤ cutoff) is
+verified against the GitHub branch activity log (`GET /repos/{o}/{r}/activity?ref=refs/heads/<branch>`). A commit
+dated before the cutoff but pushed after it was not available at the cutoff, so the last head pushed at or before the
+cutoff is evaluated instead; commit date, push time, chosen SHA and verdict are in the json (`git.push_check`) and the
+md ("Commit selection"). Reason: in round 1, variant-i had commits dated 09:52–09:53 that were pushed only at 10:53
+(the evaluated `ad9f73e` was the head pushed before 10:15, so round 1 was unaffected). From round 3, cutoffs are
+defined by push time (TODO in `tools/evaluate.py`).
+
 ## 1. Goal
 
 Pick the graph implementation (or the ideas from several) that becomes the graph layer of the EXCT toolkit (CLI, MCP
@@ -73,9 +89,10 @@ python3 tools/evaluate_graphs.py --as-of 2026-10-03T11:00:00+08:00 --runs 3     
 | G1 | Pyfa-faithful graph port (Rust) | E (Pyfa-faithful Rust, GPL) | `graphs-g1` @ ⟨sha⟩ | GPL-3.0-or-later | **no**: derived from E/Pyfa (GPL) ⟨confirm⟩ |
 | G2 | engine primitives (Go) + portable TS evaluator | C (Go) | `graphs-g2` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
 | G3 | vectorised NumPy grid + per-fit cache | G (Python + NumPy) | `graphs-g3` @ ⟨sha⟩ | LGPL-3.0 (text; qualifier not stated in the graph dir) | yes ⟨confirm⟩ |
-| G4 | declarative graph spec (Rust, expression catalogue) | F (codegen Rust/WASM) | `graphs-g4` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
+| G4 | declarative graph spec (Rust, expression catalogue) | F (codegen Rust/WASM) | `graphs-g4` @ `f73ff1c` | LGPL-3.0-or-later | **yes** (confirmed at the evaluated commit) |
+| GJ | J graphs port (C++20) | J (C++20, `variant-j` `3ab992d`) | `graphs-j` @ ⟨not yet pushed⟩ | ⟨…⟩ | ⟨…⟩ |
 
-Provisional licenses: detected 2026-10-03 09:10 CST on current heads with the evaluation tool's detection.
+Provisional licenses: detected 2026-10-03 09:10 CST on current heads with the evaluation tool's detection. G4 confirmed by the F baseline run.
 
 ### Approaches (from each branch's README / DESIGN / GRAPHS.md)
 
@@ -94,17 +111,35 @@ Provisional licenses: detected 2026-10-03 09:10 CST on current heads with the ev
 
 ## 5. Results
 
-Source: `results/evaluation-graphs.md` (commit ⟨sha⟩), measured ⟨date time⟩ CST, loadavg ⟨…⟩, ⟨N⟩ runs.
+### F baseline (G4 only)
 
-| rank | variant | graph cases | values | stats 1.8.0 | points/s | dense ms (1 CPU) | spread / flags | cold ms | speed | maint. | features | port. | **total** | mergeable |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| ⟨…⟩ | G1 | ⟨…⟩/178 | ⟨…⟩/2 437 | ⟨…⟩/326 | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ | no |
-| ⟨…⟩ | G2 | | | | | | | | | | | | | ⟨…⟩ |
-| ⟨…⟩ | G3 | | | | | | | | | | | | | ⟨…⟩ |
-| ⟨…⟩ | G4 | | | | | | | | | | | | | ⟨…⟩ |
+Source: `eve-dogma-bench@graphs-round2` `results/evaluation-graphs-F-baseline.{md,json}` (also
+`results/evaluation-graphs.{md,json}`; commit `562a201`, tool `ed54676`). Command
+`python3 tools/evaluate_graphs.py --as-of 2026-10-03T11:00:00+08:00 --runs 3 --only G4` (official settings, no
+`--quick`, no `--no-stats-gate`, no fresh clones). Run **11:05:42 – 11:09:00 CST** 2026-10-03, 3 runs, 1-min loadavg
+2.8–4.7 (other agents' builds running on the shared box). A first attempt (11:04:24 – 11:05:04) was aborted because the
+build was killed by an external SIGTERM after 38 s; it is not a variant failure.
 
-Per graph correctness, interfaces, round-2 lines added, tests: see `results/evaluation-graphs.md`.
-Not ranked and why: ⟨…⟩
+| rank | variant | commit (CST) | graph cases | values | stats 1.8.0 | points/s | dense ms (1 CPU) | spread / flags | cold ms | speed | maint. | features | port. | **total** | mergeable |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| (1) | G4 (on F) | `f73ff1c` 10:55 | **178/178** | 2 437/2 437 | **326/326** | 1 790 | 35.79 ⚠ | 0/8 valid; upper bound T_N/N used | 2 | 1.00* | 0.79 | 1.00 | 1.00 | 0.927* | yes |
+
+- **Gate: pass.** 178/178 through all three interfaces (graph-batch, RPC `graph`, single `graph`), including
+  `ecm_burst` 218/218 values and the error cases 20/20; stats engine 326/326 (21 051/21 051 values).
+- **Commit selection:** commit-date pick `f73ff1c` (committed 10:55:17, pushed 10:55:18 CST) = head pushed before the
+  11:00 cutoff ⇒ verdict ok.
+- **Dense latency flag:** all 8 differencing samples were invalid (above T_N/N) under load, so the tool fell back to
+  the upper bound T_N/N = 35.8 ms. For comparison, the warm "dense repeat" is 8.1–11.5 ms and the RPC warm request
+  9.6 ms. Treat the dense value as unreliable; it must be re-measured in the side-by-side run.
+- *Speed and total are relative to the best ranked variant. With G4 alone, speed = 1.00 by construction, so 0.927 is
+  **not** a comparable score. Only the side-by-side `--only G4,GJ` run ranks F vs J.
+- Maintainability 0.79: 2 773 round-2 core lines (Rust), own cargo suite passed but reports 0 counted tests, 4 deps,
+  README/DESIGN/LICENSE present. Portability 1 (WASM build in code). Features 1.00 (all graphs, all 3 interfaces,
+  empty `x` → empty series 154/154).
+
+### F vs J (side by side)
+
+⟨Pending: `graphs-j` not yet pushed at 11:09 CST.⟩
 
 ## 6. Decision
 
