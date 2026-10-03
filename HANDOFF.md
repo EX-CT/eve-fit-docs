@@ -95,3 +95,20 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - The F build for 20aa425 is in /tmp/ed20: wasm in target/wasm32-unknown-unknown/release-small, native eve-fit in target/release. It has been copied to public/engines/f.
 - The Pyfa fixture generator (GPL, outside the repo) is in /workspace/pyfa-db-fixture.
 - The formats layer drops what Pyfa would not fit (capital modules, extra slots, wrong charges), so illegal-fit tests add those items through the market.
+
+## eve4 / eve-fit-mcp / eve-market-prices (executor bot; updated 2026-10-03 14:40 CST)
+
+### Current commits
+- EX-CT/eve-fit-mcp main: **477726d** (all pushed, nothing uncommitted, no wip branches). Green runs through a3ef6d0/8dfb5b1 (37102094656, 37102267465); 477726d run 37102448844 (mcp-dogma-bench effects+cap suites).
+- EX-CT/eve-market-prices (new, public, MIT): main **6a59568** (license + README stub); all code on **wip/docs22-schema** (latest 5444990).
+
+### Done
+- eve-fit-mcp step 1 (engine bump): engines.lock → eve-dogma 2da8150, compute_fit exposes mining / remote_repair / bombing / heat / validation / probe_size etc., get_ship traits, `tools/mcp-dogma-bench.py` in CI (core 339/339, ext 202/202, effects 2353/2378 = engine, cap 150/150), stats + validation tests.
+- eve-market-prices (TS/Node ≥20, zero runtime deps, lib + CLI): rule `jita_sell_band_weighted` v1, ESI source (Forge sell orders, Jita 4-4 filter, X-Pages, Expires/ETag/304, error-limit pause, 420/5xx retry, Last-Modified consistency, User-Agent with contact), Fuzzwork source (`exact:false`), source registry, snapshot = docs/22 §4 `eve-price-snapshot` v1 (canonical JSON + sha256 `content_hash`, §4.5 fields + invariants, `prices-<market>-<time>.json[.gz]`).
+
+### Paused (by priority change)
+- eve-fit-mcp step 2 (test gaps) stopped at: `docs/test-ids.md/json` update for new ids, README section for mcp-bench/new outputs. v0.4.0 release (VERSION bump + tag) not done.
+
+### Next steps
+1. eve-market-prices: fix tests for the docs/22 fields, JSON Schema file, README, CI (Node 20/22 + non-gating live smoke), daily snapshot release workflow; merge wip → main.
+2. Then (after F's contract, docs/23): MCP `compute_batch` + `price_overrides` / `prices` pass-through only (no pricing math in MCP).
