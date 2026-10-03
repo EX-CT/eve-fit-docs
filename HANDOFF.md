@@ -33,3 +33,27 @@
 - New output keys: add to `ci/round1-new-keys.txt` and update `ci/round1.sha256`; any change to existing fields must be intended and re-baselined in `ci/round1-base.sha256`.
 - Pyfa-parity rule (eve): match Pyfa including hand-written handler behaviour; only proven Pyfa-data vs SDE drift is an exception, listed for eve, never excluded unilaterally.
 - Commit identity `-c user.name=EXCT-Bot -c user.email=bot@exct.invalid`; never force-push; unfinished work → `wip/*`.
+
+## eve4 / eve-fit-web (executor bot; updated 2026-10-03 14:30 CST)
+
+### Current commits
+- EX-CT/eve-fit-web main: **3eb47ba** (all work pushed; no uncommitted changes; **no wip branches**).
+  Last fully green Pages run: 37102144939 (070dfc3). Run for 3eb47ba (37102759282) was in progress at handoff.
+- Live (https://ex-ct.github.io/eve-fit-web/) checked at f97501a: e2e wasm-worker 76/76, ts-worker 66/66.
+
+### Done
+- **Milestone 4 (A), fit library + Pyfa import:** b75923b (formats layer: Pyfa saveddata.db via sql.js, library import/export, fixture made by Pyfa 1d9f72b, data only), d670e64 (IndexedDB store + migration from localStorage, folders/tags/search/rename/duplicate/delete/export/backup UI), 342b813 + f97501a (e2e: pyfa-db-*, library-*, dna-import = FMT-DNA-001, library-reload-persistence = DB-001, library-migration; docs/test-ids.md).
+- **B, F pin bump:** a972c4e engines.lock F -> EX-CT/eve-dogma 20aa425 (main, after 2da8150). 692ff88 UI: mining, outgoing reps, bombs to kill, overheat burnout, drone/fighter EHP, violation labels (zh-CN). 1ca5683 CI suites web-ext (bench pending-1.11 @1a8be05 ext 202/202) and web-effects (>= EFFECTS_MIN 2353) in the browser build. 6ac02ba e2e ids mining-yield, outgoing-reps, bombing-table, overheat-burnout, drone-ehp, validation-problems. 7854503 docs/test-ids.md, 3eb47ba README.
+- 070dfc3 (done before C was deferred): drag-and-drop rack position (moveModule), mutaplasmid roll range, Import from clipboard; unit tests web.unit.module-move, charges-valid-only.
+
+### Next steps
+1. Confirm the 3eb47ba Pages run is green (unit, e2e on all backends, bench 331/331, graphs 178/178, ext 202/202, effects) and run the live e2e (wasm-worker, ts-worker) against the deployed site.
+2. EFFECTS_MIN can go to 2378 once the pin moves to eve-dogma d990818+ (effects 2378/2378).
+3. Deferred (C): tests for the 27 docs/19 web items downgraded have->partial. Not started beyond 070dfc3. A draft of the checks (target profiles, damage pattern editor, fleet command fit, addition panes, show-info traits / required skills, probe size, MWD, utility modules, clipboard, dataset = engine sha) was written locally and dropped from the commit; redo from inventory/mcp-web-gaps.md.
+4. Prices: leave the web price box alone. Engine-computed prices (price_overrides, docs/22) and a local "my prices" setting come later.
+
+### Key context
+- Repo: /workspace/exct-eve/eve-fit-web. Local preview: `npm run build && npx vite preview --port 4180`, then `node tools/e2e.mjs http://127.0.0.1:4180/eve-fit-web/ wasm-worker|ts-worker`. For http: `node tools/engine-bridge.mjs --stdio "<eve-fit> serve-stdio" --port <free port>`. Other agents' bridges hold 8787 to 8799.
+- The F build for 20aa425 is in /tmp/ed20: wasm in target/wasm32-unknown-unknown/release-small, native eve-fit in target/release. It has been copied to public/engines/f.
+- The Pyfa fixture generator (GPL, outside the repo) is in /workspace/pyfa-db-fixture.
+- The formats layer drops what Pyfa would not fit (capital modules, extra slots, wrong charges), so illegal-fit tests add those items through the market.
