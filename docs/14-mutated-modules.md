@@ -129,8 +129,8 @@ The full list, roughly in order of score impact:
 6. **Regression.** The 1.8.0 corpus must stay at 326/326 with byte-identical output. Variant I's port kept the
    output identical; its only corpus mutation case, `esf_mutations`, is in range.
 
-Effort for the Rust variants that share A's semantics is about one hour, judging by the Variant I port (data,
-spec and EFT changes of about 200 lines).
+For variants that share A's semantics this is a small change. The Variant I port (349c6fd) was 140 lines added and
+26 removed, in the data, spec and EFT code.
 
 ## 5. Scoring
 
