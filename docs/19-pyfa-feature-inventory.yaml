@@ -1,0 +1,1714 @@
+# Generated source of truth for docs/19; edit here, then: python3 tools/render_inventory.py
+schema: pyfa-feature-inventory/1
+pyfa_ref: v2.69.0 (master 1d9f72b)
+status_values:
+- have
+- partial
+- missing
+- n/a
+columns:
+  f: eve-dogma-lab variant-f-perf (probe binary lab-fp f5b709f, 2026-10-03 11:10 CST; graphs on graphs-g4)
+  mcp: EX-CT/eve-fit-mcp main f223517 (default engine eve-dogma = frozen eve-dogma-rs; statuses assume the engine passthrough)
+  web: EX-CT/eve-fit-web main 4a4afd8 (default ts-worker; F via wasm-worker / wasm-g4-worker)
+evidence_keys:
+  B19: eve-dogma-bench v1.9.0 (331 cases)
+  CAP: cap-suite d80cc38 (150)
+  MUT: mutated-suite 2ac7c00 (93)
+  FMT: formats-suite 7c716e7 (4779 checks)
+  GR2: graphs-round2 84f7c2e
+  FZ: pending-1.10 b4deddd e_fz_* (8)
+  a08d943: eve-fit-docs drafts/mcp-web-features.md (eve4 MCP/web evidence)
+  e2e: eve-fit-web tools/e2e.mjs check names
+  MPF: eve-dogma-lab variant-f-perf 102f4d4 variant-f/docs/MISSING-PYFA-FEATURES.md
+items:
+- id: ENG-CORE-001
+  name: Dogma modifier engine
+  description: Apply SDE effects/modifiers (ItemModifier, LocationModifier, LocationGroup/RequiredSkill, OwnerRequiredSkill) with all operators (preAssign, preMul, preDiv, modAdd, modSub, postMul, postDiv,
+    postPercent, postAssign)
+  pyfa_src: eos/modifiedAttributeDict.py; eos/effects.py; eos/gamedata.py
+  f: have
+  f_evidence: B19 330/331 (22044/22046 values), probe lab-fp f5b709f
+  mcp: have
+  mcp_evidence: compute_fit passes the full FitRequest to the engine backend (src/schemas.ts)
+  web: have
+  web_evidence: FitStats from engine worker (src/engine/adapter.ts)
+- id: ENG-CORE-002
+  name: Stacking penalties
+  description: Penalised multiplier chains per attribute/operator group, stackable-attribute exemptions, penalty groups
+  pyfa_src: eos/modifiedAttributeDict.py (calculateValue, penalized)
+  f: have
+  f_evidence: B19 esf_stacking_per*, e_fz_cloak_wcs_penalty_group_ninazu (FZ 8/8)
+  mcp: have
+  mcp_evidence: compute_fit passes the full FitRequest to the engine backend (src/schemas.ts)
+  web: have
+  web_evidence: FitStats from engine worker (src/engine/adapter.ts)
+- id: ENG-CORE-003
+  name: Hand-written effects (eos/effects.py, 2402 classes)
+  description: Pyfa overrides/complements SDE expressions with hand-written handlers (incl. runTime early/normal/late, projected-only, activeByDefault quirks)
+  pyfa_src: eos/effects.py (class EffectNNNN)
+  f: partial
+  f_evidence: F codegen covers effects exercised by B19/CAP/MUT/FZ; no per-effect coverage map vs 2402 classes; needs an effect-coverage test (doc 20 §5)
+  mcp: have
+  mcp_evidence: engine pass-through
+  web: have
+  web_evidence: engine pass-through
+- id: ENG-CORE-004
+  name: Skills as modifier sources
+  description: Skill levels drive skill effects; per-skill level; character-wide skill bonuses
+  pyfa_src: eos/saveddata/character.py (Skill.calculateModifiedAttributes)
+  f: have
+  f_evidence: B19 skills0/2/3/4_* (70 cases)
+  mcp: have
+  mcp_evidence: compute_fit character.skills; skill_requirements tool
+  web: have
+  web_evidence: src/ui/Character.tsx
+- id: ENG-CORE-005
+  name: Attribute overrides
+  description: User-set base attribute value overrides per type (Attribute Overrides menu/editor)
+  pyfa_src: eos/saveddata/override.py; gui/propertyEditor.py; mainMenuBar 'Attribute Overrides'
+  f: have
+  f_evidence: request.overrides (src/request.rs, engine.rs)
+  mcp: partial
+  mcp_evidence: 'schema overrides only (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: have
+  web_evidence: 'show-info override editor (e2e tools/e2e.mjs: ''attribute override raises weapon dps'')'
+- id: ENG-CORE-006
+  name: Full modified attribute dump per item
+  description: All modified attributes of ship/module/charge/drone/fighter (item stats Attributes tab)
+  pyfa_src: gui/builtinItemStatsViews/itemAttributes.py
+  f: have
+  f_evidence: options.include_attributes (stats.rs attributes)
+  mcp: partial
+  mcp_evidence: get_type gives base attrs; fitted values only via compute_fit include_attributes
+  web: have
+  web_evidence: Market show info with fitted values
+- id: ENG-CORE-007
+  name: Attribute modifier sources (Affected by)
+  description: 'Per attribute: which items/skills modified it, operator, value; skill affectors context menu'
+  pyfa_src: gui/builtinItemStatsViews/itemAffectedBy.py; gui/builtinContextMenus/skillAffectors.py
+  f: missing
+  f_evidence: options.sources parsed but unused (MPF A6; rg '.sources' src/ 0 hits)
+  mcp: missing
+  mcp_evidence: no tool exposes modifier sources (src/ grep 'affected' 0)
+  web: missing
+  web_evidence: no Affected-by tab (src/ grep 'affected' 0)
+- id: ENG-CORE-008
+  name: Dependants view
+  description: Which attributes/items an item affects (itemDependants)
+  pyfa_src: gui/builtinItemStatsViews/itemDependants.py
+  f: missing
+  f_evidence: no reverse-modifier output
+  mcp: missing
+  mcp_evidence: grep dependants 0
+  web: missing
+  web_evidence: grep dependants 0
+- id: ENG-CORE-009
+  name: Alpha clone restrictions
+  description: Alpha clone skill caps (alphaCloneID) on character
+  pyfa_src: eos/saveddata/character.py (alphaCloneID); gui/characterEditor.py
+  f: missing
+  f_evidence: request has no clone state; rg alpha src/ 0
+  mcp: missing
+  mcp_evidence: only pirate-set names match 'alpha'
+  web: missing
+  web_evidence: Character.tsx has All 0/4/5/custom only
+- id: ENG-MOD-001
+  name: Module states
+  description: offline/online/active/overheated with per-state effect application, canHaveState/isValidState/getMaxState
+  pyfa_src: eos/saveddata/module.py (isValidState, canHaveState, getMaxState, getProposedState)
+  f: have
+  f_evidence: B19 overheat_order*, e_fz_offline_* (FZ)
+  mcp: have
+  mcp_evidence: schema modules[].state
+  web: partial
+  web_evidence: click/right-click state cycle; no e2e check (eve4 a08d943)
+- id: ENG-MOD-002
+  name: Charges / ammo
+  description: Loaded charge modifies module; charge capacity, numCharges, valid charges per launcher/turret
+  pyfa_src: module.py (charge, getValidCharges, isValidCharge, numCharges)
+  f: have
+  f_evidence: B19 esf_charges*, validation CHARGE_GROUP/SIZE/CAPACITY (stats.rs validate)
+  mcp: have
+  mcp_evidence: suggest_charges tool
+  web: have
+  web_evidence: charge picker
+- id: ENG-MOD-003
+  name: Change ammo for all same modules
+  description: moduleAmmoChange (ammoChangeAll setting)
+  pyfa_src: gui/builtinContextMenus/moduleAmmoChange.py; settings ammoChangeAll
+  f: n/a
+  f_evidence: UI feature
+  mcp: partial
+  mcp_evidence: what_if can set charges per module
+  web: partial
+  web_evidence: per-module only (Fitting.tsx)
+- id: ENG-MOD-004
+  name: Reload time / factor reload
+  description: DPS/cap with reload factored (factorReload pref + context menu)
+  pyfa_src: module.py (reloadTime, forceReload); gui/builtinContextMenus/factorReload.py
+  f: have
+  f_evidence: options.factor_reload; B19 sustain_reload_*; CAP reload 8/8
+  mcp: have
+  mcp_evidence: options passthrough
+  web: partial
+  web_evidence: options tab; no e2e (a08d943)
+- id: ENG-MOD-005
+  name: Spool-up weapons/remote reps
+  description: 'Triglavian disintegrators, mutadaptive reps: spool type/amount; default spool pref; per-module spool menu'
+  pyfa_src: module.py (getSpoolData); gui/builtinContextMenus/moduleSpool.py; eos/utils/spoolSupport.py
+  f: have
+  f_evidence: B19 esf_spool*, CAP spool 6/6, modules[].spool, options.default_spool
+  mcp: partial
+  mcp_evidence: 'FitRequest spool (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: have
+  web_evidence: 'per-module spool (e2e tools/e2e.mjs: ''per-module spool 0% lowers disintegrator dps'')'
+- id: ENG-MOD-006
+  name: Overheat bonuses
+  description: Overheated state bonuses (heat damage modelled separately)
+  pyfa_src: module.py; effects overload*
+  f: have
+  f_evidence: B19 overheat_order*, CAP overheat 15/15, FZ e_fz_capsim_overheat_*
+  mcp: have
+  mcp_evidence: state overheated
+  web: have
+  web_evidence: state toggle
+- id: ENG-MOD-007
+  name: Heat column (heat generation/damage)
+  description: Heat per module column (heatDamage, heatAbsorbtionRateModifier)
+  pyfa_src: gui/builtinViewColumns/heat.py
+  f: missing
+  f_evidence: no heat model (MPF A7)
+  mcp: missing
+  mcp_evidence: not exposed
+  web: missing
+  web_evidence: no heat column
+- id: ENG-MOD-008
+  name: Mutated / abyssal modules
+  description: Mutaplasmid rolls per attribute, base type, mutator; mutated drones
+  pyfa_src: eos/saveddata/mutatedMixin.py, mutator.py
+  f: have
+  f_evidence: MUT 86/93 (mm_*, mwd_*, edge_*, drone_* pass; 7 combo_/slot_ booster/implant cases fail, see ENG-IMP-004)
+  mcp: partial
+  mcp_evidence: 'FitRequest mutation (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: have
+  web_evidence: 'sliders (e2e tools/e2e.mjs: ''mutated module imported'', ''mutated module EFT round trip'')'
+- id: ENG-MOD-009
+  name: Mutation stats view
+  description: 'Item stats Mutator tab: roll range/percentage per attribute'
+  pyfa_src: gui/builtinItemStatsViews/itemMutator.py; gui/builtinContextMenus/itemMutations.py
+  f: partial
+  f_evidence: F returns modified values; no roll-range output
+  mcp: missing
+  mcp_evidence: no mutaplasmid range output (src/ grep mutaplasmid 0)
+  web: have
+  web_evidence: slider UI shows ranges
+- id: ENG-MOD-010
+  name: Module ranges
+  description: Optimal/falloff, missile range (incl. Pyfa missileMaxRangeData lower/upper chance)
+  pyfa_src: module.py (maxRange, falloff, missileMaxRangeData, calculateRange)
+  f: partial
+  f_evidence: stats.rs optimal_m/falloff_m/max_range_m; missile range-chance pair not output
+  mcp: have
+  mcp_evidence: via compute_fit
+  web: have
+  web_evidence: maxRange column
+- id: ENG-MOD-011
+  name: Capacitor use per module
+  description: capUse incl. reactivation delay, cycle time
+  pyfa_src: module.py (capUse, rawCycleTime, reactivationDelay, disallowRepeatingAction)
+  f: have
+  f_evidence: stats.rs modules cycle_time_ms/use; CAP 147/150
+  mcp: have
+  mcp_evidence: via compute_fit
+  web: have
+  web_evidence: capacitorUse column
+- id: ENG-MOD-012
+  name: Breacher pods
+  description: Pure-damage breachers (% HP + flat cap) DPS
+  pyfa_src: module.py (isBreacher, getVolleyParameters)
+  f: partial
+  f_evidence: 'B19 breacher_kestrel fails: weapon_pure_dps got 0 want 250 (probe)'
+  mcp: partial
+  mcp_evidence: depends on engine
+  web: partial
+  web_evidence: depends on engine
+- id: ENG-MOD-013
+  name: Module variations / meta swap
+  description: Switch module to meta variation (itemVariationChange), market group siblings
+  pyfa_src: gui/builtinContextMenus/itemVariationChange.py; service/market.py (getVariationsByItems)
+  f: missing
+  f_evidence: no variation lookup over RPC (MPF E2)
+  mcp: have
+  mcp_evidence: get_type same_group variations (src/server.ts:145); suggest_modules
+  web: missing
+  web_evidence: no variations window (a08d943 §1 gaps)
+- id: ENG-MOD-014
+  name: Module position / rack handling
+  description: Slot positions, rack labels, empty slot placeholders
+  pyfa_src: module.py (modPosition, buildEmpty, buildRack)
+  f: n/a
+  f_evidence: fit model concern
+  mcp: partial
+  mcp_evidence: order preserved in EFT
+  web: have
+  web_evidence: Fitting.tsx slots
+- id: ENG-SHIP-001
+  name: T3D tactical modes
+  description: Mode item applies bonuses; shipModeChange menu
+  pyfa_src: eos/saveddata/mode.py; ship.py (modes, validateModeItem); gui/builtinContextMenus/shipModeChange.py
+  f: have
+  f_evidence: B19 esf_tactical*, request.mode
+  mcp: partial
+  mcp_evidence: 'mode_type_id (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: partial
+  web_evidence: mode selector; no e2e (a08d943)
+- id: ENG-SHIP-002
+  name: T3C subsystems
+  description: Subsystem slot, slot/hardpoint additions
+  pyfa_src: eos/effects.py (subsystem effects); fit.py getNumSlots
+  f: have
+  f_evidence: B19 esf_slots*, Slot::Subsystem in validate
+  mcp: partial
+  mcp_evidence: 'subsystems (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: partial
+  web_evidence: subsystem slots; no e2e (a08d943)
+- id: ENG-SHIP-003
+  name: Structures / citadels
+  description: Citadel fits, service slots, structure rigs, standup modules, fuel
+  pyfa_src: eos/saveddata/citadel.py; fit.py isStructure
+  f: have
+  f_evidence: B19 esf_structure*, standup_*
+  mcp: have
+  mcp_evidence: structures supported (src/ grep citadel 8 files)
+  web: have
+  web_evidence: structures
+- id: ENG-SHIP-004
+  name: Pilot security status
+  description: Security-status dependent effects (e.g. Pirate faction / Concord)
+  pyfa_src: fit.py getPilotSecurity; gui/builtinContextMenus/fitPilotSecurity.py
+  f: have
+  f_evidence: B19 esf_security_status; character security
+  mcp: partial
+  mcp_evidence: 'character.security_status (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: partial
+  web_evidence: Character page; no e2e (a08d943)
+- id: ENG-SHIP-005
+  name: System security
+  description: High/low/null/WH system effects (e.g. Cynosural, Upwell modules)
+  pyfa_src: fit.py getSystemSecurity; gui/builtinContextMenus/fitSystemSecurity.py
+  f: have
+  f_evidence: environment.system_security; B19 esf_security
+  mcp: have
+  mcp_evidence: schema environment
+  web: have
+  web_evidence: environment security
+- id: ENG-SHIP-006
+  name: Ship traits / role bonuses
+  description: Traits text per ship
+  pyfa_src: gui/builtinItemStatsViews/itemTraits.py
+  f: partial
+  f_evidence: type RPC returns data; traits text not checked
+  mcp: have
+  mcp_evidence: get_ship
+  web: have
+  web_evidence: Market show info traits
+- id: ENG-DRN-001
+  name: 'Drones: active/inactive stacks'
+  description: Drone stacks with amount/active count, bandwidth, bay, release/store limits
+  pyfa_src: eos/saveddata/drone.py; fit.py getReleaseLimitForDrone, getStoreLimitForDrone
+  f: have
+  f_evidence: B19 drones_*, DRONE_BANDWIDTH validation
+  mcp: have
+  mcp_evidence: schema drones
+  web: have
+  web_evidence: drone pane
+- id: ENG-DRN-002
+  name: Drone DPS/volley/mining/RR
+  description: Per-drone damage, mining, remote reps
+  pyfa_src: drone.py getDps, getMiningYPS, getRemoteReps
+  f: partial
+  f_evidence: dps/volley have; drone mining and drone RR outgoing missing (MPF A1/A2)
+  mcp: partial
+  mcp_evidence: engine
+  web: partial
+  web_evidence: engine
+- id: ENG-DRN-003
+  name: Drone EHP and shield regen columns
+  description: droneEhp/droneRegen view columns
+  pyfa_src: gui/builtinViewColumns/droneEhp.py, droneRegen.py; drone.py hp/ehp/calculateShieldRecharge
+  f: missing
+  f_evidence: drone rows have no hp/ehp (MPF A4)
+  mcp: missing
+  mcp_evidence: not exposed
+  web: missing
+  web_evidence: no column
+- id: ENG-DRN-004
+  name: Drone speed/range/sig
+  description: Drone max velocity, optimal, falloff, control range
+  pyfa_src: drone.py maxRange, falloff
+  f: have
+  f_evidence: FZ e_fz_drone_speed_* 2/2; stats.rs control_range_m
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: drone pane
+- id: ENG-DRN-005
+  name: Split/merge drone stacks
+  description: droneAddStack/SplitStack
+  pyfa_src: gui/builtinContextMenus/droneAddStack.py, droneSplitStack.py
+  f: n/a
+  f_evidence: fit-model op
+  mcp: partial
+  mcp_evidence: what_if edits
+  web: partial
+  web_evidence: amount edit only
+- id: ENG-FTR-001
+  name: Fighters squadrons
+  description: Fighter tubes, squadron size, light/heavy/support slots, bay
+  pyfa_src: eos/saveddata/fighter.py; fit.py fighterTubesUsed
+  f: have
+  f_evidence: B19 fighters_*, stats.rs fighter_tubes/squadron_size
+  mcp: have
+  mcp_evidence: schema fighters
+  web: have
+  web_evidence: fighter pane
+- id: ENG-FTR-002
+  name: Fighter abilities
+  description: Per-ability on/off (attack, missiles, bombs, MWD, MJD, evasive, ECM, web, point, neut)
+  pyfa_src: eos/saveddata/fighterAbility.py; gui/builtinContextMenus/fighterAbilities.py
+  f: have
+  f_evidence: B19 fighters_*, pfighter_*
+  mcp: partial
+  mcp_evidence: 'FitRequest abilities (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: have
+  web_evidence: 'Pyfa-default abilities (e2e tools/e2e.mjs: ''disabling an attack ability lowers fighter dps'')'
+- id: ENG-FTR-003
+  name: Fighter DPS per effect
+  description: Volley/DPS per ability incl. bomb cycles
+  pyfa_src: fighter.py getDpsPerEffect, getCycleParametersPerEffect*
+  f: have
+  f_evidence: stats.rs fighter_dps; B19 fighters_*
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: engine
+- id: ENG-FTR-004
+  name: Fighter EHP / regen
+  description: fighter.py hp/ehp/calculateShieldRecharge
+  pyfa_src: fighter.py hp, ehp
+  f: missing
+  f_evidence: not in output
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: ENG-IMP-001
+  name: Implants
+  description: Implant slots, set bonuses (pirate sets multiply)
+  pyfa_src: eos/saveddata/implant.py
+  f: have
+  f_evidence: B19 implants_*
+  mcp: have
+  mcp_evidence: schema implants; implant_set presets
+  web: have
+  web_evidence: implant pane
+- id: ENG-IMP-002
+  name: Character implants vs fit implants
+  description: implantSource (fit or character), useCharacterImplantsByDefault
+  pyfa_src: fit.py implantSource, appliedImplants
+  f: missing
+  f_evidence: implants only per request
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: implants per fit only
+- id: ENG-IMP-003
+  name: Boosters and side effects
+  description: Booster slots, side effects toggles (boosterSideEffects menu)
+  pyfa_src: eos/saveddata/booster.py, boosterSideEffect.py; gui/builtinContextMenus/boosterSideEffects.py
+  f: have
+  f_evidence: B19 booster_se_* (7), booster_*
+  mcp: partial
+  mcp_evidence: 'FitRequest side_effects (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: have
+  web_evidence: 'side effects (e2e tools/e2e.mjs: ''booster side effect lowers armor HP'')'
+- id: ENG-IMP-004
+  name: Implant/booster slot conflicts
+  description: 'Same-slot implants/boosters: Pyfa keeps first; boosters slot rules'
+  pyfa_src: fit.py; service/fit.py addImplant/addBooster (replace by slot)
+  f: partial
+  f_evidence: MUT combo_two_boosters_dda, slot_booster_* (3), slot_implant_* (2) fail on F (probe 86/93)
+  mcp: partial
+  mcp_evidence: engine
+  web: partial
+  web_evidence: engine
+- id: ENG-IMP-005
+  name: Implant sets (saved + precalculated)
+  description: Implant Set Editor, apply/save set to fit, precalc faction sets
+  pyfa_src: eos/saveddata/implantSet.py; service/implantSet.py; service/precalcImplantSet.py; gui/setEditor.py; gui/builtinContextMenus/implantSetApply.py, implantSetSave.py
+  f: missing
+  f_evidence: 'implants: [type_id] only (MPF C2)'
+  mcp: have
+  mcp_evidence: list_presets implant_set (src/profiles.ts)
+  web: have
+  web_evidence: 'SDE + saved sets (e2e tools/e2e.mjs: ''implant set applied (6 Snake + kept RP-905, faster)'')'
+- id: ENG-CAP-001
+  name: Capacitor capacity/recharge/peak
+  description: capacitorCapacity, recharge time, peak recharge, capUsed, capDelta
+  pyfa_src: fit.py capUsed, capRecharge, capDelta, calculateCapRecharge
+  f: have
+  f_evidence: CAP capacity/recharge/peak 150/150
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats capacitor
+- id: ENG-CAP-002
+  name: Capacitor simulation (stable %, lasts)
+  description: Event sim with stagger, reload, injectors, max time
+  pyfa_src: eos/capSim.py; fit.py simulateCap, getCapSimData
+  f: have
+  f_evidence: CAP 147/150 (f5b709f); 150/150 on variant-f-capfix 9bf10a4
+  mcp: have
+  mcp_evidence: options.cap_sim
+  web: have
+  web_evidence: Stats capacitor
+- id: ENG-CAP-003
+  name: Cap injectors / boosters
+  description: Charges inject cap, reload
+  pyfa_src: capSim.py; module charges
+  f: have
+  f_evidence: CAP injectors 14/14
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: engine
+- id: ENG-CAP-004
+  name: Own neuts/nos in cap sim
+  description: Own neutralizer use, nosferatu gain (incl. no-target option)
+  pyfa_src: fit.py addDrain/getCapRegenGainFromMod
+  f: have
+  f_evidence: CAP own_neut_nos 10/10; options.nos_no_target_cap
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: engine
+- id: ENG-CAP-005
+  name: Incoming neut / remote cap in sim
+  description: Projected neuts/nos/cap transfers into cap sim
+  pyfa_src: fit.py addDrain, iterDrains
+  f: partial
+  f_evidence: CAP incoming 15/16, hard 12/14 (void bombs) on f5b709f; fixed on variant-f-capfix 9bf10a4
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: engine
+- id: ENG-CAP-006
+  name: Capacitor graph data (cap over time)
+  description: capacitor vs time series
+  pyfa_src: graphs/data/fitCapacitor
+  f: partial
+  f_evidence: graphs-g4 only (GRF-CAP-*)
+  mcp: partial
+  mcp_evidence: sweep tool not time-series
+  web: have
+  web_evidence: Graphs capacitor
+- id: ENG-DEF-001
+  name: HP and resists per layer
+  description: Shield/armor/hull HP and EM/Th/Kin/Ex resonance
+  pyfa_src: fit.py hp; resistancesViewFull
+  f: have
+  f_evidence: B19 all cases (hp.*, resonance)
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats defense
+- id: ENG-DEF-002
+  name: EHP vs damage pattern
+  description: Effective HP vs selected damage pattern; raw/effective toggle
+  pyfa_src: fit.py ehp; damagePattern
+  f: have
+  f_evidence: B19 dmgpattern_*
+  mcp: have
+  mcp_evidence: damage_pattern
+  web: have
+  web_evidence: Profiles
+- id: ENG-DEF-003
+  name: 'Tank: active/sustained/reinforced'
+  description: Active shield boost, armor/hull repair, passive regen; sustainable (cap) and effective
+  pyfa_src: fit.py tank, effectiveTank, sustainableTank, calculateSustainableTank; rechargeViewFull
+  f: have
+  f_evidence: stats.rs tank raw/sustained/sustained_effective; B19 sustain_*
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats
+- id: ENG-DEF-004
+  name: Reactive armor hardener sim
+  description: RAH adaptation to damage pattern; resistMode/moduleRahPattern
+  pyfa_src: eos/effects.py (Effect4928 adaptive armor hardener); gui/builtinContextMenus/moduleRahPattern.py
+  f: have
+  f_evidence: B19 esf_reactive_armor, dmgpattern_rah; options.rah
+  mcp: have
+  mcp_evidence: engine
+  web: partial
+  web_evidence: options tab RAH; no e2e (a08d943)
+- id: ENG-DEF-005
+  name: Ancillary repairers (charged)
+  description: AAR/ASB with paste/charges, reload
+  pyfa_src: effects; module charges
+  f: have
+  f_evidence: B19 esf_ancillary*, proj_aar_*
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: engine
+- id: ENG-DEF-006
+  name: Shield recharge peak
+  description: calculateShieldRecharge peak passive regen
+  pyfa_src: fit.py calculateShieldRecharge
+  f: have
+  f_evidence: stats.rs passive_shield
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats
+- id: ENG-DEF-007
+  name: Incoming remote reps in tank
+  description: Projected RR applied to sustained tank
+  pyfa_src: fit.py getRemoteReps (incoming via projected)
+  f: have
+  f_evidence: stats.rs incoming RR (MPF); B19 proj_ars/rar/rsb
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: engine
+- id: ENG-OFF-001
+  name: Weapon DPS/volley
+  description: Turrets, missiles, smartbombs, bombs per module; with spool and reload
+  pyfa_src: module.py getVolley/getDps/getCycleParametersForDps; fit.py getWeaponDps
+  f: have
+  f_evidence: B19 (weapon_dps/volley all)
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats offense
+- id: ENG-OFF-002
+  name: Drone and fighter DPS totals
+  description: fit.py getDroneDps/Volley, total
+  pyfa_src: fit.py getTotalDps
+  f: have
+  f_evidence: B19 drone_dps, fighter_dps
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats
+- id: ENG-OFF-003
+  name: DPS vs target profile (applied)
+  description: Resist-aware DPS vs target profile
+  pyfa_src: fit.py calculateWeaponDmgStats; targetProfile
+  f: have
+  f_evidence: stats.rs vs_target_profile
+  mcp: have
+  mcp_evidence: evaluate_profiles
+  web: have
+  web_evidence: Profiles
+- id: ENG-OFF-004
+  name: Doomsdays / superweapons
+  description: Doomsday damage
+  pyfa_src: effects; stats
+  f: have
+  f_evidence: stats.rs doomsday (engine.rs); covered in B19 exct_avatar?
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: engine
+- id: ENG-OFF-005
+  name: Spool min/max/current DPS display
+  description: firepowerViewFull spool-up tooltip (min/max)
+  pyfa_src: gui/builtinStatsViews/firepowerViewFull.py
+  f: partial
+  f_evidence: single spool value per request; min/max need two calls
+  mcp: partial
+  mcp_evidence: what_if
+  web: partial
+  web_evidence: spool option
+- id: ENG-OFF-006
+  name: Mining yield (modules + drones)
+  description: m3/s mining and drain (residue), mining panel
+  pyfa_src: fit.py minerYield, droneYield, minerDrain, totalYield; miningyieldViewFull
+  f: missing
+  f_evidence: no mining key in calc output (MPF A1, rg mining stats.rs 0)
+  mcp: missing
+  mcp_evidence: no mining metric (src/ grep mining 0)
+  web: partial
+  web_evidence: Stats.tsx shows st.mining only if backend provides (D ts-worker), not F
+- id: ENG-OFF-007
+  name: Bombing panel
+  description: Bombs needed per bomb type vs target
+  pyfa_src: gui/builtinStatsViews/bombingViewFull.py
+  f: missing
+  f_evidence: MPF A3
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: ENG-OFF-008
+  name: Ammo to damage pattern
+  description: Create damage pattern from loaded ammo
+  pyfa_src: gui/builtinContextMenus/ammoToDmgPattern.py
+  f: n/a
+  f_evidence: UI over type attrs
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: grep ammo pattern 0
+- id: ENG-NAV-001
+  name: Speed, align, agility, mass, sig
+  description: Max velocity, align time, agility, signature
+  pyfa_src: fit.py maxSpeed, alignTime
+  f: have
+  f_evidence: B19 max_velocity/align_time_s
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats navigation
+- id: ENG-NAV-002
+  name: Warp speed and max warp distance
+  description: warpSpeed, maxWarpDistance (cap)
+  pyfa_src: fit.py warpSpeed, maxWarpDistance
+  f: have
+  f_evidence: stats.rs warp_speed_au_s, max_warp_distance_au
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats
+- id: ENG-NAV-003
+  name: Warp core strength / scram status
+  description: Warp scramble status
+  pyfa_src: targetingMiscViewMinimal (Warp Core Strength)
+  f: have
+  f_evidence: stats.rs warp_scramble_status
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats
+- id: ENG-NAV-004
+  name: Propulsion mods (AB/MWD/MJD/bastion/siege)
+  description: Speed boosts, sig bloom, MJD; cloaks/WCS penalties
+  pyfa_src: effects
+  f: have
+  f_evidence: B19 + FZ e_fz_cloak_wcs_*
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: engine
+- id: ENG-TGT-001
+  name: Targeting stats
+  description: Max targets, lock range, scan res, sensor strength/type
+  pyfa_src: fit.py maxTargets, maxTargetRange, scanStrength, scanType
+  f: have
+  f_evidence: stats.rs targeting
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats targeting
+- id: ENG-TGT-002
+  name: Lock time vs ship classes
+  description: Lock times vs Frigate…Carrier sigs (tooltip)
+  pyfa_src: targetingMiscViewMinimal; fit.py calculateLockTime
+  f: partial
+  f_evidence: lock_time_s vs target-profile sig only
+  mcp: partial
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats lock time
+- id: ENG-TGT-003
+  name: ECM jam chance
+  description: '% chance to be jammed (incoming ECM)'
+  pyfa_src: fit.py jamChance
+  f: have
+  f_evidence: stats.rs jam_chance_percent; B19 ecm_*
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats
+- id: ENG-TGT-004
+  name: Probe size / scan
+  description: Probe size
+  pyfa_src: fit.py probeSize
+  f: have
+  f_evidence: stats.rs probe_size
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats
+- id: ENG-TGT-005
+  name: Drone control range
+  description: droneControlRange
+  pyfa_src: targetingMisc
+  f: have
+  f_evidence: stats.rs control_range_m
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: Stats
+- id: ENG-TGT-006
+  name: Cargo and special holds
+  description: Cargo, ore/fuel/fleet/ammo/... holds volumes
+  pyfa_src: targetingMiscViewMinimal (holds list)
+  f: partial
+  f_evidence: stats.rs cargo capacity; special holds not all output
+  mcp: partial
+  mcp_evidence: engine
+  web: partial
+  web_evidence: cargo only
+- id: ENG-PROJ-001
+  name: Projected modules
+  description: Remote modules (webs, TP, neut, nos, ECM, damp, TD, GD, RR, cap transfer) on the fit
+  pyfa_src: fit.py projectedModules; gui/builtinContextMenus/itemProject.py
+  f: have
+  f_evidence: B19 proj_* (30)
+  mcp: partial
+  mcp_evidence: 'FitRequest projected (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: have
+  web_evidence: 'Projected tab (e2e tools/e2e.mjs: ''projected web slows the ship'')'
+- id: ENG-PROJ-002
+  name: Projected drones / fighters
+  description: Drones/fighters projected, amounts
+  pyfa_src: fit.py projectedDrones/Fighters
+  f: have
+  f_evidence: B19 proj_*drone*, pfighter_* (6)
+  mcp: partial
+  mcp_evidence: 'FitRequest projected (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: have
+  web_evidence: projected
+- id: ENG-PROJ-003
+  name: Projected fits
+  description: Whole fits projected (with amount, active)
+  pyfa_src: fit.py projectedFits, getProjectionInfo
+  f: have
+  f_evidence: B19 projfit_* (10)
+  mcp: partial
+  mcp_evidence: 'projected[kind=fit] (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: partial
+  web_evidence: nested toRequest (fit/model.ts); no e2e (a08d943)
+- id: ENG-PROJ-004
+  name: Projection range (distance)
+  description: Range-dependent strength (falloff) for projected items
+  pyfa_src: itemProjectionRange context menu; projectionRange column
+  f: have
+  f_evidence: projected distance; B19 *_falloff
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: projected distance
+- id: ENG-PROJ-005
+  name: Burst projectors / AoE / doomsday AoE
+  description: Burst jammers, AoE structure modules
+  pyfa_src: effects
+  f: have
+  f_evidence: B19 esf_burst*, aoe_* (5), ecm_burst
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: engine
+- id: ENG-PROJ-006
+  name: Outgoing remote reps / cap transfer stats
+  description: Outgoing shield/armor/hull/cap per s (with spool)
+  pyfa_src: fit.py getRemoteReps; gui/builtinStatsViews/outgoingViewFull.py
+  f: missing
+  f_evidence: no outgoing key in calc (MPF A2); only shipstats export uses remote_reps (formats.rs:1529)
+  mcp: missing
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: Stats 'Remote assistance' section only when backend provides
+- id: ENG-PROJ-007
+  name: Bombs vs cap (void bomb)
+  description: Void bomb neut projection
+  pyfa_src: effects
+  f: partial
+  f_evidence: CAP in_void_bomb, hard_*void_bomb* fail on f5b709f; fixed 9bf10a4
+  mcp: partial
+  mcp_evidence: engine
+  web: partial
+  web_evidence: engine
+- id: ENG-PROJ-008
+  name: Target resists column / ignore resists
+  description: targetResists column
+  pyfa_src: gui/builtinViewColumns/targetResists.py
+  f: partial
+  f_evidence: projected resist applied; no per-row output
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: ENG-FLT-001
+  name: Command bursts / warfare buffs
+  description: Command burst modules + charges → warfare buffs (shield/armor/skirmish/info/mining)
+  pyfa_src: fit.py addCommandBonus; effects warfare*
+  f: have
+  f_evidence: B19 fleet_*, esf_burst
+  mcp: partial
+  mcp_evidence: 'fleet.buffs (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: have
+  web_evidence: 'buff editor (e2e tools/e2e.mjs: ''manual fleet buff raises shield resist'')'
+- id: ENG-FLT-002
+  name: Command fits (booster fits)
+  description: Other fits as command boosters; strongest-wins
+  pyfa_src: fit.py commandFits, getCommandInfo; gui/builtinContextMenus/commandFitAdd.py
+  f: have
+  f_evidence: booster_fits; B19 fleet_two_boosters; stats strongest
+  mcp: partial
+  mcp_evidence: 'fleet.booster_fits (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: partial
+  web_evidence: booster-fit picker; no e2e (a08d943)
+- id: ENG-ENV-001
+  name: Wormhole effects
+  description: Pulsar/Magnetar/Black hole/WR/Cataclysmic/Red giant classes 1-6
+  pyfa_src: fit.py systemEffect; envEffectAdd
+  f: have
+  f_evidence: B19 env_* (8)
+  mcp: partial
+  mcp_evidence: 'environment (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: have
+  web_evidence: environment
+- id: ENG-ENV-002
+  name: Abyssal weather
+  description: Electric/Caustic/Darkness/Infernal/Xenon/… + tiers
+  pyfa_src: envEffectAdd
+  f: have
+  f_evidence: B19 weather_* (6)
+  mcp: partial
+  mcp_evidence: 'environment (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: have
+  web_evidence: environment
+- id: ENG-ENV-003
+  name: Incursion / Drifter / metaliminal / filament clouds
+  description: Incursion effects, Drifter, cloud filaments
+  pyfa_src: envEffectAdd
+  f: have
+  f_evidence: B19 incursion_* (3), cloud_* (3)
+  mcp: partial
+  mcp_evidence: 'environment (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: have
+  web_evidence: environment
+- id: ENG-ENV-004
+  name: Beacons / location bonus
+  description: Beacons and location effects
+  pyfa_src: effects
+  f: have
+  f_evidence: B19 esf_beacons, esf_location_bonus_not_on
+  mcp: partial
+  mcp_evidence: 'environment (eve4 draft a08d943: works, no dedicated MCP test)'
+  web: have
+  web_evidence: 'beacon selector (e2e tools/e2e.mjs: ''environment beacon applied'')'
+- id: ENG-VAL-001
+  name: Resources overflow
+  description: CPU/PG/calibration/bandwidth over limit
+  pyfa_src: fit.py cpuUsed, pgUsed, calibrationUsed, droneBandwidthUsed
+  f: have
+  f_evidence: validate CPU/POWER/CALIBRATION/DRONE_BANDWIDTH; FZ e_fz_cpu_round_tie_*
+  mcp: have
+  mcp_evidence: validate_fit
+  web: have
+  web_evidence: Problems section
+- id: ENG-VAL-002
+  name: Slots and hardpoints
+  description: Slots per rack, turret/launcher hardpoints
+  pyfa_src: fit.py getSlotsUsed, getHardpointsUsed
+  f: have
+  f_evidence: SLOTS_EXCEEDED, TURRET/LAUNCHER_HARDPOINTS
+  mcp: have
+  mcp_evidence: validate_fit
+  web: have
+  web_evidence: Fitting
+- id: ENG-VAL-003
+  name: canFit restrictions
+  description: canFitShipGroup/Type, rig size, maxGroupFitted/Online/Active, maxTypeFitted
+  pyfa_src: module.py fits; fit.py canFit
+  f: have
+  f_evidence: SHIP_RESTRICTION, RIG_SIZE, MAX_GROUP_*, MAX_TYPE_FITTED
+  mcp: have
+  mcp_evidence: validate_fit
+  web: have
+  web_evidence: Problems
+- id: ENG-VAL-004
+  name: Missing skills (prereqs)
+  description: Required skills per item vs character
+  pyfa_src: service/prereqsCheck.py; itemRequirements view
+  f: have
+  f_evidence: MISSING_SKILL
+  mcp: have
+  mcp_evidence: skill_requirements
+  web: have
+  web_evidence: missing/train-required skills
+- id: ENG-VAL-005
+  name: Disable fitting restrictions
+  description: Toggle ignore restrictions (mainMenu)
+  pyfa_src: gui/mainMenuBar.py 'Disable Fitting Restrictions'
+  f: have
+  f_evidence: violations reported, never block
+  mcp: have
+  mcp_evidence: allow_violations
+  web: partial
+  web_evidence: fits always allowed; no strict mode toggle found
+- id: ENG-VAL-006
+  name: Charge validity
+  description: Charge group/size/capacity
+  pyfa_src: module.py isValidCharge
+  f: have
+  f_evidence: CHARGE_GROUP/SIZE/CAPACITY
+  mcp: have
+  mcp_evidence: validate_fit
+  web: have
+  web_evidence: charge picker filtered
+- id: ENG-VAL-007
+  name: Fit-level special restrictions
+  description: e.g. one cloak, max 1 per group, structure-only modules, T3D/T3C subsystem completeness
+  pyfa_src: fit.py isInvalid; ship.py validate
+  f: partial
+  f_evidence: generic max-group checks; subsystem completeness not checked
+  mcp: partial
+  mcp_evidence: engine
+  web: partial
+  web_evidence: engine
+- id: GRF-DMG-001
+  name: Damage stats graph
+  description: dps/volley/damage vs distance, time, target speed (m/s, %), target sig (m, %); inputs attacker/target speed+angle, target profile or fit, ignore resists, apply projected, drone mobile mode
+  pyfa_src: graphs/data/fitDamageStats/*; gui/builtinContextMenus/graphDmg*
+  f: partial
+  f_evidence: 'graphs-g4 (F + graph layer) GR2 178/178 native+wasm; not merged into variant-f-perf (MPF B1: ''eve-dogma-f graph'' → usage); GR2 dmg_* 63 cases'
+  mcp: missing
+  mcp_evidence: no graph tool; sweep (src/server.ts:578) gives x=sig/velocity/skill/distance series for calc metrics only
+  web: have
+  web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
+- id: GRF-APP-001
+  name: Ammo application profile graph
+  description: best ammo dps/volley vs distance, ammo picker, ammo quality
+  pyfa_src: graphs/data/fitApplicationProfile; graphFitAmmoPicker, graphAmmoOptimal*
+  f: partial
+  f_evidence: 'graphs-g4 (F + graph layer) GR2 178/178 native+wasm; not merged into variant-f-perf (MPF B1: ''eve-dogma-f graph'' → usage); GR2 app_* 10'
+  mcp: missing
+  mcp_evidence: no graph tool; sweep (src/server.ts:578) gives x=sig/velocity/skill/distance series for calc metrics only
+  web: have
+  web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
+- id: GRF-CAP-001
+  name: Capacitor graph
+  description: cap amount (GJ/%) and regen vs time / cap amount
+  pyfa_src: graphs/data/fitCapacitor
+  f: partial
+  f_evidence: 'graphs-g4 (F + graph layer) GR2 178/178 native+wasm; not merged into variant-f-perf (MPF B1: ''eve-dogma-f graph'' → usage); GR2 cap_* 13'
+  mcp: missing
+  mcp_evidence: no graph tool; sweep (src/server.ts:578) gives x=sig/velocity/skill/distance series for calc metrics only
+  web: have
+  web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
+- id: GRF-ECM-001
+  name: ECM/burst/scan-res/damps graph
+  description: source damage / target lock time / lock uptime vs target DPS or scan res
+  pyfa_src: graphs/data/fitEcmBurstScanresDamps
+  f: partial
+  f_evidence: 'graphs-g4 (F + graph layer) GR2 178/178 native+wasm; not merged into variant-f-perf (MPF B1: ''eve-dogma-f graph'' → usage); GR2 ecm_* 10'
+  mcp: missing
+  mcp_evidence: no graph tool; sweep (src/server.ts:578) gives x=sig/velocity/skill/distance series for calc metrics only
+  web: missing
+  web_evidence: no ecm_burst graph / extra inputs in web (a08d943 §9 gaps)
+- id: GRF-EWAR-001
+  name: EWAR stats graph
+  description: neut, web %, ECM, damp lock range %, TD optimal %, GD range %, TP % vs distance
+  pyfa_src: graphs/data/fitEwarStats
+  f: partial
+  f_evidence: 'graphs-g4 (F + graph layer) GR2 178/178 native+wasm; not merged into variant-f-perf (MPF B1: ''eve-dogma-f graph'' → usage); GR2 ewar_* 21'
+  mcp: missing
+  mcp_evidence: no graph tool; sweep (src/server.ts:578) gives x=sig/velocity/skill/distance series for calc metrics only
+  web: have
+  web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
+- id: GRF-LOCK-001
+  name: Lock time graph
+  description: lock time vs target sig
+  pyfa_src: graphs/data/fitLockTime; graphLockRange
+  f: partial
+  f_evidence: 'graphs-g4 (F + graph layer) GR2 178/178 native+wasm; not merged into variant-f-perf (MPF B1: ''eve-dogma-f graph'' → usage); GR2 lock_* 7'
+  mcp: partial
+  mcp_evidence: sweep target_signature + lock metric
+  web: have
+  web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
+- id: GRF-MOB-001
+  name: Mobility graph
+  description: speed, distance, momentum, bump speed/distance vs time
+  pyfa_src: graphs/data/fitMobility
+  f: partial
+  f_evidence: 'graphs-g4 (F + graph layer) GR2 178/178 native+wasm; not merged into variant-f-perf (MPF B1: ''eve-dogma-f graph'' → usage); GR2 mob_* 10'
+  mcp: missing
+  mcp_evidence: no graph tool; sweep (src/server.ts:578) gives x=sig/velocity/skill/distance series for calc metrics only
+  web: have
+  web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
+- id: GRF-RR-001
+  name: Remote reps graph
+  description: RR HP/s and total vs distance/time (spool)
+  pyfa_src: graphs/data/fitRemoteReps
+  f: partial
+  f_evidence: 'graphs-g4 (F + graph layer) GR2 178/178 native+wasm; not merged into variant-f-perf (MPF B1: ''eve-dogma-f graph'' → usage); GR2 rr_* 9'
+  mcp: missing
+  mcp_evidence: no graph tool; sweep (src/server.ts:578) gives x=sig/velocity/skill/distance series for calc metrics only
+  web: have
+  web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
+- id: GRF-SHLD-001
+  name: Shield regen graph
+  description: shield amount/regen (HP/EHP) vs time / amount
+  pyfa_src: graphs/data/fitShieldRegen
+  f: partial
+  f_evidence: 'graphs-g4 (F + graph layer) GR2 178/178 native+wasm; not merged into variant-f-perf (MPF B1: ''eve-dogma-f graph'' → usage); GR2 shield_* 5'
+  mcp: missing
+  mcp_evidence: no graph tool; sweep (src/server.ts:578) gives x=sig/velocity/skill/distance series for calc metrics only
+  web: have
+  web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
+- id: GRF-WARP-001
+  name: Warp time graph
+  description: warp time vs distance (AU/km)
+  pyfa_src: graphs/data/fitWarpTime
+  f: partial
+  f_evidence: 'graphs-g4 (F + graph layer) GR2 178/178 native+wasm; not merged into variant-f-perf (MPF B1: ''eve-dogma-f graph'' → usage); GR2 warp_* 8'
+  mcp: missing
+  mcp_evidence: no graph tool; sweep (src/server.ts:578) gives x=sig/velocity/skill/distance series for calc metrics only
+  web: have
+  web_evidence: src/ui/Graphs.tsx engine graph on wasm-g4-worker (browser GR2 178/178 CI; e2e 'graph * (engine)'); default ts-worker backend uses UI approximations (a08d943 §9)
+- id: GRF-UI-001
+  name: Graph frame features
+  description: 'multiple source fits and targets in one graph, target profiles as targets, legend, colors/line styles, export? (Pyfa: copy/save image)'
+  pyfa_src: graphs/gui/frame.py, lists.py, canvasPanel.py
+  f: n/a
+  f_evidence: UI
+  mcp: n/a
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: no multi-fit overlay or graph target fits (a08d943 §9 gaps)
+- id: CHR-001
+  name: All 0 / All 5 built-in characters
+  description: Default characters with all skills 0 or 5
+  pyfa_src: service/character.py (all0, all5)
+  f: have
+  f_evidence: character.skills.default_level
+  mcp: have
+  mcp_evidence: default all V; skills param
+  web: have
+  web_evidence: All 5/4/0
+- id: CHR-002
+  name: Custom characters (per-skill levels, save/rename/copy/delete)
+  description: Character editor
+  pyfa_src: gui/characterEditor.py; service/character.py
+  f: partial
+  f_evidence: per-request levels only (MPF C1)
+  mcp: partial
+  mcp_evidence: skills map per call; no saved characters
+  web: have
+  web_evidence: 'Character.tsx custom levels (e2e tools/e2e.mjs: ''custom character (all 0) lowers dps'')'
+- id: CHR-003
+  name: Import character from ESI (SSO)
+  description: Fetch skills via ESI for logged-in character
+  pyfa_src: service/esi.py; eos/saveddata/ssocharacter.py; gui/ssoLogin.py
+  f: missing
+  f_evidence: offline by design
+  mcp: missing
+  mcp_evidence: 'src/ grep sso: only comments'
+  web: missing
+  web_evidence: no SSO
+- id: CHR-004
+  name: Import character file (EVEMon/XML)
+  description: Import skills from XML (EVEMon / API char sheet)
+  pyfa_src: service/character.py importCharacter; gui/mainMenuBar.py 'Import Character File'
+  f: missing
+  f_evidence: '-'
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: CHR-005
+  name: Export skills needed (EVEMon plan)
+  description: Export required skills for fit as EVEMon plan
+  pyfa_src: eos/saveddata/character.py / service/character.py exportText; mainMenu 'Export Skills Needed'
+  f: partial
+  f_evidence: MISSING_SKILL list
+  mcp: partial
+  mcp_evidence: skill_requirements (list, no plan export)
+  web: partial
+  web_evidence: missing skills list, no export
+- id: CHR-006
+  name: Character implants
+  description: Implants on the character applied to all fits
+  pyfa_src: eos/saveddata/character.py implants
+  f: missing
+  f_evidence: '-'
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: CHR-007
+  name: Security status on character
+  description: secStatus
+  pyfa_src: character.py secStatus
+  f: have
+  f_evidence: character security
+  mcp: have
+  mcp_evidence: schema
+  web: have
+  web_evidence: Character.tsx
+- id: CHR-008
+  name: Skill prerequisites tree / requirements view
+  description: Item stats Requirements tab with levels
+  pyfa_src: gui/builtinItemStatsViews/itemRequirements.py
+  f: partial
+  f_evidence: type RPC?
+  mcp: have
+  mcp_evidence: skill_requirements
+  web: have
+  web_evidence: Market show info required skills
+- id: CHR-009
+  name: Skill planner needs (train time)
+  description: Pyfa shows missing skills; train time via SP/attributes (planner-adjacent)
+  pyfa_src: characterEditor skill tree
+  f: missing
+  f_evidence: no SP/train time
+  mcp: missing
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: train-required skills list
+- id: PRC-001
+  name: Market price fetch with sources
+  description: fuzzwork, evemarketdata, evetycoon, cevemarket; price system (Jita…); caching, timeouts
+  pyfa_src: service/price.py; service/marketSources/*
+  f: missing
+  f_evidence: 'offline engine (MPF A5: price → UNKNOWN_METHOD)'
+  mcp: missing
+  mcp_evidence: src/ grep price 0
+  web: partial
+  web_evidence: src/data/prices.ts ESI average/adjusted only; no source/system choice
+- id: PRC-002
+  name: Price stats panel
+  description: Ship/fittings/drones/cargo/character totals; include drones/cargo/character toggles
+  pyfa_src: gui/builtinStatsViews/priceViewFull.py; settings MarketPriceSettings
+  f: missing
+  f_evidence: '-'
+  mcp: missing
+  mcp_evidence: '-'
+  web: have
+  web_evidence: 'PriceBox.tsx (e2e tools/e2e.mjs: ''fit price from ESI'')'
+- id: PRC-003
+  name: Price column per item
+  description: price column
+  pyfa_src: gui/builtinViewColumns/price.py
+  f: missing
+  f_evidence: '-'
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: no per-row price
+- id: PRC-004
+  name: Optimize fit price
+  description: Replace items by cheaper equivalents (Fit menu)
+  pyfa_src: gui/mainFrame.py optimizeFitPrice; gui/copySelectDialog.py (multibuy OPTIMIZE_PRICES)
+  f: missing
+  f_evidence: '-'
+  mcp: missing
+  mcp_evidence: optimize_fit optimizes stats, not price
+  web: missing
+  web_evidence: '-'
+- id: PRC-005
+  name: Price options context menu
+  description: priceOptions (what to include)
+  pyfa_src: gui/builtinContextMenus/priceOptions.py
+  f: missing
+  f_evidence: '-'
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: FMT-EFT-001
+  name: EFT import/export
+  description: EFT text incl. offline, charges, drones/fighters x N, implants, boosters, cargo, mode, mutated
+  pyfa_src: service/port/eft.py
+  f: have
+  f_evidence: FMT 4779/4779 native+wasm; eft_parse/eft_export
+  mcp: have
+  mcp_evidence: parse_fit/export_fit
+  web: have
+  web_evidence: src/fit/formats.ts parseEft/exportEft
+- id: FMT-EFT-002
+  name: EFT config (.cfg) import
+  description: EFT cfg file import
+  pyfa_src: service/port/eft.py importEftCfg
+  f: have
+  f_evidence: format_import eftcfg
+  mcp: missing
+  mcp_evidence: not in parse_fit
+  web: missing
+  web_evidence: '-'
+- id: FMT-EFT-003
+  name: EFT export options
+  description: Implants/mutations/cargo/loaded charges toggles (copySelectDialog)
+  pyfa_src: gui/copySelectDialog.py; port/eft.py options
+  f: partial
+  f_evidence: fixed export shape
+  mcp: partial
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: '-'
+- id: FMT-DNA-001
+  name: DNA import/export (incl. alt, link)
+  description: ship DNA string, dna alt, fitting link
+  pyfa_src: service/port/dna.py
+  f: have
+  f_evidence: FMT; format_import dna/dna_alt/dna_link
+  mcp: have
+  mcp_evidence: parse_fit/export_fit DNA
+  web: have
+  web_evidence: parseDna/exportDna
+- id: FMT-ESI-001
+  name: ESI JSON import/export
+  description: ESI fitting JSON (exportCharges/Implants/Boosters settings)
+  pyfa_src: service/port/esi.py
+  f: have
+  f_evidence: format_export/import esi
+  mcp: partial
+  mcp_evidence: lenient JSON in parse_fit, export_fit JSON (a08d943 §10)
+  web: have
+  web_evidence: exportEsi/parseEsi
+- id: FMT-XML-001
+  name: XML import/export (EVE client)
+  description: Fittings XML, multiple fits, backup
+  pyfa_src: service/port/xml.py
+  f: have
+  f_evidence: format_import/export xml
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: src/ grep xml 0
+- id: FMT-MB-001
+  name: Multibuy export
+  description: Multibuy text
+  pyfa_src: service/port/multibuy.py
+  f: have
+  f_evidence: format_export multibuy
+  mcp: have
+  mcp_evidence: export_fit multibuy
+  web: have
+  web_evidence: exportMultibuy
+- id: FMT-SS-001
+  name: Ship stats (exportFitStats) text
+  description: Stats summary export
+  pyfa_src: service/port/shipstats.py
+  f: have
+  f_evidence: format_export shipstats
+  mcp: partial
+  mcp_evidence: compute_fit summary (src/summary.ts) differs
+  web: missing
+  web_evidence: '-'
+- id: FMT-EFS-001
+  name: EFS export
+  description: Eve Fitting Stats JSON
+  pyfa_src: service/port/efs.py
+  f: missing
+  f_evidence: UNSUPPORTED_FORMAT efs (MPF D1)
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: FMT-MUTA-001
+  name: Mutated module text export/import
+  description: Copy mutated module text
+  pyfa_src: service/port/muta.py; gui/builtinContextMenus/moduleMutatedExport.py
+  f: partial
+  f_evidence: inside EFT only (MPF D2)
+  mcp: partial
+  mcp_evidence: inside EFT
+  web: partial
+  web_evidence: inside EFT
+- id: FMT-HTML-001
+  name: HTML export of all fits
+  description: Export fits to HTML (prefs path, options)
+  pyfa_src: gui/utils/exportHtml.py; mainMenu 'Export All Fittings to HTML'; HTMLExport prefs
+  f: missing
+  f_evidence: '-'
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: FMT-AUTO-001
+  name: Auto-detect import, multi-fit buffers, files/folders
+  description: importAuto, importFitFromBuffer, importFitsFromFile (threaded)
+  pyfa_src: service/port/port.py
+  f: partial
+  f_evidence: auto-detect one text (MPF D5)
+  mcp: partial
+  mcp_evidence: parse_fit auto
+  web: partial
+  web_evidence: multi-EFT paste; no file/folder
+- id: FMT-CLIP-001
+  name: Clipboard to/from
+  description: Fit menu To/From Clipboard
+  pyfa_src: gui/mainMenuBar.py
+  f: n/a
+  f_evidence: host
+  mcp: n/a
+  mcp_evidence: '-'
+  web: have
+  web_evidence: ImportExport.tsx clipboard
+- id: FMT-ADD-001
+  name: Additions export/import
+  description: Export all/selection of drones/cargo/implants etc., import additions
+  pyfa_src: gui/builtinContextMenus/additionsExportAll.py, additionsExportSelection.py, additionsImport.py
+  f: partial
+  f_evidence: EFT sections
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: ESI-001
+  name: SSO login, multiple characters
+  description: ssoLogin, Manage ESI Characters, token refresh, custom app/server settings
+  pyfa_src: gui/ssoLogin.py; service/esiAccess.py; Esi prefs
+  f: missing
+  f_evidence: offline
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: ESI-002
+  name: Browse/import ESI fittings
+  description: List in-game fittings, import
+  pyfa_src: gui/esiFittings.py
+  f: missing
+  f_evidence: '-'
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: ESI-003
+  name: Export fit to ESI / delete ESI fittings
+  description: Upload fit, delete fitting
+  pyfa_src: gui/esiFittings.py; service/esi.py
+  f: missing
+  f_evidence: '-'
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: DB-001
+  name: Saved fits database
+  description: Persist fits (sqlite saveddata), rename, delete, copy
+  pyfa_src: eos/db/saveddata; service/fit.py
+  f: missing
+  f_evidence: stateless (MPF C5)
+  mcp: missing
+  mcp_evidence: stateless
+  web: have
+  web_evidence: localStorage fit library (FitBrowser.tsx)
+- id: DB-002
+  name: Fit browser tree (by ship group/race, search)
+  description: shipBrowser categories, race filter, fit search
+  pyfa_src: gui/shipBrowser.py; builtinShipBrowser/*
+  f: n/a
+  f_evidence: UI
+  mcp: n/a
+  mcp_evidence: '-'
+  web: have
+  web_evidence: FitBrowser grouped by ship group
+- id: DB-003
+  name: Backup all fits / restore
+  description: Backup all to XML
+  pyfa_src: service/port/port.py backupFits
+  f: missing
+  f_evidence: '-'
+  mcp: missing
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: JSON library backup/restore, no e2e; no XML (a08d943 §11)
+- id: DB-004
+  name: Fit links (projected/command fits by reference)
+  description: Projected/command fits reference saved fits; updates propagate
+  pyfa_src: eos/saveddata/fit.py projectedFits/commandFits
+  f: partial
+  f_evidence: inline booster_fits/projected fits (MPF F2)
+  mcp: partial
+  mcp_evidence: inline
+  web: have
+  web_evidence: projected/booster from library
+- id: DB-005
+  name: Fit notes
+  description: Notes pane per fit
+  pyfa_src: gui/builtinAdditionPanes/notesView.py
+  f: n/a
+  f_evidence: n/a
+  mcp: missing
+  mcp_evidence: src/fit.ts 'notes' are name-resolution notes, not fit notes
+  web: partial
+  web_evidence: notes field, EFT comment export (a08d943 §2)
+- id: DB-006
+  name: Tabs / multiple open fits
+  description: Open fits in tabs; open in new tab
+  pyfa_src: gui/mainFrame.py; fitOpenNewTab
+  f: n/a
+  f_evidence: UI
+  mcp: n/a
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: single active fit + browser
+- id: DB-007
+  name: Undo/redo
+  description: fitCommands undo stack
+  pyfa_src: gui/fitCommands/*
+  f: n/a
+  f_evidence: UI
+  mcp: n/a
+  mcp_evidence: '-'
+  web: have
+  web_evidence: App.tsx undo/redo
+- id: DB-008
+  name: Saved damage patterns / target profiles / implant sets / characters
+  description: User-editable profile libraries
+  pyfa_src: service/damagePattern.py, targetProfile.py, implantSet.py, character.py
+  f: missing
+  f_evidence: inline only
+  mcp: partial
+  mcp_evidence: list_presets read-only
+  web: have
+  web_evidence: Profiles.tsx custom + localStorage
+- id: DB-009
+  name: Database prefs (saveddata path, cleanup)
+  description: Database pref view
+  pyfa_src: gui/builtinPreferenceViews/pyfaDatabasePreferences.py
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: n/a
+  web_evidence: '-'
+- id: PRF-DMG-001
+  name: Built-in damage patterns
+  description: Uniform, EM/Th/Kin/Ex, NPC factions, ammo patterns
+  pyfa_src: eos/saveddata/damagePattern.py BUILTINS
+  f: missing
+  f_evidence: numbers only (MPF C3)
+  mcp: have
+  mcp_evidence: list_presets damage
+  web: have
+  web_evidence: presets
+- id: PRF-DMG-002
+  name: Damage pattern editor / change
+  description: patternEditor, damagePatternChange
+  pyfa_src: gui/patternEditor.py; gui/builtinContextMenus/damagePatternChange.py
+  f: n/a
+  f_evidence: '-'
+  mcp: partial
+  mcp_evidence: pass custom numbers
+  web: have
+  web_evidence: Profiles custom
+- id: PRF-TGT-001
+  name: Built-in target profiles
+  description: NPC/ship-class target profiles incl. infinite sig
+  pyfa_src: eos/saveddata/targetProfile.py getBuiltinList
+  f: missing
+  f_evidence: numbers only (MPF C4)
+  mcp: have
+  mcp_evidence: list_presets target
+  web: have
+  web_evidence: presets
+- id: PRF-TGT-002
+  name: Target profile editor (resists, sig, speed, radius)
+  description: targetProfileEditor
+  pyfa_src: gui/targetProfileEditor.py
+  f: n/a
+  f_evidence: '-'
+  mcp: partial
+  mcp_evidence: custom numbers
+  web: have
+  web_evidence: Profiles custom
+- id: MKT-001
+  name: Market browser tree
+  description: Market groups, meta buttons (T1/T2/faction/…), empty group modes
+  pyfa_src: gui/marketBrowser.py; builtinMarketBrowser/*
+  f: missing
+  f_evidence: search/type only (MPF E2)
+  mcp: missing
+  mcp_evidence: search only, no market tree (a08d943 §1)
+  web: partial
+  web_evidence: Market.tsx tree from market groups; no e2e (a08d943 §1)
+- id: MKT-002
+  name: Search with jargon/aliases
+  description: jargon (mwd, lse, ab)
+  pyfa_src: service/jargon/*
+  f: missing
+  f_evidence: name match only (MPF E1)
+  mcp: have
+  mcp_evidence: search_types jargon/fuzzy
+  web: partial
+  web_evidence: EN/ZH substring search; no jargon (src/ grep jargon|alias 0)
+- id: MKT-003
+  name: 'Item stats: description/traits/attributes/effects/properties'
+  description: itemDescription, itemTraits, itemAttributes, itemEffects, itemProperties
+  pyfa_src: gui/builtinItemStatsViews/*
+  f: partial
+  f_evidence: type RPC returns attributes/effects
+  mcp: have
+  mcp_evidence: get_type/get_ship
+  web: have
+  web_evidence: Show info
+- id: MKT-004
+  name: Item compare view
+  description: Compare attributes across variations
+  pyfa_src: gui/builtinItemStatsViews/itemCompare.py
+  f: missing
+  f_evidence: '-'
+  mcp: partial
+  mcp_evidence: compare_fits (fits, not items)
+  web: missing
+  web_evidence: '-'
+- id: MKT-005
+  name: Localized item names
+  description: Pyfa locales
+  pyfa_src: locale/; service/market.py
+  f: partial
+  f_evidence: EN+ZH search (MPF E3)
+  mcp: partial
+  mcp_evidence: EN/ZH
+  web: partial
+  web_evidence: zh switch covers names + main labels, not every string (a08d943 §13)
+- id: MKT-006
+  name: Market jump / ship jump
+  description: itemMarketJump, shipJump
+  pyfa_src: gui/builtinContextMenus/itemMarketJump.py, shipJump.py
+  f: n/a
+  f_evidence: UI
+  mcp: n/a
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: not found
+- id: UI-PANE-001
+  name: Addition panes
+  description: Drones, fighters, cargo, implants, boosters, projected, command, notes
+  pyfa_src: gui/builtinAdditionPanes/*
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: have
+  web_evidence: Fitting.tsx panes
+- id: UI-PANE-002
+  name: Cargo add/fill ammo
+  description: cargoAdd, cargoAddAmmo, cargoFill
+  pyfa_src: gui/builtinContextMenus/cargo*.py
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: cargo edit; no add-all-ammo
+- id: UI-PANE-003
+  name: Item amount change/fill/remove
+  description: itemAmountChange, itemFill, itemRemove
+  pyfa_src: gui/builtinContextMenus/item*.py
+  f: n/a
+  f_evidence: '-'
+  mcp: partial
+  mcp_evidence: what_if
+  web: have
+  web_evidence: amount edit
+- id: UI-STAT-001
+  name: Stats panels with Minimal/Full/hidden modes
+  description: StatView prefs per panel
+  pyfa_src: service/settings.py StatViewSettings
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: fixed layout
+- id: UI-COL-001
+  name: Fitting view columns
+  description: abilities, ammo, capUse, dampScanRes, droneEhp, heat, maxRange, misc, price, projectionRange, sideEffects, state, targetResists…
+  pyfa_src: gui/builtinViewColumns/*
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: subset of columns
+- id: UI-PREF-001
+  name: Preferences
+  description: General, ContextMenu, Engine (global reload, spool default, RAH, strict skill levels), StatView, Market, Network/proxy, HTML export, ESI, Update, Logging, Database
+  pyfa_src: gui/builtinPreferenceViews/*
+  f: partial
+  f_evidence: engine options per request
+  mcp: partial
+  mcp_evidence: options passthrough
+  web: partial
+  web_evidence: EngineSettings.tsx reload/spool/RAH
+- id: UI-CTX-001
+  name: Context menu catalog (51 actions)
+  description: See builtinContextMenus; most mapped to other items
+  pyfa_src: gui/builtinContextMenus/*
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: subset
+- id: UI-MISC-001
+  name: Fleet/command pane, command link add
+  description: commandLinkAdd
+  pyfa_src: gui/builtinContextMenus/commandLinkAdd.py
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: have
+  web_evidence: fleet booster fits
+- id: SVC-001
+  name: Update check
+  description: Check GitHub releases (prerelease setting)
+  pyfa_src: service/update.py; gui/updateDialog.py
+  f: n/a
+  f_evidence: n/a for engine
+  mcp: n/a
+  mcp_evidence: engine_info versions
+  web: n/a
+  web_evidence: web deploys
+- id: SVC-002
+  name: Network/proxy settings
+  description: Proxy modes
+  pyfa_src: service/network.py; Network prefs
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: n/a
+  web_evidence: browser
+- id: SVC-003
+  name: Logging / dev tools
+  description: Logging prefs, widget inspect
+  pyfa_src: gui/builtinPreferenceViews/pyfaLoggingPreferences.py; gui/devTools.py
+  f: partial
+  f_evidence: stderr
+  mcp: partial
+  mcp_evidence: metrics resource
+  web: n/a
+  web_evidence: '-'
+- id: SVC-004
+  name: Data update (new SDE)
+  description: Pyfa ships with SDE dumps per release
+  pyfa_src: eos/db/gamedata; scripts/
+  f: partial
+  f_evidence: dataset compiled in at build (eve-sde-pipeline)
+  mcp: have
+  mcp_evidence: eve://dataset/meta
+  web: have
+  web_evidence: dataset.ts
+- id: SVC-005
+  name: Effect/attribute conversions
+  description: service/conversions (renamed items)
+  pyfa_src: service/conversions/*
+  f: missing
+  f_evidence: no rename map for imports
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
