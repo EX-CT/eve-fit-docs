@@ -115,12 +115,14 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 
 ## eve3 / bench (executor bot; updated 2026-10-03 15:15 CST)
 
-### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 14:53 CST
+### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 14:54 CST
 **Current commits** (everything pushed)
 - eve-dogma-bench pending-1.11:
-  - Gate + baseline: `98419df`, `b3a0957`, `07245e8`, `c2229b2`, `88ed590`, `32981f5`.
-    - `baselines/f.json` = eve-dogma d990818: core 339, ext 208/239, ext_rpc 0/54, batch 0, effects 2378, graphs
-      192, cap 150, mutated 93, formats 4779.
+  - Gate + baseline: `98419df`, `b3a0957`, `07245e8`, `c2229b2`, `88ed590`, `32981f5`, `d151cb3` (d22 suites).
+    - `baselines/f.json` = eve-dogma d990818: core 339, ext 208/239, ext_rpc 0/54, batch 0/92, effects 2378, graphs
+      192, cap 150, mutated 93, formats 4779, sde 0/17, price_inject 0/32. Full run_all + gate on d990818: no
+      regression. price_rule runs only with `PRICE_RULE_CMD` (updater) and is not in f.json; `SDE_PACK` enables 6
+      pending d22 cases.
   - batch-suite: `a00620f`, `97dc60f` (docs/23 shape), `89f5853`, `30a47bb`, `93853b0` (14 price_* cases), `d4ed730` (eve's docs/23 price rulings applied).
     `dfb4f49`: 34 gap cases (gap 15, gap_error 12, calc_price 6, calc_price_embedded 1) + `batch/data/` price files.
     92 cases; self-test 92/92; d990818 0/92 (no `batch` method; calc has no price block / no `--prices`).
@@ -131,17 +133,12 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
   - optimizer-bench WIP: `13cb0d9`..`d48bbab`.
 - wip branches: `wip/eve3-batch-prices` (already merged).
 
-**In progress (eve's current task)**
-0. Align batch/ with eve's docs/23 rulings:
-   - multiplier = 1 and base_source = source when no multiplier applies;
-   - L3 = request `prices` (the fit's own table wins over the batch-wide one);
-   - L4 = `--prices` file (labelled injected) or the embedded snapshot.
-1. Cover the gaps: `in` / `not_null` filters, delta_ref, numeric sweeps, swap_type, BATCH_TOO_LARGE,
-   BAD_PRICE_OVERRIDE, `--prices` files, calc's own price block, use_snapshot, snapshot prices.
-2. docs/22 suites: embedded SDE version/hash and `--sde`; the price rule on synthetic order books; injection
-   precedence. Then add them to run_all_suites and the gate.
+**In progress:** none. eve's task (steps 0-3) is done: `d4ed730`, `dfb4f49`, `48b1cb6`, `04f9ba5`, `d151cb3`, plus
+`32981f5` (ext 208).
 
-Steps 0 (`d4ed730`) and 1 (`dfb4f49`) done; step 2 suites written (`04f9ba5`). **Next step:** add sde / price_inject (and price_rule when `PRICE_RULE_CMD` is set) to run_all_suites.sh and the gate at F's count.
+**Next step:** wait for F's batch / price / docs/22 contract and change only `batch/adapter.py` and `d22/adapter.py`.
+When eve-sde-pipeline publishes an `.edp`, run with `SDE_PACK`. eve4 can point `PRICE_RULE_CMD` at the updater.
+Optimizer-bench is still shelved.
 
 ### docs/19 + missing/partial cases (updated 2026-10-03 15:00 CST)
 **Current commits:** eve-dogma-bench pending-1.11: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5, 583f912, b34ebb9 (tip b34ebb9). eve-fit-docs: ef6cdb6, 07341e3, eccb194, b6b8a6d, 295694a. Nothing uncommitted; **no wip branches**.
