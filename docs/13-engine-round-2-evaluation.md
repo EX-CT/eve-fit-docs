@@ -90,7 +90,8 @@ python3 tools/evaluate_graphs.py --as-of 2026-10-03T11:00:00+08:00 --runs 3     
 | G2 | engine primitives (Go) + portable TS evaluator | C (Go) | `graphs-g2` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
 | G3 | vectorised NumPy grid + per-fit cache | G (Python + NumPy) | `graphs-g3` @ ⟨sha⟩ | LGPL-3.0 (text; qualifier not stated in the graph dir) | yes ⟨confirm⟩ |
 | G4 | declarative graph spec (Rust, expression catalogue) | F (codegen Rust/WASM) | `graphs-g4` @ `f73ff1c` | LGPL-3.0-or-later | **yes** (confirmed at the evaluated commit) |
-| GJ | J graphs port (C++20) | J (C++20, `variant-j` `3ab992d`) | `graphs-j` @ ⟨not yet pushed⟩ | ⟨…⟩ | ⟨…⟩ |
+
+GJ: F/J side-by-side cancelled: on 2026-10-03 at 11:09 CST the user set the Rust mainline based on F (J and the `graphs-j` port stopped).
 
 Provisional licenses: detected 2026-10-03 09:10 CST on current heads with the evaluation tool's detection. G4 confirmed by the F baseline run.
 
@@ -139,7 +140,7 @@ build was killed by an external SIGTERM after 38 s; it is not a variant failure.
 
 ### F vs J (side by side)
 
-⟨Pending: `graphs-j` not yet pushed at 11:09 CST.⟩
+F/J side-by-side cancelled: on 2026-10-03 at 11:09 CST the user set the Rust mainline based on F (J and the `graphs-j` port stopped).
 
 ## 6. Decision
 
