@@ -65,18 +65,18 @@ The authoritative text is the docstring of `tools/evaluate.py`; if this section 
 |---|---|---|---|---|---|---|
 | A | eve-dogma-rs (reference) | Rust | lazy memoised modifier graph | `main` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
 | B | data-oriented | Rust | compile a flat CSR modifier graph, then evaluate | `variant-b` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| C | Go | Go | pull-based modifier registry with selectors | `variant-c` @ ⟨sha⟩ | none found | unknown (no LICENSE / metadata) ⟨confirm⟩ |
+| C | Go | Go | pull-based modifier registry with selectors | `variant-c` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
 | D | TypeScript | TypeScript | pull-based attribute graph + typed modifier pipeline | `variant-d` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| E | Pyfa-faithful | Rust | Pyfa eos transpiled to Rust | `variant-e` @ ⟨sha⟩ | GPL-3.0-or-later | **no** (GPL, derived from Pyfa) ⟨confirm⟩ |
+| E | Pyfa-faithful | Rust | Pyfa eos transpiled to Rust | `variant-e` @ ⟨sha⟩ | GPL-3.0-or-later | **no** (GPL LICENSE text, derived from Pyfa) ⟨confirm⟩ |
 | F | codegen | Rust (+WASM) | SDE compiled into Rust code at build time | `variant-f` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
 | G | batch | Python + NumPy | vectorised dogma over many fits | `variant-g` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| H | ECS | Rust (hecs) | entities/components/systems | `variant-h` @ ⟨sha⟩ | none found | unknown (no LICENSE / metadata) ⟨confirm⟩ |
+| H | ECS | Rust (hecs) | entities/components/systems | `variant-h` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
 | I | incremental | Rust (salsa) | memoised demand-driven query graph | `variant-i` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| J | C++20 | C++20 | mmapped POD dataset image, flat attribute tables | `variant-j` @ ⟨sha⟩ | LGPL-3.0-or-later (README only) | yes, add LICENSE file ⟨confirm⟩ |
-| K | .NET | C# (Native AOT) | typed rule book + binary dataset cache | `variant-k` @ ⟨sha⟩ | LGPL-3.0 | yes ⟨confirm⟩ |
+| J | C++20 | C++20 | mmapped POD dataset image, flat attribute tables | `variant-j` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
+| K | .NET | C# (Native AOT) | typed rule book + binary dataset cache | `variant-k` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
 
-Licenses are provisional (detected 2026-10-03 08:30 CST on current heads; package metadata > LICENSE file > README
-"License" section) and are re-detected by the evaluation run (`results/evaluation.md`, "Licensing" table). Mergeable =
+Licenses are provisional (detected 2026-10-03 08:47 CST on current heads from the actual LICENSE texts in the variant
+dir and branch root; SPDX metadata / README only refine -only vs -or-later) and are re-detected by the evaluation run (`results/evaluation.md`, "Licensing" table). Mergeable =
 the code can be merged into the LGPL-3.0-or-later mainline (`eve-dogma-rs`): LGPL-3 / permissive → yes, GPL → no,
 nothing found → unknown (the authors must add a license before any merge). Licensing is informational, not scored,
 but it constrains the merge plan (§7).
@@ -165,7 +165,7 @@ Not ranked (failed the gate) and why: ⟨…⟩
    perf regression).
 2. Repository moves (which branch becomes which repo / crate). Licensing gate: only code marked *mergeable = yes*
    enters the LGPL-3.0-or-later core; E (GPL-3.0-or-later, derived from Pyfa) can only contribute ideas or stay a
-   separate GPL cross-check tool; C and H need a license from their authors first; J needs a LICENSE file.
+   separate GPL cross-check tool. All other variants currently ship LGPL v3 LICENSE texts (re-checked at the 10:15 commit).
 3. Variants archived (branch kept, README pointer to this document).
 4. Bench: unfreeze, apply `pending-1.9.0.md`, re-run the evaluation for the merged engine.
 
