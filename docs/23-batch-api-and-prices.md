@@ -7,7 +7,7 @@
 - 价格是引擎核心：请求字段 `price_overrides`（按 type / 市场分组（含子分组）/ 分组 / 类别，固定价（可为 0）或倍数）、注入价格 `prices` / `--prices`、内嵌快照。优先级：变体覆盖 > 请求覆盖 > 注入价格 > 快照；同一层内越具体越优先，平局取较小 id；倍数作用于下一层解析出的价格。
 - 输出 `price` 块：总价，按舰船 / 装备 / 弹药 / 无人机 / 铁骑 / 植入体 / 增效剂 / 货柜分段，细到每个物品，每个价格带来源和快照时间，无价物品单独列出。批量结果可按价格排序和过滤。
 
-**Status: DRAFT for implementation, 2026-10-03 (CST).** Decisions from the user / eve (14:14–14:26). Implemented in
+**Status: IMPLEMENTED in eve-dogma (see HANDOFF), contract v1, 2026-10-03 (CST).** Rulings by eve 14:26 / 14:36 and F's contract decisions (§11) are folded in. Decisions from the user / eve (14:14–14:26). Implemented in
 `EX-CT/eve-dogma` (engine) right after this doc; eve4 wires MCP `compute_batch` as a pass-through; eve3's
 `batch-suite` (bench pending-1.11 `batch/`, provisional shape `CONTRACT-BATCH.md`) maps onto this contract in its
 `adapter.py` only. The shape below deliberately keeps eve3's provisional semantics (JSON Patch, `fields` projection,
@@ -81,8 +81,12 @@ replaces `type_id` of every module whose `type_id` is `from` (keeps state / char
 ```
 - An axis is either `options` (each a patch with `id`/`label`, optional `price_overrides`) or `sweep`.
 - A sweep is `{path, values:[...]}` or numeric `{path, from, to, step}` (`step` > 0; values `from + k·step` for
-  k = 0.. while value ≤ `to` + 1e-9·|step|, computed by multiplication, never by accumulation). Each value becomes
-  `{"op":"add","path":path,"value":v}`. Sweep option id/label: `path=<json value>`.
+  k = 0.. while value ≤ `to` + 1e-9·|step|, computed by multiplication, never by accumulation; integers stay integers
+  when from/to/step are all integers). Each value becomes `{"op":"add","path":path,"value":v}`. Sweep option id/label:
+  `path=<json value>`, where `<json value>` is **compact JSON with object keys sorted** (no spaces; Python:
+  `json.dumps(v, separators=(",", ":"), sort_keys=True)`), e.g. `/damage_pattern={"em":10,"explosive":0,"kinetic":45,"thermal":45}`.
+- Patch paths that do not exist in the base as given are retried on the **normalized** base (the FitRequest with all
+  defaults present, e.g. `/character/skills/levels/3300`, `/character/skills/default_level`); stats are the same.
 - Patches of one combination are applied in axis order. The first axis varies slowest. Combination `id` = option ids
   joined with `|` (e.g. `t2|12614|3`), `label` = option labels joined with ` × `.
 - Option-level `price_overrides` of all axes are concatenated in axis order (later axes do not override earlier ones;
@@ -156,6 +160,9 @@ Within an override layer (L1, L2) the one entry that applies to a type is the **
 the same kind and specificity (possible only when L2 combines the batch-wide list with the fit's own list) goes to the
 **lower id**, then to the entry listed first.
 
+Ties: entries of the same kind and specificity can only collide when the same target appears in both L2 lists; the
+FitRequest's own list is listed first, so its entry wins (a duplicate target inside one list is `BAD_PRICE_OVERRIDE`).
+
 Resolving type T from layer k:
 - no entry for T in layer k → resolve from layer k+1;
 - the entry has `price` → that is the price (lower layers are not consulted);
@@ -164,6 +171,13 @@ Resolving type T from layer k:
 - L3 / L4 give a price or nothing.
 So multipliers stack across layers (an L1 ×0.9 over an L2 ×0.5 over an injected 100 gives 45), and a fixed price stops
 the chain.
+
+**Line attribution (eve ruling 14:36):**
+- `source` / `layer` = the highest layer that had an entry for the type (the top override; `injected` / `snapshot`
+  when no override applied).
+- `multiplier` = the product of all multipliers in the chain; omitted when no multiplier applied.
+- `base_source` = what finally supplied the base price: `injected`, `snapshot`, or the fixed-price override's source
+  (`override:type` …). Without a multiplier, `base_source` = `source`.
 
 ### 5.3 Injected prices (`prices`, `--prices`)
 `prices` on the FitRequest / BatchRequest:
@@ -202,23 +216,29 @@ Otherwise it is absent, so existing outputs stay unchanged.
   "snapshot_time": null,             // L4 snapshot market_time when any line used it
   "sources": { "override:type": 2, "injected": 11, … }   // line count per source
 }
-Line = { "index": 0, "type_id": 2873, "name": "125mm Gatling AutoCannon II", "quantity": 3,
+Line = { "kind": "module", "index": 0, "type_id": 2873, "name": "125mm Gatling AutoCannon II", "quantity": 3,
          "unit_isk": 1250000.0, "total_isk": 3750000.0,
          "source": "override:type",      // override:type | override:market_group | override:group | override:category | injected | snapshot
          "layer": "variant",             // variant | request | injected | snapshot
-         "multiplier": null,             // the product of multipliers applied, when any
-         "base_source": null,            // source of the price a multiplier was applied to
+         "multiplier": 0.45,             // product of the multipliers applied; key omitted when none
+         "base_source": "injected",      // supplier of the base price; = source when no multiplier
          "snapshot_time": null }
 ```
+- `kind` per line: `ship` | `module` | `charge` | `drone` | `fighter` | `implant` | `booster` | `cargo` (the ship row
+  is `kind: "ship"`, `index` 0). All eight `sections` are always present (empty: `{"total_isk": 0, "items": []}`).
 - One line per fitted item: ship; each module (`index` = module index; a mutated module is priced as its base type);
-  each loaded charge stack (`index` = module index, `quantity` = loaded charge count, Pyfa's rule); each drone /
-  fighter stack (quantity); implants; boosters; cargo entries.
+  each loaded charge stack (`index` = module index, `quantity` = floor(module type's base capacity / charge volume),
+  Pyfa's rule, eve ruling 14:36; 0 if it does not fit — the line is then priced at 0); each drone /
+  fighter stack (quantity; a fighter without `quantity` counts its squadron max size); implants; boosters; cargo
+  entries at their actual quantity.
 - `missing` reasons: `no_price`, `multiplier_without_base`. Missing lines are not in `sections.*.items` and not in
   totals.
 - Projected and fleet booster fits are not priced (they are not part of the fit).
 
 ### 6.3 Price in batch
-Each result carries its own `price` block (computed with that variant's layers). `fields`, `filter`, `sort_by` and
+Each result's calc output includes its own `price` block (computed with that variant's layers) whenever the batch
+has price inputs, `price: true`, or a `price.*` path in `fields` / `filter` / `sort_by`; `fields` read it as
+`price.…`. With `price: true` the full block is also returned as the result's `price` (and `base.price`). `fields`, `filter`, `sort_by` and
 `deltas` can use `price.total_isk`, `price.complete`, `price.sections.modules.total_isk`, etc.
 
 ## 7. BatchResponse
@@ -320,8 +340,20 @@ Market-group overrides need the SDE dataset with the market-group tree (pipeline
 ```
 
 ## 10. Implementation notes (eve-dogma)
+- Implemented: `crates/eve-dogma/src/batch.rs`, `src/price.rs`, tests `crates/eve-dogma/tests/batch_prices.rs`; CLI
+  `eve-fit batch --request`, JSONL BatchRequest lines, `--prices FILE`; RPC `batch` (alias `calc_batch`) and
+  `prices_load` (`{"clear":true}` clears). SDE dataset r5 (market-group tree) since eve-dogma d55fadb, so
+  `market_group_id` overrides are supported; with a pre-r2 dataset they are ignored with the warning in §8.
 - Module `eve_dogma::batch` expands, computes with the existing parallel batch workers (data and caches shared,
   output order fixed), then projects / filters / sorts. `eve_dogma::price` resolves layers per type and builds the
   block; the market-group tree comes from the SDE tables (dataset r5+).
 - Tests: batch == one-by-one `calc` (byte-identical) on all forms; cap error; determinism (two runs, 1 vs N threads);
   every precedence rule and the multiplier chain; eve3 batch-suite through its adapter.
+
+## 11. Contract decisions by F (2026-10-03 14:50 CST; differences from bench batch/ prices.py at 93853b0)
+1. `base_source` without a multiplier = `source` (eve ruling); bench reference currently emits `null`.
+2. All eight `sections` always present, empty ones as `{"total_isk": 0, "items": []}`, so `price.sections.charges.total_isk`
+   is `0`, not `null`, for a fit without charges (bench reference omits empty sections).
+3. Sweep ids/labels use compact JSON with sorted keys (§2.3); the bench uses Python's default `json.dumps` (`", "`, `": "`).
+4. L2 tie on the same target: the FitRequest's own entry wins over the batch-wide one (bench lists batch-wide first).
+5. Fighter lines without `quantity` use the squadron max size (bench: 1). Mutated drones are priced as their base type.
