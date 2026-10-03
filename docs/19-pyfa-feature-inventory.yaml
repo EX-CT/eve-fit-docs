@@ -58,9 +58,10 @@ items:
   f: have
   f_evidence: 'eve-dogma d990818: effects/ 2378/2378 (every carrier kind full), handler-only 112/112, unverified handler-only 37/37 (bench results-1.11/ED-d990818.md) [2026-10-03 14:58: partial -> have;
     2da8150 was 2352/2378]'
-  mcp: partial
+  mcp: have
   mcp_evidence: 'engine pass-through [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 15:20:
-    new suite mcp-effects: eve-fit-mcp v0.3.1 2378/2378 with engine d990818, 2352/2378 with the pinned 2da8150; stays partial until the engine pin is bumped]'
+    new suite mcp-effects: eve-fit-mcp v0.3.1 2378/2378 with engine d990818, 2352/2378 with the pinned 2da8150; stays partial until the engine pin is bumped] [2026-10-03 15:50: partial -> have; mcp-effects
+    2378/2378; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: 'engine pass-through [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
 - id: ENG-CORE-004
@@ -89,8 +90,9 @@ items:
   pyfa_src: gui/builtinItemStatsViews/itemAttributes.py
   f: have
   f_evidence: options.include_attributes (stats.rs attributes)
-  mcp: partial
-  mcp_evidence: get_type gives base attrs; fitted values only via compute_fit include_attributes
+  mcp: have
+  mcp_evidence: 'get_type gives base attrs; fitted values only via compute_fit include_attributes [2026-10-03 15:50: partial -> have; mcp-effects 2378/2378 via compute_fit include_attributes; eve-fit-mcp
+    v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: have
   web_evidence: Market show info with fitted values
 - id: ENG-CORE-007
@@ -194,8 +196,8 @@ items:
   pyfa_src: gui/builtinViewColumns/heat.py
   f: have
   f_evidence: 'ED ext heat 30/30 (pool_heat_*: heat generation, damage, burnout)'
-  mcp: missing
-  mcp_evidence: not exposed
+  mcp: have
+  mcp_evidence: 'not exposed [2026-10-03 15:50: missing -> have; mcp-ext pool_heat_* 30/30 (modules[].heat); mcp.stats.overheat is weak; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: missing
   web_evidence: no heat column
 - id: ENG-MOD-008
@@ -331,8 +333,9 @@ items:
   pyfa_src: gui/builtinItemStatsViews/itemTraits.py
   f: partial
   f_evidence: type RPC returns data; traits text not checked
-  mcp: partial
-  mcp_evidence: 'get_ship [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp: have
+  mcp_evidence: 'get_ship [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 15:50: partial
+    -> have; mcp.integration.get-ship-traits: Cerberus role / per-skill trait lines and the HAC bonus in the numbers; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: 'Market show info traits [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
 - id: ENG-DRN-001
@@ -361,8 +364,8 @@ items:
   pyfa_src: gui/builtinViewColumns/droneEhp.py, droneRegen.py; drone.py hp/ehp/calculateShieldRecharge
   f: have
   f_evidence: ED ext drone_ehp 16/16 (dehp_*)
-  mcp: missing
-  mcp_evidence: not exposed
+  mcp: have
+  mcp_evidence: 'not exposed [2026-10-03 15:50: missing -> have; mcp.stats.drone-fighter-hp + mcp-ext dehp_* 5/5; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: missing
   web_evidence: no column
 - id: ENG-DRN-004
@@ -426,8 +429,8 @@ items:
   f: have
   f_evidence: 'ED 2da8150 ext fighter_ehp 15/15 (fehp_*: Thanatos, Archon, Chimera, Nidhoggur, Nyx, Aeon, Wyvern, Hel; light/support/heavy squadrons, Fighter Support Unit II, skills 0 / Fighters 1, damage
     patterns, inactive squadron) + pool_fighter_ehp_fsweep06420; fighters[].hp/ehp/shield_peak_recharge_hp_s vs Pyfa'
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; mcp.stats.drone-fighter-hp + mcp-ext fehp_* / pool_fighter_ehp_* 16/16; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: missing
   web_evidence: '-'
 - id: ENG-IMP-001
@@ -679,8 +682,8 @@ items:
   pyfa_src: fit.py minerYield, droneYield, minerDrain, totalYield; miningyieldViewFull
   f: have
   f_evidence: ED ext mining 11/11 (+ mining with fleet buffs 1/1)
-  mcp: missing
-  mcp_evidence: no mining metric (src/ grep mining 0)
+  mcp: have
+  mcp_evidence: 'no mining metric (src/ grep mining 0) [2026-10-03 15:50: missing -> have; mcp.stats.mining + mcp-ext mining_* 10/10; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: Stats.tsx shows st.mining only if backend provides (D ts-worker), not F
 - id: ENG-OFF-007
@@ -689,8 +692,8 @@ items:
   pyfa_src: gui/builtinStatsViews/bombingViewFull.py
   f: have
   f_evidence: ED ext bombing 15/15 (bomb_*)
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; mcp.stats.bombing + mcp-ext bomb_* 11/11; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: missing
   web_evidence: '-'
 - id: ENG-OFF-008
@@ -871,8 +874,8 @@ items:
   pyfa_src: fit.py getRemoteReps; gui/builtinStatsViews/outgoingViewFull.py
   f: have
   f_evidence: 'ED ext outgoing 25/25 (rr_*: remote reps / cap transfer)'
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; mcp.stats.remote-repair(-spool) + mcp-ext rr_* 10/10; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: Stats 'Remote assistance' section only when backend provides
 - id: ENG-PROJ-007
@@ -1270,8 +1273,9 @@ items:
   pyfa_src: gui/builtinViewColumns/price.py
   f: missing
   f_evidence: '-'
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; mcp.features.price-passthrough + price-fit-engine: per-line unit_isk and source from the engine price block (MCP CI on 197223f); eve-fit-mcp v0.4.0
+    d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: missing
   web_evidence: no per-row price
 - id: PRC-004
@@ -1822,8 +1826,9 @@ items:
   pyfa_src: graphs/data/fitDamageStats/graph.py; gui/builtinContextMenus/graphDmg*.py, graphDroneControlRange.py
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: missing
-  mcp_evidence: no graph tool (a08d943 §9)
+  mcp: have
+  mcp_evidence: 'no graph tool (a08d943 §9) [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs dmg_* 69/69; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f
+    (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: 'Graphs.tsx: no attacker/target lists, no per-graph extra inputs (a08d943 §9 gaps)'
 - id: GRF-OPT-002
@@ -1832,8 +1837,8 @@ items:
   pyfa_src: graphs/data/fitCapacitor/graph.py
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs cap_* 13/13; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: Graphs.tsx capacitor; options not exposed
 - id: GRF-OPT-003
@@ -1842,8 +1847,8 @@ items:
   pyfa_src: graphs/data/fitMobility/graph.py
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs mob_bump* 2/2; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: speed/distance only
 - id: GRF-OPT-004
@@ -1852,8 +1857,8 @@ items:
   pyfa_src: graphs/data/fitRemoteReps/graph.py
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs rr_* 11/11; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: engine rr graph on g4
 - id: GRF-OPT-005
@@ -1862,8 +1867,8 @@ items:
   pyfa_src: graphs/data/fitEcmBurstScanresDamps/graph.py
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs ecm_* + err_ecm* 12/12; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: 40e6044 ECM burst graph present (web.e2e.graph-ecm-burst); option inputs not tested
 - id: GRF-OPT-006
@@ -1872,8 +1877,8 @@ items:
   pyfa_src: graphs/data/fitEwarStats/graph.py
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs ewar_resist* 2/2; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: '-'
 - id: GRF-OPT-007
@@ -1882,8 +1887,8 @@ items:
   pyfa_src: graphs/data/fitShieldRegen/graph.py
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs shield_* 5/5; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: shield_pct/regen
 - id: GRF-OPT-008
@@ -1892,8 +1897,8 @@ items:
   pyfa_src: gui/builtinContextMenus/graph*.py
   f: have
   f_evidence: ED graphs-round2 84f7c2e 178/178 through eve-fit serve-stdio graph RPC (merged into the mainline)
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs app_* 14/14; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: '-'
 - id: UI-STAT-RES
@@ -1966,8 +1971,8 @@ items:
   pyfa_src: gui/builtinStatsViews/outgoingViewFull.py, outgoingViewMinimal.py
   f: have
   f_evidence: ED ext outgoing 25/25
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; mcp.stats.remote-repair(-spool) + mcp-ext rr_* 10/10; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: Remote assistance section depends on backend
 - id: UI-STAT-MIN
@@ -1976,8 +1981,8 @@ items:
   pyfa_src: gui/builtinStatsViews/miningyieldViewFull.py
   f: have
   f_evidence: ED ext mining 11/11
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; mcp.stats.mining + mcp-ext mining_* 10/10; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: backend-dependent
 - id: UI-STAT-PRC
@@ -1996,8 +2001,8 @@ items:
   pyfa_src: gui/builtinStatsViews/bombingViewFull.py
   f: have
   f_evidence: ED ext bombing 15/15
-  mcp: missing
-  mcp_evidence: '-'
+  mcp: have
+  mcp_evidence: '- [2026-10-03 15:50: missing -> have; mcp.stats.bombing + mcp-ext bomb_* 11/11; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: missing
   web_evidence: '-'
 - id: UI-PREF-GEN
@@ -2119,9 +2124,9 @@ items:
   pyfa_src: eos/effects.py
   f: have
   f_evidence: 'eve-dogma d990818: Breach Control sets ship breacherPodDamageResistance (options.include_attributes); bench pending-1.11 ext:brdc_* 4/4 (2da8150: 1/4) [2026-10-03 14:55: missing -> have]'
-  mcp: partial
+  mcp: have
   mcp_evidence: 'engine [2026-10-03 14:40: mcp-* suites 0/4 on eve-fit-mcp 8c6b93d; F fails too] [2026-10-03 15:20: eve-fit-mcp v0.3.1: mcp-ext brdc_* 4/4 with engine d990818, 1/4 with the pinned 2da8150;
-    stays partial until the MCP pins an engine >= d990818]'
+    stays partial until the MCP pins an engine >= d990818] [2026-10-03 15:50: partial -> have; mcp-ext brdc_* 4/4; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: engine
 - id: ENG-MISC-005
@@ -2153,9 +2158,12 @@ items:
   pyfa_src: '- (not in Pyfa)'
   f: partial
   f_evidence: 'd990818: only the JSONL `batch` stream (many independent fits, one result line each); no base/variants/product/sweep, deltas, sort, filter or fields; eve-dogma-bench batch/ (docs/23 shape,
-    identity vs one-by-one calc) 0/58'
-  mcp: missing
-  mcp_evidence: no compute_batch tool (477726d; the engine adapters batch internally only); queued after F's contract
+    identity vs one-by-one calc) 0/58 [2026-10-03 15:50: kept partial (F set have in the rendered .md for 8bde0ba, 4820fa7; yaml was partial): eve-dogma 8bde0ba on bench 1fdcf61 batch 77/93 (calc_price
+    3/6, gap 13/16, price 6/14, sweep 9/11); pending bench contract update, re-check after bench fix]'
+  mcp: partial
+  mcp_evidence: 'compute_batch (v0.4.0) [2026-10-03 15:50: missing -> partial; mcp-batch 52/92 on bench 1fd7e37 (engine 197223f directly 62/92; MCP-only gaps: extra engine/notes/request_hash keys in full
+    results, per-fit errors rejected up front, BATCH_TOO_LARGE without count/limit, no --prices file), 8/93 after the provenance rulings; mcp.features.compute-batch / mcp.unit.batch-* partial; eve-fit-mcp
+    v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: missing
   web_evidence: no batch / variant view (e1afe8d)
 - id: ENG-PRICE-001
@@ -2165,10 +2173,14 @@ items:
     > group > category) > injected prices > embedded snapshot; output total + per-item lines with `source` per price and the missing-price list; batch variants may carry their own overrides (docs/22). Beyond
     Pyfa.
   pyfa_src: '- (not in Pyfa; Pyfa prices come from one market source)'
-  f: missing
-  f_evidence: 'd990818: no price input or output in calc (only the optimizer''s `price.prices` table, docs/21); eve-dogma-bench batch/price_* (14 cases, docs/23 §5-§6, bench reference resolver) 0/14'
+  f: partial
+  f_evidence: 'd990818: no price input or output in calc (only the optimizer''s `price.prices` table, docs/21); eve-dogma-bench batch/price_* (14 cases, docs/23 §5-§6, bench reference resolver) 0/14 [2026-10-03
+    15:50: missing -> partial (F set have in the rendered .md for 8bde0ba, 4820fa7): 8bde0ba on bench 1fdcf61 batch price_* 6/14, calc_price 3/6, d22 price_inject 21/32 (sde 18/18); pending bench contract
+    update, re-check after bench fix]'
   mcp: partial
-  mcp_evidence: 'price_fit / get_prices (477726d src/prices.ts): per-item lines and one source (ESI or Fuzzwork) for the whole fit; no overrides, no per-price source'
+  mcp_evidence: 'price_fit / get_prices (477726d src/prices.ts): per-item lines and one source (ESI or Fuzzwork) for the whole fit; no overrides, no per-price source [2026-10-03 15:50: stays partial; v0.4.0
+    passes docs/23 price inputs through (mcp.features.price-passthrough, price-fit-engine pass in MCP CI on 197223f) but mcp-batch price_* 0/14 (provenance); eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f
+    (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
   web_evidence: 'PriceBox (src/ui/PriceBox.tsx, e1afe8d): ESI average prices; no overrides ("my prices" queued)'
 extras_rule: 'An item with `extra: true` is a feature beyond Pyfa (Pyfa does not have it). It gets a normal id and the same status/test rules (have needs a full test), but it is excluded from the parity
