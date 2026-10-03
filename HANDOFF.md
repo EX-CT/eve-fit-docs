@@ -71,7 +71,7 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - Run 37108036168 (0608315) was green and deployed. Unit tests passed. e2e: ts-worker 73/73, wasm-worker 87/87, J 83/83, http 87/87.
   - Bench pending-1.11 @7192f66: core 339/339, ext 208/239, ext_rpc 0/54, batch 93/93, effects 2378/2378, graphs 192/192, cap 150/150, mutated 93/93, formats 4779/4779, sde 16/18, price_inject 32/32. No regression.
   - Gate baseline is f.json without sde version_cli_fields / version_rpc_fields (browser-inherent: version.target = wasm32).
-- Run for c07e9d9 (37108520615): see GitHub Actions.
+- Run 37108520615 (c07e9d9) green and deployed: e2e ts 78/78, wasm 92/92, J 88/88, http 92/92; bench same as above, no regression. Live e2e wasm-worker 92/92, ts-worker 78/78; data/presets-pyfa-LGPL-GPL.json served (118 patterns, 195 profiles).
 - Live build-info: engine_f 8bde0ba, prices_snapshot prices-jita44-20261003T070857Z.
 
 ### Done this round
