@@ -64,29 +64,39 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - Embedded snapshot update: replace file in crates/eve-dogma/data + EMBEDDED_ID/TIME/HASH in price.rs (test `embedded_snapshot_identity_and_jcs` checks them).
 - Commit identity `-c user.name=EXCT-Bot -c user.email=bot@exct.invalid`; never force-push; unfinished work → `wip/*`.
 
-## eve4 / eve-fit-web (executor bot; updated 2026-10-03 15:20 CST)
+## eve4 / eve-fit-web (executor bot; updated 2026-10-03 16:10 CST)
 
 ### Current commits
-- EX-CT/eve-fit-web main: **fdbb014** (all work pushed; no uncommitted changes; **no wip branches**). Pages run 37104154159 green and deployed: unit; e2e ts-worker 72/72, wasm-worker 82/82, J 82/82, http 82/82; bench 1.9.0; graphs 0.2; full pending-1.11 suite set (below) with no regression vs baselines/f.json. Artifact: bench-suites-wasm-worker.
-- Live (https://ex-ct.github.io/eve-fit-web/, build-info web fdbb014, engine_f 20aa425) checked: e2e wasm-worker 82/82, ts-worker 72/72.
+- EX-CT/eve-fit-web main: **c07e9d9**. All work is pushed; there are no wip branches.
+- Run 37108036168 (0608315) was green and deployed. Unit tests passed. e2e: ts-worker 73/73, wasm-worker 87/87, J 83/83, http 87/87.
+  - Bench pending-1.11 @7192f66: core 339/339, ext 208/239, ext_rpc 0/54, batch 93/93, effects 2378/2378, graphs 192/192, cap 150/150, mutated 93/93, formats 4779/4779, sde 16/18, price_inject 32/32. No regression.
+  - Gate baseline is f.json without sde version_cli_fields / version_rpc_fields (browser-inherent: version.target = wasm32).
+- Run for c07e9d9 (37108520615): see GitHub Actions.
+- Live build-info: engine_f 8bde0ba, prices_snapshot prices-jita44-20261003T070857Z.
 
-### Done
-- **Milestone 4 (A), fit library + Pyfa import:** b75923b (formats layer: Pyfa saveddata.db via sql.js, library import/export, fixture made by Pyfa 1d9f72b, data only), d670e64 (IndexedDB store + migration from localStorage, folders/tags/search/rename/duplicate/delete/export/backup UI), 342b813 + f97501a (e2e: pyfa-db-*, library-*, dna-import = FMT-DNA-001, library-reload-persistence = DB-001, library-migration; docs/test-ids.md).
-- **B, F pin bump:** a972c4e engines.lock F -> EX-CT/eve-dogma 20aa425 (main, after 2da8150). 692ff88 UI: mining, outgoing reps, bombs to kill, overheat burnout, drone/fighter EHP, violation labels (zh-CN). 1ca5683 CI suites web-ext (bench pending-1.11 @1a8be05 ext 202/202) and web-effects (>= EFFECTS_MIN 2353) in the browser build. 6ac02ba e2e ids mining-yield, outgoing-reps, bombing-table, overheat-burnout, drone-ehp, validation-problems. 7854503 docs/test-ids.md, 3eb47ba README.
-- 070dfc3 (done before C was deferred): drag-and-drop rack position (moveModule), mutaplasmid roll range, Import from clipboard; unit tests web.unit.module-move, charges-valid-only.
-
-- **Full bench suite set in the browser (parent queue item):** 2dce909 CI step "Bench pending-1.11 full suite set". It clones eve-dogma-bench @ `BENCH_SUITES_SHA` (pending-1.11 head c2229b2, in engines.lock), runs `tools/run_all_suites.sh tools/browser-engine.mjs` against the built wasm-worker in headless Chrome, gates the deploy on `check_no_regress.py --baseline baselines/f.json`, and uploads artifact `bench-suites-wasm-worker`. afb9e83 tools/browser-engine.mjs (eve-fit-compatible CLI: calc / batch / serve-stdio), ef38516 browser-rpc --http, bf58942 (stdout flush fix), fdbb014 (keep suites/ for the checker), a70469c (shipstats: full_precision stats as stats_json, byte-exact; browser-rpc computes shipstats stats like serve-stdio).
-  CI result (run 37104154159, identical locally): core 339/339, ext 207/239, ext_rpc 0/54, batch 0/44 (the methods are not in the browser; baseline 0), effects 2353/2378, graphs 192/192, cap 150/150, mutated 93/93, formats 4779/4779. Result: no regression.
+### Done this round
+- 2308bf3: F pin set to eve-dogma 8bde0ba (effects 2378/2378).
+- bc10926 / e240b23 / 0608315: browser-rpc and browser-engine pass any RPC through (batch, prices_load, sde_override; --prices). The response text is kept exactly as the engine wrote it. Compare makes one engine `batch` call.
+- 5e290d9 + a9ee592: prices come from the engine price block.
+  - Price box shows source, missing items, and provenance.
+  - "My prices" overrides and self-made = 0 (localStorage eve-fit-web-my-prices).
+  - Optional "update prices" uses prices_load with the site's own copy of the latest eve-market-prices release. CI downloads and checks it, and the 6-hourly schedule refreshes it.
+- 0cd6084, PRF-DMG-001:
+  - Built-in damage patterns are now only Uniform and pure EM/Thermal/Kinetic/Explosive. The invented NPC/ammo values are removed.
+  - Pyfa's built-in patterns and target profiles are opt-in (Profiles tab) from the pipeline's separate asset presets-pyfa-LGPL-GPL.json (GPL data).
+  - CI deploys that file beside the site with its notice and attribution, slimmed by tools/slim-presets-pyfa.mjs. It is not in the MIT repo, and the browser fetches it only when the option is on.
+- 0cd6084, ENG-CORE-006: e2e show-info-engine-values (every fitted value = engine attribute) and show-info-skill-formula (HNB II all-V formula).
+- c07e9d9: docs/test-ids.md and README.
 
 ### Next steps
-0. Bench owners may `check_no_regress.py --update` f.json: the browser run improves ext 204 -> 207 and effects 2352 -> 2353 (I don't edit the bench).
-2. Moving the F pin to eve-dogma d990818+ should give effects 2378/2378.
-3. Deferred (C): tests for the 27 docs/19 web items downgraded have->partial. Not started beyond 070dfc3. A draft of the checks (target profiles, damage pattern editor, fleet command fit, addition panes, show-info traits / required skills, probe size, MWD, utility modules, clipboard, dataset = engine sha) was written locally and dropped from the commit; redo from inventory/mcp-web-gaps.md.
-4. Prices: leave the web price box alone. Engine-computed prices (price_overrides, docs/22) and a local "my prices" setting come later.
+1. User/parent: confirm that deploying the Pyfa GPL data file next to the site (opt-in, attributed, not vendored) is acceptable. If not, remove the CI step.
+2. Bench owners may add a web baseline (sde version fields: target wasm32).
+3. pyfadb built-in pattern ids are not yet mapped to the Pyfa preset ids (a warning on import).
+4. Deferred (C): the remaining docs/19 partial-test items.
 
 ### Key context
 - Repo: /workspace/exct-eve/eve-fit-web. Local preview: `npm run build && npx vite preview --port 4180`, then `node tools/e2e.mjs http://127.0.0.1:4180/eve-fit-web/ wasm-worker|ts-worker`. For http: `node tools/engine-bridge.mjs --stdio "<eve-fit> serve-stdio" --port <free port>`. Other agents' bridges hold 8787 to 8799.
-- The F build for 20aa425 is in /tmp/ed20: wasm in target/wasm32-unknown-unknown/release-small, native eve-fit in target/release. It has been copied to public/engines/f.
+- The F build for 8bde0ba is in /tmp/ed19: wasm in target/wasm32-unknown-unknown/release-small, native eve-fit in target/release. It has been copied to public/engines/f.
 - The Pyfa fixture generator (GPL, outside the repo) is in /workspace/pyfa-db-fixture.
 - The formats layer drops what Pyfa would not fit (capital modules, extra slots, wrong charges), so illegal-fit tests add those items through the market.
 
