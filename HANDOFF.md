@@ -114,32 +114,32 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 2. Then (after F's contract, docs/23): MCP `compute_batch` + `price_overrides` / `prices` pass-through only (no pricing math in MCP).
 
 ---
-## eve3 / bench (executor bot; updated 2026-10-03 14:50 CST)
+## eve3 / bench (executor bot; updated 2026-10-03 15:15 CST)
 
 ### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started)
-**Current commits** (everything pushed; no wip branches yet)
+**Current commits** (everything pushed; nothing uncommitted)
 - eve-dogma-bench pending-1.11:
-  - Gate: `98419df` (`tools/run_all_suites.sh`, `tools/check_no_regress.py`), `b3a0957` (seed from 2da8150),
-    `07245e8` (batch suite in the gate), `c2229b2` (+batch 0/44), `88ed590` (**baseline raised to eve-dogma
-    d990818**, CI green 14:21 CST).
-  - batch-suite: `a00620f` (`batch/`, 44 cases: multi 12, variants 12, product 9, sweep 11; 1024 fits).
-  - optimizer-bench WIP: `13cb0d9`, `e88d0a4`, `d48bbab` (27 cases, Pyfa check 27/27; score.py and baselines not
-    started, plan in `optimizer/README.md`).
-- eve-fit-docs: `857b2e8` docs/19 extras ENG-BATCH-001 (f partial, mcp/web missing) and ENG-PRICE-001 (f missing,
-  mcp/web partial); `check_inventory` reports 0 problems.
+  - Gate: `98419df`, `b3a0957`, `07245e8`, `c2229b2`, `88ed590` (**f.json raised to eve-dogma d990818**, CI green).
+  - batch-suite: `a00620f` (44 cases) and `97dc60f` (cases + semantics in the **docs/23** shape: RPC method `batch`,
+    batch_version 1).
+  - Price cases: `89f5853` (reference resolver `batch/prices.py`), `30a47bb` (14 `price_*` cases), `93853b0` (docs).
+  - optimizer-bench WIP: `13cb0d9`, `e88d0a4`, `d48bbab`.
+- wip branch `wip/eve3-batch-prices` = the same commits, already merged into pending-1.11 (can be deleted).
+- eve-fit-docs: `857b2e8` and `d5e757e` (docs/19 extras ENG-BATCH-001 / ENG-PRICE-001; check_inventory reports
+  0 problems).
 
 **Progress**
-- f.json now (d990818): core 339, ext 207/239, ext_rpc 0/54, batch 0/44, effects 2378/2378, graphs 192, cap 150,
-  mutated 93, formats 4779. docs/19 have counts: f 104, mcp 97, web 84, formats 10. F's CI runs the gate.
-- Batch check: every result must be byte-identical to `calc` of the same fit run on its own (self-test 44/44).
-  d990818 scores 0/44 (no batch method yet).
-- docs/23 (eve-fit-docs 8b1e6cf) is the batch + prices contract draft. The bench still sends its provisional shape.
+- batch-suite: 58 cases (multi 12, variants 12, product 9, sweep 11, price 14).
+  - Self-test 58/58. eve-dogma d990818 scores 0/58 (UNKNOWN_METHOD `batch`); f.json has batch at 0 passed.
+  - Price checks: block, lines, `source`, `layer`, `multiplier`, `base_source`, the missing list and section sums,
+    against the bench resolver.
+  - Interpretation points for F are listed in `batch/CONTRACT-BATCH.md`.
+- f.json (d990818): core 339, ext 207/239, ext_rpc 0/54, batch 0, effects 2378, graphs 192, cap 150, mutated 93,
+  formats 4779. docs/19 have counts: f 104, mcp 97, web 84, formats 10.
 
 **Next steps**
-1. `batch/adapter.py` and `semantics.py` → docs/23: method `batch`, `batch_version` 1, `sort_by`/`top_n`, axis
-   `options`, labels joined " × ", `delta_pct`, `matched`, booleans as 0/1 in filter/sort.
-2. Price-override cases (docs/23 §5/§6). The bench reference resolver checks: type > market group (+children) >
-   group > category; L1 variant > L2 request > L3 injected > L4 snapshot; price 0, multiplier chains,
-   `multiplier_without_base`; per-line `source`, the missing list, sections summing to `total_isk`; and variants
-   carrying their own overrides. Unfinished work goes to the `wip/eve3-batch-prices` branch.
-3. Then raise f.json when F ships batch.
+1. When F ships `batch` + prices, run `batch/run_batch.py` (`--transport rpc`), then run_all_suites and
+   `check_no_regress --update`.
+2. Not covered yet: `in` / `not_null` filters, `delta_ref`, numeric sweeps, `swap_type`, `BATCH_TOO_LARGE`,
+   `BAD_PRICE_OVERRIDE`, `--prices` files, `calc`'s own price block, `use_snapshot`, L4 snapshot.
+3. optimizer-bench: score.py, greedy/random baselines and README (plan in `optimizer/README.md`).
