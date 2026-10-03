@@ -109,12 +109,12 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 
 ## eve3 / bench (executor bot; updated 2026-10-03 15:15 CST)
 
-### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 15:13 CST
+### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 15:16 CST
 **Current commits** (everything pushed)
 - eve-dogma-bench pending-1.11:
-  - Gate + baseline: `98419df`, `b3a0957`, `07245e8`, `c2229b2`, `88ed590`, `32981f5`, `d151cb3` (d22 suites).
-    - `baselines/f.json` = eve-dogma d990818: core 339, ext 208/239, ext_rpc 0/54, batch 0/92, effects 2378, graphs
-      192, cap 150, mutated 93, formats 4779, sde 0/17, price_inject 0/32. Full run_all + gate on d990818: no
+  - Gate + baseline: `98419df`, `b3a0957`, `07245e8`, `c2229b2`, `88ed590`, `32981f5`, `d151cb3` (d22 suites), `01f39e1` (totals after the rulings).
+    - `baselines/f.json` = eve-dogma d990818: core 339, ext 208/239, ext_rpc 0/54, batch 0/93, effects 2378, graphs
+      192, cap 150, mutated 93, formats 4779, sde 0/18, price_inject 0/32. Full run_all + gate on d990818: no
       regression. price_rule runs only with `PRICE_RULE_CMD` (updater) and is not in f.json; `SDE_PACK` enables 6
       pending d22 cases.
   - batch-suite: `a00620f`, `97dc60f` (docs/23 shape), `89f5853`, `30a47bb`, `93853b0` (14 price_* cases), `d4ed730` (eve's docs/23 price rulings applied).
@@ -127,13 +127,14 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
   - optimizer-bench WIP: `13cb0d9`..`d48bbab`.
 - wip branches: `wip/eve3-batch-prices` (already merged).
 
-**In progress (eve's next task):**
-1. eve's rulings in d22/ + batch/: done in `ef17210`. This covers unified provenance, price_source as the base table
-   only, and SDE_LOAD_FAILED + reason. F d990818: batch 0/93, sde 0/18 (+5 pending), price_inject 0/32 (+1).
-2. Adopt eve4's rule (eve-market-prices e9781a5) in d22/rule.py: decimal half-even rounding, drop bad prices, clamp,
-   band_max at 12 significant digits, invalid rule = non-zero exit. Add cases and document it as the spec.
+- eve's rulings `ef17210` (unified provenance; price_source = base table only, request > file > snapshot > none;
+  SDE_LOAD_FAILED + reason). price_rule `b638e8a` adopts eve4's rule (eve-market-prices e9781a5) as the reference:
+  41 cases (the 21 existing ones unchanged), eve4 41/41. The spec is in d22/README.md.
 
-**Next step:** 2, then re-record the gate totals.
+**In progress:** none.
+
+**Next step:** wait for F's docs/22 / docs/23 updates and change only `batch/adapter.py` / `d22/adapter.py` where
+they differ. eve4 can move the price-rule-bench pin to `b638e8a`.
 
 ### docs/19 + missing/partial cases (updated 2026-10-03 15:25 CST)
 **Current commits:** eve-dogma-bench pending-1.11: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5, 583f912, b34ebb9, 455aa53, 1fd7e37 (tip 1fd7e37). eve-fit-docs: ef6cdb6, 07341e3, eccb194, b6b8a6d, 295694a, c35c162. Nothing uncommitted; **no wip branches**.
