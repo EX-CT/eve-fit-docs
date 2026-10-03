@@ -96,25 +96,23 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - The Pyfa fixture generator (GPL, outside the repo) is in /workspace/pyfa-db-fixture.
 - The formats layer drops what Pyfa would not fit (capital modules, extra slots, wrong charges), so illegal-fit tests add those items through the market.
 
-## eve4 / eve-fit-mcp / eve-market-prices (executor bot; updated 2026-10-03 14:50 CST)
+## eve4 / eve-fit-mcp / eve-market-prices (executor bot; updated 2026-10-03 14:55 CST)
 
 ### Current commits
-- EX-CT/eve-fit-mcp main: **5356b81** (version 0.3.1; tag v0.3.1 after CI green). ffc642a = fixes for eve3's mcp_batch findings. CI: ffc642a run 37103649871 (in progress at update); last green 477726d (37102448844). No wip branches, nothing uncommitted.
-- EX-CT/eve-market-prices (public, MIT): main 6a59568 (stub); code on **wip/docs22-schema** (latest ef7bcb0).
+- EX-CT/eve-fit-mcp main: **e7b794a** = release **v0.3.1** (release run 37103909901 success; CI 37103809811 green: engine + test 20/22). No wip branches, nothing uncommitted.
+- EX-CT/eve-market-prices main: **1a34266** (CI 37103816237 green). wip/docs22-schema is merged (same commit) and can be deleted. First snapshot release: `prices-jita44-20261003T063856Z` (snapshot run 37103826084; 4910 priced, 2836 missing, sha256:3dd62f6c…).
 
 ### Done
-- eve-fit-mcp bugs from eve3 (bench pending-1.11 tools/mcp_batch.py, MCP 8c6b93d): (1) empty nested `fleet.booster_fits: []` and (2) projected fighter without quantity were already fixed on main in 70d463b; pinned with tests mcp.unit.empty-nested-arrays / mcp.unit.projected-fighter-default-quantity. (3) tool errors now carry contract codes ("Error: CODE: msg"; engine codes verbatim, MCP input errors BAD_REQUEST, unknown types UNKNOWN_TYPE); compute_graph passes explicit x.values / y / resist_mode to the engine (test mcp.features.contract-error-codes).
-  mcp_batch before (8c6b93d) -> after: core 322 -> **339/339**; ext 201 -> **207/239** (= engine 2da8150 direct; the 32 are engine-missing features); graphs 176 -> **189/192** (errors 8 -> 17/20). Remaining 3 (err_missing_x, err_missing_x_values, err_missing_y) are MCP defaults by design (x/y optional in compute_graph) -> suggest mcp n/a.
-- eve-fit-mcp step 1 engine bump (2da8150, new outputs, mcp-dogma-bench in CI) done earlier.
-- eve-market-prices: library + CLI (TS, zero deps), rule jita_sell_band_weighted v1, ESI + Fuzzwork sources, docs/22 §4 eve-price-snapshot v1 (canonical JSON, sha256 content_hash, §4.5 fields), JSON Schema; rule + mocked source tests pass.
+- eve-fit-mcp fixes for eve3's mcp_batch findings (ffc642a, schemas e7b794a). Bugs 1 (empty nested booster_fits) and 2 (projected fighter quantity) were already fixed in 70d463b and are now pinned by tests. Bug 3: tool errors are "Error: CODE: msg" (engine codes verbatim; MCP input errors BAD_REQUEST; unknown types UNKNOWN_TYPE). compute_graph passes explicit x.values / y / resist_mode through to the engine.
+  mcp_batch 8c6b93d -> e7b794a: core 322 -> 339/339; ext 201 -> 207/239 (= engine direct); graphs 176 -> 189/192. err_missing_x, err_missing_x_values and err_missing_y still fail because compute_graph defaults omitted x/y on purpose; suggest marking them mcp n/a.
+- eve-market-prices: TS library + CLI with no dependencies. Rule jita_sell_band_weighted v1 (min_units default 10, band 0.05, both configurable), ESI and Fuzzwork sources, eve-price-snapshot v1 per docs/22 §4, JSON Schema, 26 tests, non-gating live smoke, daily snapshot release workflow (03:17 UTC + manual). docs/22 gaps are listed in the README (hash number form `1240000` vs `1240000.0`, key order, band_max, sde_build required, aggregate clamp).
 
 ### Paused
-- eve-fit-mcp step 2 (test gaps): docs/test-ids.md/json for the new ids + README mcp-bench section not done; v0.4.0 release not done.
+- eve-fit-mcp step 2 (test gaps): stopped before updating docs/test-ids.md/json for the new ids and the README mcp-bench section. The v0.4.0 release is not done.
 
 ### Next steps
-1. Tag v0.3.1 when CI is green; check release workflow.
-2. eve-market-prices: snapshot tests green, README, CI, daily snapshot workflow; merge wip/docs22-schema -> main.
-3. After F's docs/23: MCP compute_batch + price_overrides pass-through (no pricing math in MCP).
+1. After F's docs/23 lands: MCP compute_batch plus price_overrides / prices pass-through, with no pricing math in MCP.
+2. Resume step 2 (docs/test-ids, README), then v0.4.0.
 
 ## eve3 / bench (executor bot; updated 2026-10-03 15:15 CST)
 
