@@ -65,25 +65,23 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - Pyfa parity (eve): match Pyfa incl. handler behaviour; only proven Pyfa-data drift is excepted (eve-sde-pipeline docs/pyfa-data-drift.json).
 - Commit identity `-c user.name=EXCT-Bot -c user.email=bot@exct.invalid`; never force-push; unfinished work → `wip/*`.
 
-## eve4 / eve-fit-web (executor bot; updated 2026-10-03 15:25 CST)
+## eve4 / eve-fit-web (executor bot; updated 2026-10-03 15:20 CST)
 
 ### Current commits
-- EX-CT/eve-fit-web main: **b2b57e5** (all work pushed; no uncommitted changes; **no wip branches**). Pages run 37103998542 (b2b57e5) is pending; a70469c run 37103721084 is in progress.
-  The last green run was 37102734646 (6ac02ba): unit, e2e wasm-worker 82/82, http 82/82, ts-worker 72/72, bench 331/331, graphs 178/178, ext 202/202, effects 2353/2378.
-- Live (https://ex-ct.github.io/eve-fit-web/) checked at f97501a: e2e wasm-worker 76/76, ts-worker 66/66.
+- EX-CT/eve-fit-web main: **fdbb014** (all work pushed; no uncommitted changes; **no wip branches**). Pages run 37104154159 green and deployed: unit; e2e ts-worker 72/72, wasm-worker 82/82, J 82/82, http 82/82; bench 1.9.0; graphs 0.2; full pending-1.11 suite set (below) with no regression vs baselines/f.json. Artifact: bench-suites-wasm-worker.
+- Live (https://ex-ct.github.io/eve-fit-web/, build-info web fdbb014, engine_f 20aa425) checked: e2e wasm-worker 82/82, ts-worker 72/72.
 
 ### Done
 - **Milestone 4 (A), fit library + Pyfa import:** b75923b (formats layer: Pyfa saveddata.db via sql.js, library import/export, fixture made by Pyfa 1d9f72b, data only), d670e64 (IndexedDB store + migration from localStorage, folders/tags/search/rename/duplicate/delete/export/backup UI), 342b813 + f97501a (e2e: pyfa-db-*, library-*, dna-import = FMT-DNA-001, library-reload-persistence = DB-001, library-migration; docs/test-ids.md).
 - **B, F pin bump:** a972c4e engines.lock F -> EX-CT/eve-dogma 20aa425 (main, after 2da8150). 692ff88 UI: mining, outgoing reps, bombs to kill, overheat burnout, drone/fighter EHP, violation labels (zh-CN). 1ca5683 CI suites web-ext (bench pending-1.11 @1a8be05 ext 202/202) and web-effects (>= EFFECTS_MIN 2353) in the browser build. 6ac02ba e2e ids mining-yield, outgoing-reps, bombing-table, overheat-burnout, drone-ehp, validation-problems. 7854503 docs/test-ids.md, 3eb47ba README.
 - 070dfc3 (done before C was deferred): drag-and-drop rack position (moveModule), mutaplasmid roll range, Import from clipboard; unit tests web.unit.module-move, charges-valid-only.
 
-- **Full bench suite set in the browser (parent queue item):** 2dce909 CI step "Bench pending-1.11 full suite set". It clones eve-dogma-bench @ `BENCH_SUITES_SHA` (pending-1.11 head c2229b2, in engines.lock), runs `tools/run_all_suites.sh tools/browser-engine.mjs` against the built wasm-worker in headless Chrome, gates the deploy on `check_no_regress.py --baseline baselines/f.json`, and uploads artifact `bench-suites-wasm-worker`. afb9e83 tools/browser-engine.mjs (eve-fit-compatible CLI: calc / batch / serve-stdio), ef38516 browser-rpc --http, bf58942 (stdout flush fix), a70469c (shipstats: full_precision stats as stats_json, byte-exact; browser-rpc computes shipstats stats like serve-stdio).
-  Local result at a70469c: core 339/339, ext 207/239, ext_rpc 0/54, batch 0/44 (the methods are not in the browser; baseline 0), effects 2353/2378, graphs 192/192, cap 150/150, mutated 93/93, formats 4779/4779. Result: no regression.
+- **Full bench suite set in the browser (parent queue item):** 2dce909 CI step "Bench pending-1.11 full suite set". It clones eve-dogma-bench @ `BENCH_SUITES_SHA` (pending-1.11 head c2229b2, in engines.lock), runs `tools/run_all_suites.sh tools/browser-engine.mjs` against the built wasm-worker in headless Chrome, gates the deploy on `check_no_regress.py --baseline baselines/f.json`, and uploads artifact `bench-suites-wasm-worker`. afb9e83 tools/browser-engine.mjs (eve-fit-compatible CLI: calc / batch / serve-stdio), ef38516 browser-rpc --http, bf58942 (stdout flush fix), fdbb014 (keep suites/ for the checker), a70469c (shipstats: full_precision stats as stats_json, byte-exact; browser-rpc computes shipstats stats like serve-stdio).
+  CI result (run 37104154159, identical locally): core 339/339, ext 207/239, ext_rpc 0/54, batch 0/44 (the methods are not in the browser; baseline 0), effects 2353/2378, graphs 192/192, cap 150/150, mutated 93/93, formats 4779/4779. Result: no regression.
 
 ### Next steps
-0. Confirm Pages run 37103998542 (b2b57e5) is green, read its step summary, then do the live e2e.
-1. Confirm the 3eb47ba Pages run is green (unit, e2e on all backends, bench 331/331, graphs 178/178, ext 202/202, effects) and run the live e2e (wasm-worker, ts-worker) against the deployed site.
-2. EFFECTS_MIN can go to 2378 once the pin moves to eve-dogma d990818+ (effects 2378/2378).
+0. Bench owners may `check_no_regress.py --update` f.json: the browser run improves ext 204 -> 207 and effects 2352 -> 2353 (I don't edit the bench).
+2. Moving the F pin to eve-dogma d990818+ should give effects 2378/2378.
 3. Deferred (C): tests for the 27 docs/19 web items downgraded have->partial. Not started beyond 070dfc3. A draft of the checks (target profiles, damage pattern editor, fleet command fit, addition panes, show-info traits / required skills, probe size, MWD, utility modules, clipboard, dataset = engine sha) was written locally and dropped from the commit; redo from inventory/mcp-web-gaps.md.
 4. Prices: leave the web price box alone. Engine-computed prices (price_overrides, docs/22) and a local "my prices" setting come later.
 
