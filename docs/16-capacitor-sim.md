@@ -2,18 +2,21 @@
 
 **中文摘要**：本文介绍"电容模拟"难题：测试集、合约草案、计分方法，以及各引擎目前的通过率。
 
-- **测试集**：位于 eve-dogma-bench 分支 `cap-suite`（`cap/`），共 150 个用例，其中 142 个计分、8 个待定。
+- **测试集**：位于 eve-dogma-bench 分支 `cap-suite`（`cap/`），共 150 个用例，全部计分。
   覆盖面包括：本地装备、超载、电容注电器（含装填）、己方及来袭的中和器/掠能器（含无人机）、远程电容传输、
   渐进武器、装填、错峰、`cap_sim` 选项，以及 14 个困难用例。
 - **期望值**：全部由 Pyfa 作为黑盒 oracle 生成，测试集中不含 Pyfa 代码。
 - **合约**：`cap/CONTRACT-CAP.md` 0.1 草案，规定消耗列表、分组/错峰、事件循环、结果和容差。
-- **计分**：一个用例的全部电容指标都在容差内才算通过；得分 = 通过数 / 计分用例数。
-  `cap_sim.stagger:false` 的 8 个用例为待定，等待裁定。
-- **当前通过率**：H 142/142，F 139，E 138，A/B/C/D/G/I/J/K 均为 133。
+- **计分**：一个用例的全部电容指标都在容差内才算通过；得分 = 通过数 / 用例数。
+- **eve 的裁定**：
+  - `cap_sim.stagger` 已弃用，一律忽略（始终错峰，同 Pyfa）；
+  - 注电器不足的情况未定义，不计分；
+  - `nos_no_target_cap` 不在范围内。
+- **当前通过率**：H 150/150，F 147，E 145，A/B/C/D/G/I/J/K 均为 141。
 - **"34 个全超载差异"**：H 与 Pyfa 34/34 一致，A 仅 1/34。原因是模拟器会把以毫秒计的周期（浮点数，如 7649.999…）
   向下取整，而 A 得到的是 7650。
 
-Status: draft, 2026-10-03 ~09:45 CST. Informational suite; it is not part of the frozen 1.8.0 scoring.
+Status: draft, 2026-10-03 ~09:45 CST; eve's rulings applied. Informational suite; it is not part of the frozen 1.8.0 scoring.
 
 - **Suite:** `EX-CT/eve-dogma-bench`, branch **`cap-suite`**, directory `cap/`.
 - **Contract:** `cap/CONTRACT-CAP.md` (0.1 draft).
@@ -43,7 +46,7 @@ and eve left those differences unscored. This problem pins the simulator down.
 | reload | 8 | `factor_reload`: charges with clip and reload in the simulation |
 | stagger | 6 | grouping identical modules: non-turrets staggered (duration / n), turrets x n, clip-based offsets |
 | light | 14 | mostly stable fits (the `stable_percent` path) |
-| sim_options | 16 | `options.cap_sim.{reload, max_time_s, stagger}`; 8 stagger-off cases are pending |
+| sim_options | 16 | `options.cap_sim.{reload, max_time_s}`; 8 cases send the deprecated `stagger: false`, which must be ignored |
 | edge | 4 | micro jump drive, drones only, tiny drains |
 | hard | 14 | fractional clip-stagger start times; long LCM period; boosters topping up before a big need; void bombs on a battleship (single and grouped); command bursts; smartbombs; mixed skill levels; nos under incoming neuts; injectors kept waiting by incoming transfer |
 
@@ -66,7 +69,7 @@ cannot take, while Pyfa falls back to online, so such requests would test state 
    - Without reload in the simulation, clip and reload are cleared, except for boosters.
    - Identical entries are grouped. Boosters fire separately at t = 0.
    - Staggered non-turrets without a clip become one event of ⌊duration/n⌋. With a clip, they get n offset starts.
-   - Turrets, or staggering off: need × n.
+   - Turrets: need × n. `cap_sim.stagger` is deprecated and ignored.
    - Period = LCM of the durations; none if any clip.
 3. **Event loop.**
    - Events are ordered by (time, duration, need, shot, clip, reload, booster).
@@ -80,10 +83,11 @@ cannot take, while Pyfa falls back to online, so such requests would test state 
    - Unstable: `depletes_in_s` = failing event time / 1000.
    - Stable: `stable_percent` = min(100, (lowest after + lowest before activations) / 2C × 100).
    - `eve_stable_percent` and `sim_iterations` are report-only.
-5. **Open rulings.**
-   - `cap_sim.stagger`. The main bench's 317 cases send `false`, but its oracle always staggers.
-   - Booster-shortfall fallback, where Pyfa raises an error.
-   - `nos_no_target_cap` is not covered.
+5. **Rulings (eve, 2026-10-03).**
+   - `cap_sim.stagger` is deprecated and ignored: the simulation always staggers, like Pyfa. Main bench 1.8.0
+     stays frozen and is not regenerated.
+   - When no waiting booster covers a shortfall, the behaviour is undefined and unscored (Pyfa raises an error).
+   - `nos_no_target_cap` is out of scope.
 
 ## 4. Scoring method
 
@@ -92,25 +96,23 @@ cannot take, while Pyfa falls back to online, so such requests would test state 
 - **Tolerance:** max(1e-3, 1e-4·|want|). `depletes_in_s` must be within 0.0005 s, i.e. the same millisecond.
   `stable` must be equal.
 - **Case pass:** every scored metric passes.
-- **Score:** passed / scored cases, with per-category and per-metric breakdowns (`cap/results/<engine>.json`).
-- **Pending:** the 8 `stagger: false` cases are reported, not scored, until the ruling.
+- **Score:** passed / cases (all 150 scored), with per-category and per-metric breakdowns (`cap/results/<engine>.json`).
 - **Proposal if adopted as a round problem:** the cap-suite score is gated on the main bench staying 326/326.
 - **Reproduce:** `python3 cap/run_cap.py --work-root <bench checkout>` (all built variants), or
   `--batch-cmd "<engine> --dataset D batch" --name X`. The whole suite runs in < 1 s per engine.
 
-## 5. Current pass rates (suite 76de49d, built bench binaries, ~09:40 CST)
+## 5. Current pass rates (after the rulings, built bench binaries, ~09:45 CST)
 
-| engine | scored | pending (stagger off) | failing groups |
-|---|---|---|---|
-| H (variant-h b1c7852 code) | **142/142 (100 %)** | 1/8 | — |
-| F | 139/142 (97.9 %) | 1/8 | void bomb ×3 |
-| E | 138/142 (97.2 %) | 1/8 | void bomb ×3; `cap_sim.reload` with ancillary repairers |
-| A (eve-dogma-rs 659737b), B, C, D, G, I, J, K | 133/142 (93.7 %) | 1/8 | cycle truncation ×6; void bomb ×3 |
+| engine | passed | failing groups |
+|---|---|---|
+| H (variant-h b1c7852 code) | **150/150 (100 %)** | — |
+| F | 147/150 (98.0 %) | void bomb ×3 |
+| E | 145/150 (96.7 %) | void bomb ×3; `cap_sim.reload` with ancillary repairers ×2 |
+| A (eve-dogma-rs 659737b), B, C, D, G, I, J, K | 141/150 (94.0 %) | cycle truncation ×6; void bomb ×3 |
 
 Per category, every engine passes baseline, modifiers, injectors, own_neut_nos, remote_cap, stagger and edge. The
 differences sit in overheat, reload, spool and light: the truncation cases (overheated fits) appear in several
-categories. The rest are in incoming / hard (void bombs) and sim_options (E). In the pending stagger-off cases every
-engine fails 7/8, because every engine always staggers.
+categories. The rest are in incoming / hard (void bombs) and sim_options (E).
 
 ## 6. The "34 all-overheated" differences — verdict
 
@@ -126,7 +128,6 @@ engine fails 7/8, because every engine always staggers.
 
 ## 7. Next steps
 
-1. eve: rule on `cap_sim.stagger` (contract §9.1) and on the booster-shortfall fallback (§9.2).
-2. Engines other than H: floor full cycle times to integer ms as computed; add incoming void bombs (H, E, F show
+1. Engines other than H: floor full cycle times to integer ms as computed; add incoming void bombs (H, E, F show
    where).
-3. If adopted: freeze the suite as CONTRACT-CAP 1.0 and merge `cap-suite` into a bench release.
+2. If adopted: freeze the suite as CONTRACT-CAP 1.0 and merge `cap-suite` into a bench release.
