@@ -3,11 +3,15 @@
 **中文摘要**：本文列出 Pyfa `service/port/` 的全部导入/导出格式（EFT、EFT 配置文件、DNA/聊天链接、XML、ESI JSON、
 Multibuy、舰船属性文本、变异装备文本、附加列表、自动识别、EFS），说明用 Pyfa 自身代码生成的往返测试集
 （eve-dogma-bench 分支 `formats-suite`：3260 条导出、1304 条往返导入、16 条边界用例），并给出 Pyfa 的实际行为
-与 variant F 的实现/未实现对照表。目前只有 EFT 导出（326/326）已在引擎中实现；EFT 导入有 6 处与 Pyfa 不同的行为。
+与 variant F 的实现/未实现对照表。第 3 轮（导入/导出格式）以 FORMATS 合约 0.1 草案计分（第 5 节）：
+共 4792 行（含 228 行边界/畸形输入），以 Pyfa 实际行为为准；variant F（bc84e2b）得分 4781/4792（原生与 WASM 相同）。
+草案尚未冻结，等第 1 轮归档后再定稿。
 
 Status: 2026-10-03, Pyfa client db 3532181, bench cases 1.8.0 (326 fits). Suite: `EX-CT/eve-dogma-bench`
 branch **`formats-suite`** (`formats/`, `oracle/pyfa_formats.py`, `tools/make_formats.py`, `tools/check_formats.py`).
-The suite is not part of the frozen 1.8.0 scoring.
+The suite is not part of the frozen 1.8.0 scoring. **Round 3** scores it as the FORMATS contract 0.1 draft
+(`formats/CONTRACT-FORMATS.md`, `tools/evaluate_formats.py`). Section 5 has the scoring rules. The draft is not
+frozen until the round-1 archive.
 
 ## 1. Pyfa's formats (`service/port/`)
 
@@ -87,3 +91,83 @@ Other variants can be scored with the same checker. As of this writing only EFT 
    report violations, with a `pyfa_import: true` option for strict parity.
 3. Treat T3D modes explicitly: Pyfa neither writes nor reads a mode line in EFT. DNA, ESI and XML carry no mode
    either.
+
+## 5. Round 3 scoring rules (FORMATS contract 0.1, DRAFT)
+
+Contract: eve-dogma-bench `formats-suite`, `formats/CONTRACT-FORMATS.md` (revision 0.1, draft; not frozen, not
+merged to bench main). Ground truth is Pyfa's actual behaviour, recorded black-box by `oracle/pyfa_formats.py`.
+Variants re-implement it from the contract text and cases, and no Pyfa (GPL) code may be copied.
+
+**Interface.** Use `serve-stdio` RPC (required) or an optional `format-batch` CLI.
+- `format_export {fit, name, format, options}` returns `{"text"}`.
+- `format_import {text, format, path?}` returns `{"kind","fits"}` or `{"kind","items"}`.
+- Error codes: `UNRECOGNIZED_INPUT` (auto-detect found nothing, including blank input), `IMPORT_ERROR` (format
+  detected or forced, but no fit), `EXPORT_ERROR`, `BAD_REQUEST`, and `UNSUPPORTED_FORMAT` / `UNKNOWN_METHOD`
+  (counted as not implemented).
+
+**Rows (4792).**
+
+| group | rows | source |
+|---|---|---|
+| `export:<fmt>` | 3260 | 326 bench fits × 10 export variants |
+| `import:<fmt>` | 1304 | Pyfa's import of its own export: eft, dna, esi, xml |
+| `edge_export` | 125 | 9 hand-written fits (special/unicode/newline/long/empty names, ship-only, cargo-only, drone stacks, implants + boosters) × 10 exports, plus 35 round trips |
+| `edge` | 103 | 86 inputs imported with `auto`, plus 17 forced-format rows |
+
+The `edge` categories: eft 29, dna 12, esi 11, items 8, multi 7, xml 7, autodetect 6, mutated 4, eftcfg 2,
+forced 17. Of these, 36 rows are expected errors, and 8 are flagged `pyfa_crash`.
+
+**Pass rules.**
+- **Export:** byte-exact text. The only accepted difference is one extra `[Empty Subsystem slot]` on T3 cruisers
+  (SDE 3569502 vs Pyfa db).
+- **Import:** same fit count and order, and the same `kind`. Per fit, these must match:
+  - ship
+  - mode (null = first mode, accepted)
+  - modules per rack in order: type, state, charge, mutation (attributes to 6 decimals)
+  - multisets of drones, fighters, implants, boosters and cargo
+  - name
+
+  Drone active counts and notes are reported only.
+- **Items payloads:** `kind` plus the ordered (type, amount, mutation) list.
+- **Error rows:** pass on any error. Code agreement is reported but not scored in 0.1.
+
+**Score.** Rows passed / 4792, broken down per group and category. Tie-break proposal: export + import first,
+then edge, then wall time.
+
+Run it with `python3 tools/evaluate_formats.py --rpc "<variant> serve-stdio" --name X`. The output goes to
+`results/formats/X/`.
+
+**First entrant: variant F** (bc84e2b, no engine changes). The result is **4781/4792** on both native and WASM
+(wasm32-wasip1), with identical failures:
+
+| group | F |
+|---|---|
+| export | 3258/3260 |
+| import | 1304/1304 |
+| edge_export | 124/125 |
+| edge | 95/103 |
+
+The 11 failures:
+- shipstats ×2 (known)
+- XML import of a name containing a newline
+- 8 inputs F accepts where Pyfa fails or behaves differently:
+  - lower-case hull name
+  - `[Rifter,]`
+  - ESI without `description`
+  - truncated XML
+  - XML without `<description>`
+  - XML with zero fittings
+  - garbage forced as XML
+  - the `Drone Control Unit I` rename
+
+F's error codes (`IMPORT`, `UNSUPPORTED_FORMAT`) don't match the contract's names yet (0/42, informational).
+Scorecards: eve-dogma-lab `graphs-g4` `graphs-g4/bench/formats-contract-0.1/` (copied to `variant-f/bench/formats/`
+after the 10:20 CST scoring).
+
+**Open questions before the freeze** (contract §9):
+1. Should Pyfa-crash rows stay scored as `IMPORT_ERROR`?
+2. Should error codes be scored?
+3. Should the merged multi-fit EFT paste stay as truth?
+4. Should `name` be scored, including `"<Ship> - DNA Imported"`?
+5. Weight per row or per group (the bench-case rows dominate)?
+6. Should `format-batch` be mandatory?
