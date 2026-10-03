@@ -36,6 +36,7 @@
 | 18 | [f-vs-j](docs/18-f-vs-j.md) | Dedicated F (Rust codegen + WASM) vs J (C++20) evaluation: method, correctness suites, speed incl. WASM, maintainability, extensibility exercise, portability, merge recommendation (draft) |
 | 19 | [pyfa-feature-inventory](docs/19-pyfa-feature-inventory.md) | Complete Pyfa v2.69.0 feature inventory (scope baseline: never less than Pyfa): 200 items with stable IDs, F / MCP / web status + evidence; YAML source + CSV |
 | 20 | [rust-architecture-plan](docs/20-rust-architecture-plan.md) | Proposal: Rust mainline on F — crate layout, J speed techniques, prioritized gaps with effort, inventory→test gate, bot work split |
+| 21 | [optimizer-and-character-input](docs/21-optimizer-and-character-input.md) | Draft interface: `eve-optimizer` (RPC/CLI/WASM `optimize`: objectives, constraints, search space, algorithm, tests) and the `eve-character` skills/character input format (ESI/EVEMon mapping) |
 | — | [LICENSING](LICENSING.md) | License decisions (Pyfa GPLv3 / eos LGPL / CCP data) |
 | — | [PROGRESS](PROGRESS.md) | Done / next, for resuming work |
 
