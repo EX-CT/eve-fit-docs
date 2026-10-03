@@ -16,6 +16,12 @@
 - **格式**：EFT 等装配格式不属于引擎，由独立的 `eve-fit-formats` 处理（CLI / MCP 层转换）；优化器只接收结构化输入。
 - **算法**：候选过滤 → 贪心构造 → 局部搜索（单 / 双替换）+ 束搜索。在给定种子和评估预算下结果确定。
 
+**Status update 2026-10-03 14:30 CST: optimizer DEMOTED.** v1 is implemented (eve-dogma `crates/eve-optimizer`,
+RPC/CLI/WASM `optimize`) and stays as is: tests must keep passing, no further work until the user re-prioritises (AI
+will optimise through MCP `compute_batch`, see [docs/23](23-batch-api-and-prices.md)). Prices for `constraints.price`
+and the price objective follow docs/23 §5 (`price_overrides`, `prices`) and docs/22 (snapshot). The character input
+format (§1) is unaffected and current.
+
 **Status: DRAFT, 2026-10-03 (CST).** Implements docs/20 P0-5 (optimizer) and the input-format part of P0-6
 (character). The user approved docs/19/20 at 11:32. This document is the interface for review. Implementation starts
 in `EX-CT/eve-dogma`, crate `crates/eve-optimizer`. Pyfa has no stat optimizer (only *Optimize Fit Price*, PRC-004).

@@ -9,6 +9,11 @@ only after the user approves.
   codegen + WASM). J (C++) stays a speed reference only.
 - The rule: **cover all of Pyfa, never less**. The bench corpus does not define scope.
 
+**Update 2026-10-03 14:30 CST (priorities).** Order is now: feature completeness and correct calculation first
+(docs/19 F column), then the **batch API + prices** ([docs/23](23-batch-api-and-prices.md), engine core), embedded SDE
+and price snapshot ([docs/22](22-embedded-sde-and-prices.md)); the optimizer (P0-5, docs/21) is **demoted**: v1 stays
+as is, no further work. The no-regression gate (bench pending-1.11 `check_no_regress.py`) is blocking in eve-dogma CI.
+
 ## 1. Where F stands
 
 | | F today (`variant-f-perf` f5b709f + open branches) |

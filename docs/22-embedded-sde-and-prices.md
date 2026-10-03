@@ -3,7 +3,7 @@
 **中文摘要**：
 - **内嵌 SDE**：每个发布版本在构建时把对应版本的 SDE 紧凑二进制包（`eve-sde-pipeline` 产出的 `.edp`）用 `include_bytes!` 编进程序。原生、WASM、CLI、RPC 默认都只用内嵌数据，从不联网。输出和 `version` 命令报告 `sde_build` 与数据哈希。可选开关 `--sde <文件>` / RPC `sde_override` 在不发新版的情况下加载更新的 SDE 包。
 - **冻结价格**：每个发布版本内嵌一份价格快照（含来源、时间、规则参数）。快照由独立的更新工具生成，引擎只读。定价规则：Jita 4-4（空间站 60003760）卖单；剔除数量少于 `min_units` 的订单（按数量过滤，不按订单数比例）；p0 = 剩余最低价；快照价 = 价格落在 [p0, p0×1.05] 内的全部卖单按数量加权的均价；带宽（默认 5%）和 `min_units` 可配置。
-- **价格注入**：请求可带 `prices`（完整表或部分覆盖），或用 `--prices <文件>` 加载；都没有时用内嵌快照。输出给出 `price_source` 和快照时间。优化器的价格上限和价格目标都用这套价格。
+- **价格注入**：请求可带 `prices`（价格表）和 `price_overrides`（按类型 / 市场分组 / 分组 / 类别的固定价或倍数，见 docs/23），或用 `--prices <文件>` 加载；都没有时用内嵌快照。输出给出 `price_source` 和快照时间。优化器的价格上限和价格目标都用这套价格。
 - **价格更新工具**（eve4 负责）独立于引擎，数据源可插拔（ESI 市场订单、Fuzzwork 等），输出带版本的快照文件；快照格式由本文 §4 定义。
 
 **Status: DECIDED (design from the user via eve, 2026-10-03 14:15 CST); written up 2026-10-03.** Implementation in
@@ -147,37 +147,25 @@ Per type, rule `jita_sell_band_weighted` v1:
 - Parameters `band` and `min_units` are configurable in the updater and written to the snapshot. Default
   `min_units`: **10** (proposed; eve may change it, it is a parameter, not engine code).
 
-### 3.3 Price injection and precedence
-For each type the price comes from the first source that has it:
-1. request `prices` (§3.4);
-2. the `--prices FILE` snapshot (CLI / serve-stdio start option) or RPC `prices_override` `{"path"}` /
-   `{"snapshot": {…}}` for the session, if given; it replaces the embedded snapshot completely;
-3. otherwise the embedded snapshot.
-A type without a price in the chosen sources is unpriced (reported, never guessed).
-
-### 3.4 Request field `prices`
-```json
-"prices": { "mode": "override", "isk": { "587": 350000.0, "2889": 1250000.0 } }
-```
-- `mode`: `override` (default; partial table on top of the snapshot in use) or `replace` (the table is the only
-  source; types not in it are unpriced).
-- `isk`: map type id (string key) → ISK per unit, finite and ≥ 0.
-- Request `prices` apply to that request only (incl. its projected / booster fits for their own price lines).
-
-### 3.5 Output
-New top-level key `price` (also strip-listed for round 1):
-```json
-"price": { "total_isk": 98400000.0, "ship_isk": 350000.0, "modules_isk": …, "charges_isk": …, "drones_isk": …,
-           "fighters_isk": …, "implants_isk": …, "boosters_isk": …, "cargo_isk": …,
-           "unpriced": [ { "type_id": 12345, "count": 2 } ] }
-```
-Charges are priced at the loaded quantity (Pyfa's charge count rule), drones / fighters / cargo by quantity. Totals
-exclude unpriced items, which are listed. Source and snapshot time are in `provenance`.
+### 3.3–3.5 Price injection, precedence, request fields and output — superseded by docs/23
+**Reconciled 2026-10-03 with [docs/23](23-batch-api-and-prices.md) §5–§6**, which is now normative:
+- Request inputs: `price_overrides` (type / market group incl. children / group / category; fixed price or multiplier)
+  and `prices` (`{"isk": {type_id: isk}, "use_snapshot": bool}`; the earlier `mode: override|replace` is an accepted
+  alias for `use_snapshot: true|false`).
+- Layers, highest first: variant overrides > request overrides > request `prices` > market snapshot (`--prices FILE` /
+  RPC `prices_load` if given, replacing the embedded snapshot completely; else the embedded snapshot). Within an
+  override layer the most specific entry wins (type > deepest market group > group > category; tie → lower id); a
+  multiplier applies to the price resolved by the next lower layer; a fixed price stops the chain.
+- Output: top-level `price` block with total, per-section lines down to each item, `source` per line
+  (`override:type|market_group|group|category`, `injected`, `snapshot`), `snapshot_time`, and a `missing` list
+  (supersedes the `*_isk` / `unpriced` sketch). Emitted only when price inputs are present or `options.price` is set,
+  so round-1 outputs stay unchanged; `price` is strip-listed for the round-1 identity check anyway.
+- A type without a price in any layer is missing (reported, never guessed).
 
 ### 3.6 Optimizer
 - `constraints.price.max_isk` (price cap) and the `price` objective/metric (price_fit, minimise price) use the same
-  resolved prices as `calc` (§3.3). `constraints.price.prices` (docs/21) keeps working and is merged as a request
-  `prices` override (`mode: override`).
+  resolved prices as `calc` (§3.3). `constraints.price.prices` (docs/21) keeps working and is merged into the request
+  `prices.isk` table (docs/23 §5.3).
 - `constraints.price.missing`: `error` (default; `OPT_MISSING_PRICE` lists the unpriced types) or `zero`.
 - Results carry the base fit's `provenance.price_*` once in the response.
 

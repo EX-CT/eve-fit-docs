@@ -144,9 +144,12 @@ Layers, highest first:
 1. **L1 variant overrides**: a batch fit's / variant's `price_overrides`, plus its axis options' (form 3).
 2. **L2 request overrides**: the BatchRequest's `price_overrides` and the base / fit FitRequest's own `price_overrides`
    (a FitRequest computed alone with `calc` has only this layer).
-3. **L3 injected prices**: request `prices` merged over the `--prices` file (request wins per type).
-4. **L4 snapshot**: the embedded Jita snapshot (docs/22; not in the first implementation: L4 is empty, so an
-   otherwise unpriced item is *missing*).
+3. **L3 injected prices**: the request's `prices.isk` table (FitRequest or BatchRequest; a FitRequest's own table
+   wins per type over the batch-wide one).
+4. **L4 market snapshot**: the `--prices FILE` snapshot / RPC `prices_load` session snapshot if given (it replaces the
+   embedded one completely, docs/22 §3.3; its lines are labelled `injected`), else the embedded Jita snapshot
+   (docs/22; labelled `snapshot`). Not in the first implementation: no embedded snapshot yet, so without `--prices`
+   L4 is empty and an otherwise unpriced item is *missing*.
 
 Within an override layer (L1, L2) the one entry that applies to a type is the **most specific**:
 `type_id` > `market_group_id` (deepest matching group first) > `group_id` > `category_id`. A tie between two entries of
@@ -167,12 +170,14 @@ the chain.
 ```jsonc
 "prices": { "isk": { "587": 350000.0, "2873": 1250000.0 }, "use_snapshot": true }
 ```
-- `isk`: type id (string key) → ISK per unit, finite, ≥ 0.
-- `use_snapshot` (default true): `false` disables L4 for this request (the injected table is the only market source).
-- `--prices FILE`: an `eve-price-snapshot` v1 file (docs/22 §4) or a plain `{"<type_id>": isk}` map; validated on load
-  (`PRICE_SNAPSHOT_INVALID` / `BAD_PRICES`). RPC sessions: `{"method":"prices_load","params":{"path"|"snapshot"|"isk"}}`.
+- `isk`: type id (string key) → ISK per unit, finite, ≥ 0 (layer L3).
+- `use_snapshot` (default true): `false` disables L4 for this request (the request table is the only market source).
+- `--prices FILE`: an `eve-price-snapshot` v1 file (docs/22 §4) or a plain `{"<type_id>": isk}` map, validated on load
+  (`PRICE_SNAPSHOT_INVALID` / `BAD_PRICES`); RPC sessions: `{"method":"prices_load","params":{"path"|"snapshot"|"isk"}}`.
+  It replaces the embedded snapshot (L4).
 This replaces docs/22 §3.4's earlier `prices {mode, isk}` draft: `mode: "override"` = `use_snapshot: true`,
-`mode: "replace"` = `use_snapshot: false`; partial per-type overrides are now `price_overrides`.
+`mode: "replace"` = `use_snapshot: false` (`mode` stays accepted as an alias); partial overrides by group / category /
+market group or multipliers are `price_overrides`.
 
 ## 6. Price output
 
