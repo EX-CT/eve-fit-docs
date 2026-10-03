@@ -96,7 +96,7 @@ items:
   description: 'Per attribute: which items/skills modified it, operator, value; skill affectors context menu'
   pyfa_src: gui/builtinItemStatsViews/itemAffectedBy.py; gui/builtinContextMenus/skillAffectors.py
   f: missing
-  f_evidence: options.sources parsed but unused (MPF A6; rg '.sources' src/ 0 hits)
+  f_evidence: options.sources parsed but unused (MPF A6; rg '.sources' src/ 0 hits); Pyfa-backed bench pending-1.11 cases ext:src_* 6 (0/6) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: missing
   mcp_evidence: no tool exposes modifier sources (src/ grep 'affected' 0)
   web: missing
@@ -106,7 +106,7 @@ items:
   description: Which attributes/items an item affects (itemDependants)
   pyfa_src: gui/builtinItemStatsViews/itemDependants.py
   f: missing
-  f_evidence: no reverse-modifier output
+  f_evidence: no reverse-modifier output; Pyfa-backed bench pending-1.11 cases ext:dep_* 4 (0/4) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: missing
   mcp_evidence: grep dependants 0
   web: missing
@@ -117,7 +117,8 @@ items:
   pyfa_src: eos/saveddata/character.py (alphaCloneID); gui/characterEditor.py
   deferred: planned for 1.0, low priority (user 2026-10-03); needs alpha skill caps from eve-sde-pipeline
   f: missing
-  f_evidence: 'request has no clone state; rg alpha src/ 0. Planned/TODO for 1.0 (until implemented the engine answers clone: alpha with an UNSUPPORTED error)'
+  f_evidence: 'request has no clone state; rg alpha src/ 0. Planned/TODO for 1.0 (until implemented the engine answers clone: alpha with an UNSUPPORTED error); Pyfa-backed bench pending-1.11 cases ext:alpha_*
+    5 (0/5) on eve-dogma 2da8150 (stays missing until F passes)'
   mcp: missing
   mcp_evidence: only pirate-set names match 'alpha'
   web: missing
@@ -248,7 +249,7 @@ items:
   description: Switch module to meta variation (itemVariationChange), market group siblings
   pyfa_src: gui/builtinContextMenus/itemVariationChange.py; service/market.py (getVariationsByItems)
   f: missing
-  f_evidence: no variation lookup over RPC (MPF E2)
+  f_evidence: no variation lookup over RPC (MPF E2); Pyfa-backed bench pending-1.11 cases ext-rpc:var_* 6 (0/6) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: have
   mcp_evidence: get_type same_group variations (src/server.ts:145); suggest_modules
   web: have
@@ -429,7 +430,7 @@ items:
   description: implantSource (fit or character), useCharacterImplantsByDefault
   pyfa_src: fit.py implantSource, appliedImplants
   f: missing
-  f_evidence: implants only per request
+  f_evidence: implants only per request; Pyfa-backed bench pending-1.11 cases ext:cimp_* 6 (2/6) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: missing
   mcp_evidence: '-'
   web: missing
@@ -459,7 +460,7 @@ items:
   description: Implant Set Editor, apply/save set to fit, precalc faction sets
   pyfa_src: eos/saveddata/implantSet.py; service/implantSet.py; service/precalcImplantSet.py; gui/setEditor.py; gui/builtinContextMenus/implantSetApply.py, implantSetSave.py
   f: missing
-  f_evidence: 'implants: [type_id] only (MPF C2)'
+  f_evidence: 'implants: [type_id] only (MPF C2); Pyfa-backed bench pending-1.11 cases ext-rpc:isets_* 1 (0/1) on eve-dogma 2da8150 (stays missing until F passes)'
   mcp: have
   mcp_evidence: list_presets implant_set (src/profiles.ts)
   web: have
@@ -1130,7 +1131,7 @@ items:
   description: Import skills from XML (EVEMon / API char sheet)
   pyfa_src: service/character.py importCharacter; gui/mainMenuBar.py 'Import Character File'
   f: missing
-  f_evidence: '-'
+  f_evidence: -; Pyfa-backed bench pending-1.11 cases ext-rpc:evemon_* 4 (0/4) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: missing
   mcp_evidence: '-'
   web: missing
@@ -1150,7 +1151,7 @@ items:
   description: Implants on the character applied to all fits
   pyfa_src: eos/saveddata/character.py implants
   f: missing
-  f_evidence: '-'
+  f_evidence: -; Pyfa-backed bench pending-1.11 cases ext:cimp_* 6 (2/6) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: missing
   mcp_evidence: '-'
   web: missing
@@ -1462,7 +1463,7 @@ items:
   description: Backup all to XML
   pyfa_src: service/port/port.py backupFits
   f: missing
-  f_evidence: '-'
+  f_evidence: -; Pyfa-backed bench pending-1.11 cases ext-rpc:backup_* 2 (0/2) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: missing
   mcp_evidence: '-'
   web: partial
@@ -1532,7 +1533,7 @@ items:
   description: Uniform, EM/Th/Kin/Ex, NPC factions, ammo patterns
   pyfa_src: eos/saveddata/damagePattern.py BUILTINS
   f: missing
-  f_evidence: numbers only (MPF C3)
+  f_evidence: numbers only (MPF C3); Pyfa-backed bench pending-1.11 cases ext:dpb_* 6 (0/6) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: have
   mcp_evidence: list_presets damage
   web: have
@@ -1552,7 +1553,7 @@ items:
   description: NPC/ship-class target profiles incl. infinite sig
   pyfa_src: eos/saveddata/targetProfile.py getBuiltinList
   f: missing
-  f_evidence: numbers only (MPF C4)
+  f_evidence: numbers only (MPF C4); Pyfa-backed bench pending-1.11 cases ext:tpb_* 6 (0/6) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: have
   mcp_evidence: list_presets target
   web: partial
@@ -1572,7 +1573,7 @@ items:
   description: Market groups, meta buttons (T1/T2/faction/…), empty group modes
   pyfa_src: gui/marketBrowser.py; builtinMarketBrowser/*
   f: missing
-  f_evidence: search/type only (MPF E2)
+  f_evidence: search/type only (MPF E2); Pyfa-backed bench pending-1.11 cases ext-rpc:mkt_* 4 (0/4) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: have
   mcp_evidence: v0.3.0 browse_market; mcp.features.market-roots, mcp.features.market-meta-filter
   web: partial
@@ -1582,7 +1583,7 @@ items:
   description: jargon (mwd, lse, ab)
   pyfa_src: service/jargon/*
   f: missing
-  f_evidence: name match only (MPF E1)
+  f_evidence: name match only (MPF E1); Pyfa-backed bench pending-1.11 cases ext-rpc:srch_* 7 (0/7) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: have
   mcp_evidence: search_types jargon/fuzzy
   web: partial
@@ -1602,7 +1603,7 @@ items:
   description: Compare attributes across variations
   pyfa_src: gui/builtinItemStatsViews/itemCompare.py
   f: missing
-  f_evidence: '-'
+  f_evidence: -; Pyfa-backed bench pending-1.11 cases ext-rpc:cmp_* 4 (0/4) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: partial
   mcp_evidence: compare_fits (fits, not items)
   web: missing
@@ -1752,7 +1753,7 @@ items:
   description: service/conversions (renamed items)
   pyfa_src: service/conversions/*
   f: missing
-  f_evidence: no rename map for imports
+  f_evidence: no rename map for imports; Pyfa-backed bench pending-1.11 cases ext-rpc:names_* 3 (0/3) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: missing
   mcp_evidence: '-'
   web: missing
@@ -2056,7 +2057,7 @@ items:
   description: moduleBonusBreacherPodDamageControl
   pyfa_src: eos/effects.py
   f: missing
-  f_evidence: not named in F src (probe); see ENG-MOD-012
+  f_evidence: not named in F src (probe); see ENG-MOD-012; Pyfa-backed bench pending-1.11 cases ext:brdc_* 4 (0/4) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: partial
   mcp_evidence: engine
   web: partial
