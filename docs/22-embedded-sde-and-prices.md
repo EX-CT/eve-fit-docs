@@ -115,11 +115,9 @@ text sections `TRAI`, `ENVI`, `NAMZ`).
 - `price_source` names only where the **base price table** came from, by precedence: `request` (a `prices.isk`
   table in the request) > `file` (`--prices FILE` or RPC `prices_load`) > `snapshot` (the embedded snapshot) >
   `none`. Overrides never change it (overrides + `--prices` is `file`); overrides show in each price line's `source`
-  (docs/23 §6). `snapshot_time`, `price_snapshot_id` and `price_hash` describe the market snapshot (L4) still in use
-  under the base table: the `--prices` / `prices_load` file's (null for a plain map file) or the embedded one's,
-  **also when `price_source` is `request`** (a partial request table falls through to it); null with
-  `use_snapshot: false` (so always null with `none`). (Amended 15:30 to match eve's ruling as encoded in bench d22
-  ef17210.) A batch variant whose own FitRequest brings a
+  (docs/23 §6). `snapshot_time` = the `market_time` of the file / embedded snapshot in use (null for a plain map
+  file); with `request` or `none`, `snapshot_time`, `price_snapshot_id` and `price_hash` are null (bench 4783eab
+  follows this). Per-line `snapshot_time` still shows where a partial request table fell through to a snapshot. A batch variant whose own FitRequest brings a
   different table carries its own `provenance`.
 - `eve-fit version` and RPC `version` return the same object without the per-request price fields resolved per
   request (they report the process / session state), plus `pack_format` (`"1.0"`), `snapshot_schema_version` (1) and
