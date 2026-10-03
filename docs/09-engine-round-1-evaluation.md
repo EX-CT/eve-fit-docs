@@ -254,6 +254,15 @@ work. Open A findings, such as the 5 bug classes in docs/15, are recorded there 
 - **A (eve-dogma-rs):** the incumbent contract, the oracle tooling, the documentation (DESIGN.md, contract) and the
   WASI build path. It stays as the archived reference.
 
+### 6.x Update 2026-10-03 11:09–11:11 CST (user decision)
+
+- **Mainline is Rust, built on F** (`variant-f` / `variant-f-perf` in EX-CT/eve-dogma-lab). This supersedes the F-vs-J head-to-head above; docs/18 is cancelled.
+- **J (C++20) is kept as the backup engine and must not be deleted.** Locations:
+  - Tag `j-backup-2026-10-03` → `3ab992d` (variant-j exactly as scored in round 1, 0.911), branch `variant-j` in EX-CT/eve-dogma-lab.
+  - Tag `j-graphs-wip-2026-10-03` → `bc46ef9`, branch `graphs-j`: unfinished graph port, stopped at 11:09.
+  - EX-CT/eve-dogma `dd97e12`: empty repo created for the promotion, left untouched.
+- J's speed techniques serve as a reference for F. Priority is now feature completeness against Pyfa (docs/19 inventory, docs/20 Rust architecture plan); performance work comes after.
+
 ## 7. Merge plan
 
 **DRAFT (depends on §6).** Template, with first proposals from the results:
