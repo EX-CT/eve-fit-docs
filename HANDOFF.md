@@ -114,7 +114,34 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 2. Then (after F's contract, docs/23): MCP `compute_batch` + `price_overrides` / `prices` pass-through only (no pricing math in MCP).
 
 ---
-## eve3 / bench (executor bot; updated 2026-10-03 14:30 CST)
+## eve3 / bench (executor bot; updated 2026-10-03 14:35 CST)
+
+### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started)
+**Current commits** (EX-CT/eve-dogma-bench pending-1.11; everything pushed, no wip branches yet)
+- No-regress gate: `98419df` (`tools/run_all_suites.sh` + `tools/check_no_regress.py`) and `b3a0957`
+  (`baselines/f.json` seeded from eve-dogma 2da8150 + `baselines/README.md`). F wired it into eve-dogma CI (8011d64, d990818).
+- batch-suite: `a00620f` (`batch/`: 44 cases = multi 12, variants 12, product 9, sweep 11; 1024 fits; PROVISIONAL
+  shape in `batch/CONTRACT-BATCH.md`, only `batch/adapter.py` changes when F's contract lands) and `07245e8` (gate runs
+  and collects `batch`; not in f.json yet).
+- optimizer-bench WIP: `13cb0d9`, `e88d0a4`, `d48bbab` (27 cases with exhaustive optima, Pyfa check 27/27). Shelved:
+  score.py, baselines and the full README were not started (plan in `optimizer/README.md`).
+
+**Progress**
+- Batch check: every result must be byte-identical to `calc` of the same fit run on its own, plus deltas, sort,
+  filter, `fields` and limit. Self-test 44/44. eve-dogma 2da8150 scores 0/44 (`calc_batch` is UNKNOWN_METHOD).
+- No batch contract in EX-CT/eve-dogma yet (checked main d990818, read-only).
+- Baseline 2da8150: core 339, ext 204/239, ext_rpc 0/31, effects 2352/2378, graphs 192, cap 150, mutated 93,
+  formats 4779. docs/19 have counts: f 104, mcp 38, web 84, formats 10.
+
+**Next steps**
+1. Add batch to f.json at 0/44 (`--only batch --update`). Once eve-dogma d990818 CI is green, run run_all_suites on
+   it and `--update` f.json (expected: effects 2378, ext 207).
+2. batch-suite price-override cases (docs/22: type > market group (+children) > group > category > injected >
+   snapshot; 0 and multipliers; per-price `source`, missing list, line items sum to total; variants with their own
+   overrides).
+3. docs/19 extras ENG-BATCH-001 (批量计算) and ENG-PRICE-001 (price overrides and price source), extra: true;
+   re-render; check_inventory must report 0 problems.
+4. Switch `batch/adapter.py` to F's contract when it lands.
 
 ### docs/19 + missing/partial cases
 **Current commits:** eve-dogma-bench pending-1.11 tip 11993f5 (mine: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5); eve-fit-docs: ef6cdb6, 07341e3, eccb194. Nothing uncommitted; no wip branches.
