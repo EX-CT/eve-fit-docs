@@ -38,31 +38,31 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 ---
 # Per-bot status sections (each bot updates only its own)
 
-## variant F / eve-dogma (executor bot; updated 2026-10-03 15:05 CST)
+## variant F / eve-dogma (executor bot; updated 2026-10-03 15:35 CST)
 
 ### Current commits
-- EX-CT/eve-dogma main: **197223f** batch API + prices (CI run 37104392767 in progress); **d55fadb** SDE dataset r5 (CI green incl. no-regress gate); d990818 green.
-- EX-CT/eve-fit-docs main: 8b1e6cf docs/23 draft, 6baea45 docs/22 reconcile + docs/20/21 notes (optimizer demoted), 399b839 docs/23 rulings + F decisions (§11).
-- EX-CT/eve-sde-pipeline main: 83ba879 pyfa-data-drift.json (engine handling + eve 14:26 reconfirmation; both drifts were already recorded in 0be1dcb).
+- EX-CT/eve-dogma main: **8bde0ba** provenance + embedded price snapshot + JCS + global --sde/--prices + SDE_LOAD_FAILED (CI pending); 197223f batch API + prices (green); d55fadb SDE dataset r5 (green).
+- EX-CT/eve-fit-docs main: **eccf455** docs/22 + docs/23 eve 14:56 rulings + answers to eve4 B1–B8; 399b839, 6baea45, 8b1e6cf earlier.
+- EX-CT/eve-sde-pipeline main: 83ba879 pyfa-data-drift.json.
 - EX-CT/eve-dogma-bench: only parked **wip/stats-ext-suite** = 07beb42 (reference only).
 
 ### Done
-- docs/23 batch + prices contract (implemented). Rust lib `eve_dogma::batch::run` / `batch_json`, `eve_dogma::price`; RPC `batch` (alias `calc_batch`), `prices_load`; CLI `eve-fit batch --request FILE|-`, JSONL BatchRequest lines, global `--prices FILE`; eve-wasm `rpc` serves `batch` (same dispatcher). Tests `crates/eve-dogma/tests/batch_prices.rs` (8).
-- calc output unchanged without price inputs (round-1 sha identical). Price block only with `prices` / `price_overrides` / `options.price` / `--prices`.
-- Dataset r5 (d55fadb): output identical to r1 on 2944 bench requests except `meta.dataset_sha256`; no-regress gate passes; market-group overrides supported (tree tables `TYPE_MARKET_GROUP`, `MARKET_GROUP_IDS/PARENT`).
-- Bench batch/ (93853b0): 42/58 as-is; **58/58** with the three docs/23 §11 alignments (base_source = source without multiplier [eve ruling], empty sections present, sweep label compact sorted JSON) → eve3 to update prices.py / semantics.py.
+- docs/23 batch + prices (lib `eve_dogma::batch`, `eve_dogma::price`; RPC `batch`/`calc_batch`, `prices_load`; CLI `batch --request`, JSONL BatchRequest lines). Batch response: top-level `provenance` + per-result `provenance`; all price-override lists validated up front (whole-batch BAD_PRICE_OVERRIDE); BATCH_TOO_LARGE count computed analytically.
+- docs/22: `provenance` on every calc/batch result (`crates/eve-dogma/src/prov.rs`); price_source request>file>snapshot>none; `version` CLI command + RPC; global `--sde FILE` / RPC `sde_override` → `SDE_LOAD_FAILED` with reason not_found/corrupt/hash_mismatch/incompatible_version (valid packs currently refused as incompatible_version: no runtime pack interpreter yet); embedded snapshot = eve-market-prices `prices-jita44-20261003T063856Z` (`crates/eve-dogma/data/`, hash sha256:3dd62f6c…, JCS-verified); `--prices`/`prices_load` read .json/.json.gz snapshots (JCS hash + invariant checks) or plain tables.
+- Scores (8bde0ba, pending-1.11 d151cb3, data/ generated locally): batch **78/92**, d22 sde **7/17** (5 pending), price_inject **17/32** (1 pending). no-regress gate: no regression. All remaining failures are bench-side vs the 14:56 rulings (see eve3 list below).
+- For eve3: SDE_PACK_INVALID → SDE_LOAD_FAILED+reason; price_source embedded/request+embedded/request+file → snapshot/request/file; price_time → snapshot_time; bench snapshot files' content_hash must use JCS (RFC 8785); sweep labels compact sorted JSON; price_missing_list / price_multiplier_without_base / calcprice_request_table / price_variants_sort_filter assume no embedded snapshot (use `prices.use_snapshot:false` or update expectations); `batch/data` + `d22/data` are gitignored (generate or commit).
 
 ### Next steps
-1. Watch 197223f CI; docs/19 ENG-BATCH-001 / ENG-PRICE-001 F column → have once green.
-2. docs/19 missing items with eve3 cases (pending-1.11 11993f5+): ext brdc, cimp, alpha, dpb, tpb, src, dep; ext/rpc 54 (var, cmp, mkt, srch, isets, evemon, names, backup, type_*); type RPC: radius, mass/capacity/volume in attributes, description, traits, skill requirements; review CONTRACT.md "Draft 1.11: missing-f".
-3. docs/22 embedded SDE pack + snapshot (L4 `snapshot` source; `price::set_market` already takes a Market with source "snapshot").
+1. Watch 8bde0ba CI; docs/19 ENG-BATCH-001 / ENG-PRICE-001 F column → have.
+2. docs/19 missing items with eve3 cases: ext brdc, cimp, alpha, dpb, tpb, src, dep; ext/rpc 54; type RPC fields; CONTRACT.md "Draft 1.11: missing-f".
+3. docs/22 embedded edp pack + runtime pack interpreter (then sde_hash_of = "pack").
 - Pending external: eve3 1.11 tag → switch CI bench tag, inventory step blocking.
 
 ### Key context for a successor
-- Paths: eve-dogma `/workspace/exct-eve/eve-dogma-main`, docs `/workspace/exct-eve/fit-docs-main`, pending-1.11 clone `/tmp/nrg/bench`, Pyfa reference (behaviour only) `/workspace/exct-eve/ref/pyfa`.
-- Build: `export EVE_DOGMA_DATASET=/workspace/exct-eve/data/dataset-3569502-r5.json.gz; cargo build --release --locked -p eve-cli`. Gate: `BENCH=/tmp/nrg/bench SUITES_DIR=/tmp/ci-suites ci/run_suites.sh native $PWD/target/release/eve-fit`; no-regress: `/tmp/nrg/bench/tools/run_all_suites.sh target/release/eve-fit out && python3 /tmp/nrg/bench/tools/check_no_regress.py --baseline /tmp/nrg/bench/baselines/f.json --run-dir out`; batch: `python3 /tmp/nrg/bench/batch/run_batch.py --cmd target/release/eve-fit`.
-- New output keys → `ci/round1-new-keys.txt` + `ci/round1.sha256`; changes to existing fields must be intended and re-baselined in `ci/round1-base.sha256`.
-- Pyfa parity (eve): match Pyfa incl. handler behaviour; only proven Pyfa-data drift is excepted (eve-sde-pipeline docs/pyfa-data-drift.json).
+- Paths: eve-dogma `/workspace/exct-eve/eve-dogma-main`, docs `/workspace/exct-eve/fit-docs-main`, pending-1.11 clone `/tmp/nrg/bench`, Pyfa reference `/workspace/exct-eve/ref/pyfa`.
+- Build: `export EVE_DOGMA_DATASET=/workspace/exct-eve/data/dataset-3569502-r5.json.gz; cargo build --release --locked -p eve-cli`. Gate: `BENCH=/tmp/nrg/bench SUITES_DIR=/tmp/ci-suites ci/run_suites.sh native $PWD/target/release/eve-fit`; no-regress: `/tmp/nrg/bench/tools/run_all_suites.sh target/release/eve-fit out && python3 /tmp/nrg/bench/tools/check_no_regress.py --baseline /tmp/nrg/bench/baselines/f.json --run-dir out`; batch `python3 batch/run_batch.py --cmd ENGINE --out X`; d22 `python3 d22/run_d22.py --suite sde|price_inject --cmd ENGINE --out X`.
+- New output keys → `ci/round1-new-keys.txt` + `ci/round1.sha256`; existing-field changes must be intended and re-baselined in `ci/round1-base.sha256`.
+- Embedded snapshot update: replace file in crates/eve-dogma/data + EMBEDDED_ID/TIME/HASH in price.rs (test `embedded_snapshot_identity_and_jcs` checks them).
 - Commit identity `-c user.name=EXCT-Bot -c user.email=bot@exct.invalid`; never force-push; unfinished work → `wip/*`.
 
 ## eve4 / eve-fit-web (executor bot; updated 2026-10-03 15:20 CST)
