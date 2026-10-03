@@ -139,8 +139,8 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 
 **Next step:** when F has the edp interpreter and the pipeline publishes a pack, run with `SDE_PACK`.
 
-### docs/19 + missing/partial cases (updated 2026-10-03 16:05 CST)
-**Current commits:** eve-dogma-bench pending-1.11: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5, 583f912, b34ebb9, 455aa53, 1fd7e37, e3e3895, 1fdcf61, 2738960, 6f3e985, 8683e48, 5efa174 (tip 5efa174). eve-fit-docs: ef6cdb6, 07341e3, eccb194, b6b8a6d, 295694a, c35c162, 8c25b2d, 3f86ebb. Nothing uncommitted; **no wip branches**.
+### docs/19 + missing/partial cases (updated 2026-10-03 15:54 CST)
+**Current commits:** eve-dogma-bench pending-1.11: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5, 583f912, b34ebb9, 455aa53, 1fd7e37, e3e3895, 1fdcf61, 2738960, 6f3e985, 8683e48, 5efa174, 90f8f56, f212bcd, 89e3805, 7192f66, 26e3833, 5c1ff1f, 4a80c84, 01e6724 (tip 01e6724). eve-fit-docs: ef6cdb6, 07341e3, eccb194, b6b8a6d, 295694a, c35c162, 8c25b2d, 3f86ebb, e817900, 9bc28f7, bccc5b8. Nothing uncommitted; **no wip branches**.
 
 **Progress**
 - 26 f-missing items: 16 Pyfa-generatable with 68 cases. `ext:` brdc_ (ENG-MISC-004), cimp_ (ENG-IMP-002, CHR-006), alpha_ (ENG-CORE-009), dpb_ (PRF-DMG-001), tpb_ (PRF-TGT-001), src_ (ENG-CORE-007), dep_ (ENG-CORE-008). `ext-rpc:` var_, cmp_, mkt_, srch_, isets_, evemon_, names_, backup_ (ENG-MOD-013, MKT-004, MKT-001, MKT-002, ENG-IMP-005, CHR-004, SVC-005, DB-003). Not generatable: CHR-009, PRC-001..005, UI-STAT-PRC, UI-PREF-MKT, DB-001, DB-008. Oracle opt-in `ORACLE_EXTRA=drafts,sources` + `oracle/pyfa_lookup.py` (default output byte-identical). Draft fields: CONTRACT.md "Draft 1.11: missing-f".
@@ -150,11 +150,29 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - eve-fit-mcp v0.3.1 (e7b794a) re-run (bench results-1.11/mcp-v0.3.1.md): engine d990818 core 339/339, ext 208/239, effects 2378/2378, cap 150/150, mut 93/93, graphs 189/192; engine 2da8150 the same except ext 205/239, effects 2352/2378. MCP = engine on every Pyfa case. Graph failures (both engines): err_missing_x, err_missing_x_values, err_missing_y (MCP fills defaults; n/a for MCP is eve's call, left as is). mcp partial -> have: ENG-FTR-002, ENG-PROJ-002/003/004, ENG-FLT-002. ENG-MISC-004 (brdc 4/4) and ENG-CORE-003 (new suite mcp-effects) pass only with engine d990818, so they stay partial until the MCP pins it. New ids mapped (partial): mcp.unit.empty-nested-arrays -> ENG-FLT-002/ENG-PROJ-003, mcp.unit.projected-fighter-default-quantity -> ENG-PROJ-002. mcp.features.contract-error-codes is unmapped (no docs/19 item). mcp column: have 102 / partial 32 / missing 40 / n/a 26 (+3 extras).
 - mcp-graphs n/a (eve ruling): err_missing_x / err_missing_x_values / err_missing_y via suites.yaml `na:` (check_inventory excludes them and rejects citing them; tools/apply_na.py rescored results: 189/189).
 - eve-fit-mcp v0.4.0 (d3786eb, pinned engine 197223f, contains d990818; bench results-1.11/mcp-v0.4.0.md): core 339, ext 208, effects 2378, cap 150, mut 93, graphs 189/189 + 3 n/a; batch via compute_batch (tools/mcp_batch.py --tool compute_batch) 52/92 before the provenance rulings (engine 62/92), 8/93 after. Test-id map imported (36 ids with refs; security-status-value is todo, not mapped). mcp flips: ENG-MISC-004, ENG-CORE-003/006, ENG-MOD-007, ENG-SHIP-006, ENG-DRN-003, ENG-FTR-004, ENG-OFF-006/007, ENG-PROJ-006, PRC-003, UI-STAT-OUT/MIN/BMB, GRF-OPT-001..008 -> have; ENG-BATCH-001 missing -> partial; ENG-PRICE-001 stays partial (mcp-batch price_* 0/14).
-- F 8bde0ba (bench 1fdcf61): batch 77/93, sde 18/18, price_inject 21/32 -> ENG-BATCH-001 / ENG-PRICE-001 f partial in the yaml (F had set have in the .md only, 4820fa7), "pending bench contract update, re-check after bench fix" (results-1.11/F-8bde0ba/).
+- F 8bde0ba on bench 05ae5a1 (binary eve-fit-8bde0ba-r5, dataset r5): batch 93/93, sde 18/18 (+5 pending), price_inject 32/32 (+1 pending). The earlier 77/93 / 21/32 came from my r1-dataset build, not from F; this is corrected in results-1.11/mcp-v0.4.0.md and results-1.11/F-8bde0ba/. ENG-BATCH-001 / ENG-PRICE-001 f: partial -> have, pending-bench note removed.
+- eve-fit-mcp v0.4.1 (447420f, engine 8bde0ba, 90 ids, 37 with refs; --root mcp = v0.4.1). mcp-batch 71/93 on 26e3833. MCP-only failures for eve4 are listed in results-1.11/mcp-v0.4.1.md:
+  - 10 --prices FILE: no MCP equivalent; n/a is eve's call
+  - 3 BATCH_TOO_LARGE without count/limit
+  - 7 full results with extra engine/notes/request_hash
+  - multi_error_in_place rejected up front
+  - multi_ext_mix: compute_fit rejects builtin target_profile/damage_pattern ("Invalid input at fit.ship") while compute_batch computes them
+- Bench 26e3833: batch identity compares JSON numbers canonically, so the 14 price_* "1 vs 1.0" failures are gone. MCP CI features+unit run locally: 38 pass / 0 fail (+1 todo, 1 skip).
+- mcp column: ENG-PRICE-001 partial -> have; ENG-BATCH-001 stays partial. mcp.features.provenance -> ENG-PRICE-001 (partial).
+- web strict gate: ENG-CORE-006 and PRF-DMG-001 have -> partial.
+  - ENG-CORE-006: the site test checks presence only.
+  - PRF-DMG-001: src/data/presets.ts has 15 hand-made patterns, not Pyfa's builtins (e.g. Guristas 0/18/82/0 vs Pyfa 19.8/80.2), and dpb_* fail in the browser.
+  - ENG-CORE-001 stays have: its site tests pass, and the 25 effects failures are only the stale wasm 20aa425, which needs bumping. baselines/web.json is now web have 104.
+- d22 price_rule: + round_11_integer_digits (55174443703.65 -> 55174443703.7, Decimal-verified), 42 cases, bench 7192f66; eve-market-prices 364b96d passes 42/42 (read-only build).
 - web: eve-fit-web run 37104154159 (F wasm 20aa425 in Chrome, bench c2229b2) verified per case (results-1.11/web-fdbb014.md); suites web-ext/-ext-unit/-effects/-cap/-mut; 22 web items partial -> have; baselines/web.json added (f.json unchanged).
-- Counts (parity 200): f 106/23/25/46, mcp 124/28/22/26, web 106/59/29/6, formats 10/1/2/1 (have/partial/missing/n/a).
+- Counts (parity 200): f 106/23/25/46, mcp 124/28/22/26, web 104/61/29/6, formats 10/1/2/1 (have/partial/missing/n/a).
 - check_inventory: 0 problems.
 
-**Next step:** (1) re-run batch / price_inject on F after the bench contract fix and flip ENG-BATCH-001 / ENG-PRICE-001 f when all mapped cases pass; (2) MCP compute_batch gaps (extra keys, up-front per-fit errors, BATCH_TOO_LARGE count/limit) for eve4; (3) web: refresh baselines/web.json when the site bumps F wasm (effects 2353 -> 2378), check UI rendering for mining / remote assistance with F; (4) re-score new F commits with ext/tools/score.py + score_rpc.py.
+**Next step:**
+1. eve: rule whether the 10 `--prices FILE` batch cases are n/a for MCP.
+2. eve4: MCP compute_batch gaps (results-1.11/mcp-v0.4.1.md). When they are fixed, re-run mcp-batch; ENG-BATCH-001 mcp can become have.
+3. web: when the site bumps F wasm past 20aa425, refresh baselines/web.json (effects 2353 -> 2378). Re-check PRF-DMG-001 once the site ships Pyfa's builtin patterns.
+4. Re-score new F commits with ext/tools/score.py + score_rpc.py.
+5. Build worktrees /workspace/exct-eve/ed-197223f and ed-8bde0ba are left in place for re-use.
 **wip branches:** none.
 
