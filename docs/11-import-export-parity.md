@@ -4,8 +4,9 @@
 Multibuy、舰船属性文本、变异装备文本、附加列表、自动识别、EFS），说明用 Pyfa 自身代码生成的往返测试集
 （eve-dogma-bench 分支 `formats-suite`：3260 条导出、1304 条往返导入、16 条边界用例），并给出 Pyfa 的实际行为
 与 variant F 的实现/未实现对照表。第 3 轮（导入/导出格式）以 FORMATS 合约 0.1 草案计分（第 5 节）：
-共 4793 行（4782 行计分，四组各占 25%；Pyfa 自身崩溃、多舰合并粘贴、旧物品名等 11 行仅报告），以 Pyfa 实际行为为准；
-variant F（bc84e2b）得分 98.44%（4774/4782），graphs-g4（22dbeb7）99.98%（4780/4782），原生与 WASM 相同。
+共 4793 行（4779 行计分，四组各占 25%；Pyfa 自身崩溃、多舰合并粘贴、旧物品名、依赖主基准已排除属性的 3 行舰船属性文本等
+14 行仅报告），以 Pyfa 实际行为为准；variant F（bc84e2b）得分 98.46%（4773/4779），graphs-g4（22dbeb7）与
+variant-f-formats（af1c04b）100%（4779/4779），原生与 WASM 相同。
 草案尚未冻结，等第 1 轮归档后再定稿。
 
 Status: 2026-10-03, Pyfa client db 3532181, bench cases 1.8.0 (326 fits). Suite: `EX-CT/eve-dogma-bench`
@@ -108,21 +109,29 @@ code may be copied.
   (format detected or forced, but no fit), `EXPORT_ERROR` and `BAD_REQUEST`. `UNSUPPORTED_FORMAT` /
   `UNKNOWN_METHOD` mean not implemented.
 
-**Rows: 4793, of which 4782 are scored.**
+**Rows: 4793, of which 4779 are scored.**
 
 | group | weight (ruling 5) | rows | source |
 |---|---|---|---|
-| `export` | 25 % | 3260 | 326 bench fits × 10 export variants |
+| `export` | 25 % | 3260 (3257 scored) | 326 bench fits × 10 export variants |
 | `import` | 25 % | 1304 | Pyfa's import of its own export: eft, dna, esi, xml |
 | `edge_export` | 25 % | 125 | 9 hand-written fits (special/unicode/newline/long/empty names, ship-only, cargo-only, drone stacks, implants + boosters) × 10 exports, plus 35 round trips |
 | `edge` | 25 % | 104 (93 scored) | 87 inputs imported with `auto`, plus 17 forced-format rows: eft, dna, esi, xml, eftcfg, multi-fit, mutated, items lists, autodetect |
 
-**Report-only rows (11, never scored).**
+**Report-only rows (14, never scored).**
 - 8 rows where Pyfa itself crashes (ruling 1: the oracle is invalid there).
 - 2 pasted multi-fit EFT texts, which Pyfa merges into one fit (ruling 3: a known divergence; engines may merge
   or reject).
 - 1 legacy item name (`Drone Control Unit I`), which only Pyfa's rename table resolves. Item names follow the
   current SDE (3569502: `Fighter Support Unit I`), and a scored control row uses that name.
+- 3 `shipstats` export rows that print a stat the main bench excludes for that case (`expected/known_divergences.json`).
+  The list is fixed in `formats/edge/MANIFEST.json` → `export_unscored` (eve, 2026-10-03):
+
+  | case | excluded stat | shipstats lines |
+  |---|---|---|
+  | `esf_items_4` | `max_velocity` (two prop mods active at once) | Speed |
+  | `esf_items_7` | `cap_capacity` (structure module on a ship) | Capacitor |
+  | `esf_structure_bonus_1` | `hp.armor`, `ehp.armor` (unpowered structure plating bonus) | EHP, Armor |
 
 **Pass rules.**
 - **Export:** byte-exact text, names included. The only accepted difference is one extra `[Empty Subsystem slot]`
@@ -144,15 +153,14 @@ are reported too. **Correctness gate: 100 % of scored rows.**
 Run it with `python3 tools/evaluate_formats.py --rpc "<variant> serve-stdio" --name X`. The output goes to
 `results/formats/X/`.
 
-**Scores (native = WASM, wasm32-wasip1):**
+**Scores (native = WASM, wasm32-wasip1; suite `formats-suite` 7c716e7):**
 
 | build | score | scored rows | export | import | edge_export | edge | report-only rows agreeing |
 |---|---|---|---|---|---|---|---|
-| variant-f bc84e2b (first entrant, unchanged for the 10:20 scoring) | 98.44 % | 4774/4782 | 3258/3260 | 1304/1304 | 124/125 | 88/93 | 8/11 |
-| graphs-g4 22dbeb7 (F + formats parity fixes; to be ported to variant-f after 10:50 CST) | 99.98 % | 4780/4782 | 3258/3260 | 1304/1304 | 125/125 | 93/93 | 10/11 |
+| variant-f bc84e2b (first entrant, unchanged for the 10:20 scoring) | 98.46 % | 4773/4779 | 3257/3257 | 1304/1304 | 124/125 | 88/93 | 9/14 |
+| graphs-g4 22dbeb7 / `variant-f-formats` af1c04b (F + formats parity fixes) | **100 %** | **4779/4779** (gate passed) | 3257/3257 | 1304/1304 | 125/125 | 93/93 | 11/14 |
 
-The 2 rows left are shipstats text for `esf_structure_bonus_1` and `esf_items_7`. They are stat differences that
-the main bench also excludes: the structure armor bonus and an odd item's capacitor. The open question is whether
-shipstats rows depending on such stats should be report-only.
+`variant-f-formats` is a fast-forward of variant-f (bc84e2b → af1c04b), and its calc output is byte-identical. It
+becomes variant-f once the round-1 run is confirmed finished.
 
 Scorecards: eve-dogma-lab `graphs-g4` `graphs-g4/bench/formats-contract-0.1/`.
