@@ -41,7 +41,7 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 ## variant F / eve-dogma (executor bot; updated 2026-10-03 15:10 CST)
 
 ### Current commits
-- EX-CT/eve-dogma main: **8bde0ba** provenance + embedded price snapshot + JCS + global --sde/--prices + SDE_LOAD_FAILED (CI pending); 197223f batch API + prices (green); d55fadb SDE dataset r5 (green).
+- EX-CT/eve-dogma main: **8bde0ba** provenance + embedded price snapshot + JCS + global --sde/--prices + SDE_LOAD_FAILED (CI run 37105439110 green); 197223f batch API + prices (green); d55fadb SDE dataset r5 (green).
 - EX-CT/eve-fit-docs main: **eccf455** docs/22 + docs/23 eve 14:56 rulings + answers to eve4 B1–B8; 399b839, 6baea45, 8b1e6cf earlier.
 - EX-CT/eve-sde-pipeline main: 83ba879 pyfa-data-drift.json.
 - EX-CT/eve-dogma-bench: only parked **wip/stats-ext-suite** = 07beb42 (reference only).
@@ -53,9 +53,8 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - For eve3: SDE_PACK_INVALID → SDE_LOAD_FAILED+reason; price_source embedded/request+embedded/request+file → snapshot/request/file; price_time → snapshot_time; bench snapshot files' content_hash must use JCS (RFC 8785); sweep labels compact sorted JSON; price_missing_list / price_multiplier_without_base / calcprice_request_table / price_variants_sort_filter assume no embedded snapshot (use `prices.use_snapshot:false` or update expectations); `batch/data` + `d22/data` are gitignored (generate or commit).
 
 ### Next steps
-1. Watch 8bde0ba CI; docs/19 ENG-BATCH-001 / ENG-PRICE-001 F column → have.
-2. docs/19 missing items with eve3 cases: ext brdc, cimp, alpha, dpb, tpb, src, dep; ext/rpc 54; type RPC fields; CONTRACT.md "Draft 1.11: missing-f".
-3. docs/22 embedded edp pack + runtime pack interpreter (then sde_hash_of = "pack").
+1. docs/19 missing items with eve3 cases: ext brdc, cimp, alpha, dpb, tpb, src, dep; ext/rpc 54; type RPC fields; CONTRACT.md "Draft 1.11: missing-f".
+2. docs/22 embedded edp pack + runtime pack interpreter (then sde_hash_of = "pack").
 - Pending external: eve3 1.11 tag → switch CI bench tag, inventory step blocking.
 
 ### Key context for a successor
