@@ -47,7 +47,9 @@ items:
   description: Pyfa overrides/complements SDE expressions with hand-written handlers (incl. runTime early/normal/late, projected-only, activeByDefault quirks)
   pyfa_src: eos/effects.py (class EffectNNNN)
   f: partial
-  f_evidence: F codegen covers effects exercised by B19/CAP/MUT/FZ; no per-effect coverage map vs 2402 classes; needs an effect-coverage test (doc 20 §5)
+  f_evidence: 'probe tools/probe_pyfa_effects.py: 2378 Pyfa effect classes used by dataset-3569502 types; 2266 have SDE modifierInfo (F codegen); 112 are handler-only, 75 named in F src (build.rs/engine.rs/stats.rs),
+    37 not named (weather_*/aoe clouds/warfare links handled via dbuffs and pass B19; mining*, salvaging, hacking, tractor, pointDefense, lightningWeapon, doomsdayAOEBubble, moduleTitanEffectGenerator,
+    moduleBonusBreacherPodDamageControl unverified). Needs a per-effect test map.'
   mcp: have
   mcp_evidence: engine pass-through
   web: have
@@ -1106,12 +1108,13 @@ items:
   name: Import character from ESI (SSO)
   description: Fetch skills via ESI for logged-in character
   pyfa_src: service/esi.py; eos/saveddata/ssocharacter.py; gui/ssoLogin.py
-  f: missing
-  f_evidence: offline by design
-  mcp: missing
-  mcp_evidence: 'src/ grep sso: only comments'
+  f: n/a
+  f_evidence: 'ruling 2026-10-03: ESI login/character fetch is a web-frontend job (owner eve4, later); engine input = character.skills/security (request.rs) — have'
+  mcp: n/a
+  mcp_evidence: 'web frontend first; MCP may later accept the same skills input (already does: skills param)'
   web: missing
-  web_evidence: no SSO
+  web_evidence: missing — web frontend, later (eve4)
+  owner: eve-fit-web (eve4), later; engine owns the character/skill input format
 - id: CHR-004
   name: Import character file (EVEMon/XML)
   description: Import skills from XML (EVEMon / API char sheet)
@@ -1366,32 +1369,35 @@ items:
   name: SSO login, multiple characters
   description: ssoLogin, Manage ESI Characters, token refresh, custom app/server settings
   pyfa_src: gui/ssoLogin.py; service/esiAccess.py; Esi prefs
-  f: missing
-  f_evidence: offline
-  mcp: missing
-  mcp_evidence: '-'
+  f: n/a
+  f_evidence: 'ruling 2026-10-03: ESI login/character fetch is a web-frontend job (owner eve4, later); engine input = character.skills/security (request.rs) — have'
+  mcp: n/a
+  mcp_evidence: 'web frontend first; MCP may later accept the same skills input (already does: skills param)'
   web: missing
-  web_evidence: '-'
+  web_evidence: missing — web frontend, later (eve4)
+  owner: eve-fit-web (eve4), later; engine owns the character/skill input format
 - id: ESI-002
   name: Browse/import ESI fittings
   description: List in-game fittings, import
   pyfa_src: gui/esiFittings.py
-  f: missing
-  f_evidence: '-'
-  mcp: missing
-  mcp_evidence: '-'
+  f: n/a
+  f_evidence: 'ruling 2026-10-03: ESI login/character fetch is a web-frontend job (owner eve4, later); engine input = character.skills/security (request.rs) — have'
+  mcp: n/a
+  mcp_evidence: 'web frontend first; MCP may later accept the same skills input (already does: skills param)'
   web: missing
-  web_evidence: '-'
+  web_evidence: missing — web frontend, later (eve4)
+  owner: eve-fit-web (eve4), later; engine owns the character/skill input format
 - id: ESI-003
   name: Export fit to ESI / delete ESI fittings
   description: Upload fit, delete fitting
   pyfa_src: gui/esiFittings.py; service/esi.py
-  f: missing
-  f_evidence: '-'
-  mcp: missing
-  mcp_evidence: '-'
+  f: n/a
+  f_evidence: 'ruling 2026-10-03: ESI login/character fetch is a web-frontend job (owner eve4, later); engine input = character.skills/security (request.rs) — have'
+  mcp: n/a
+  mcp_evidence: 'web frontend first; MCP may later accept the same skills input (already does: skills param)'
   web: missing
-  web_evidence: '-'
+  web_evidence: missing — web frontend, later (eve4)
+  owner: eve-fit-web (eve4), later; engine owns the character/skill input format
 - id: DB-001
   name: Saved fits database
   description: Persist fits (sqlite saveddata), rename, delete, copy
@@ -1711,4 +1717,318 @@ items:
   mcp: missing
   mcp_evidence: '-'
   web: missing
+  web_evidence: '-'
+- id: GRF-OPT-001
+  name: Damage graph options
+  description: 'Attacker/Target lists (fits or target profiles); inputs: distance, time, target speed/sig (abs and %), attacker speed/angle, target angle; checkboxes: apply projected (webs/TPs of source),
+    ignore resists, drone mobile mode, (graphDmgApplyProjected/DroneMode/IgnoreResists), drone control range limit'
+  pyfa_src: graphs/data/fitDamageStats/graph.py; gui/builtinContextMenus/graphDmg*.py, graphDroneControlRange.py
+  f: partial
+  f_evidence: 'graphs-g4: params ignore_resists, apply_projected, mobile_drone_mode (CONTRACT-GRAPHS 0.2 BAD_REQUEST enums); GR2 dmg_*'
+  mcp: missing
+  mcp_evidence: no graph tool (a08d943 §9)
+  web: partial
+  web_evidence: 'Graphs.tsx: no attacker/target lists, no per-graph extra inputs (a08d943 §9 gaps)'
+- id: GRF-OPT-002
+  name: Capacitor graph options
+  description: Starting cap amount, use capacitor simulator checkbox (useCapsim)
+  pyfa_src: graphs/data/fitCapacitor/graph.py
+  f: partial
+  f_evidence: graphs-g4 GR2 cap_*
+  mcp: missing
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: Graphs.tsx capacitor; options not exposed
+- id: GRF-OPT-003
+  name: Mobility graph target inputs
+  description: Target mass / inertia factor for bump speed and distance
+  pyfa_src: graphs/data/fitMobility/graph.py
+  f: partial
+  f_evidence: graphs-g4 GR2 mob_bump*
+  mcp: missing
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: speed/distance only
+- id: GRF-OPT-004
+  name: Remote reps graph options
+  description: Reload ancillary RRs (ancReload), spool
+  pyfa_src: graphs/data/fitRemoteReps/graph.py
+  f: partial
+  f_evidence: graphs-g4 GR2 rr_*
+  mcp: missing
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: engine rr graph on g4
+- id: GRF-OPT-005
+  name: ECM/burst graph options
+  description: applyDamps, applyDrones
+  pyfa_src: graphs/data/fitEcmBurstScanresDamps/graph.py
+  f: partial
+  f_evidence: graphs-g4 GR2 ecm_*, err_ecm*
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: GRF-OPT-006
+  name: EWAR graph target resistance option
+  description: Target resistance checkbox
+  pyfa_src: graphs/data/fitEwarStats/graph.py
+  f: partial
+  f_evidence: graphs-g4 GR2 ewar_resist*
+  mcp: missing
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: '-'
+- id: GRF-OPT-007
+  name: Shield regen graph options
+  description: Starting shield amount, effective HP toggle (isEffective)
+  pyfa_src: graphs/data/fitShieldRegen/graph.py
+  f: partial
+  f_evidence: graphs-g4 GR2 shield_*
+  mcp: missing
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: shield_pct/regen
+- id: GRF-OPT-008
+  name: Lock range / ammo picker graph menus
+  description: graphLockRange, graphFitAmmoPicker, graphAmmoOptimalApplyProjected/IgnoreResists
+  pyfa_src: gui/builtinContextMenus/graph*.py
+  f: partial
+  f_evidence: graphs-g4 app_* params
+  mcp: missing
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: '-'
+- id: UI-STAT-RES
+  name: Resources panel
+  description: CPU, PG, calibration, drone bandwidth/bay, fighter bay, fighter squadrons active, drones active, turret/launcher hardpoints, cargo
+  pyfa_src: gui/builtinStatsViews/resourcesViewFull.py
+  f: have
+  f_evidence: stats.rs resources/hardpoints/cargo
+  mcp: have
+  mcp_evidence: compute_fit summary (a08d943 §6)
+  web: have
+  web_evidence: Stats.tsx Resources
+- id: UI-STAT-RST
+  name: Resistances panel
+  description: Resist % per layer and type, HP per layer, EHP, raw/effective toggle, damage pattern selector, resist multiplier
+  pyfa_src: gui/builtinStatsViews/resistancesViewFull.py
+  f: have
+  f_evidence: stats.rs resonance/hp/ehp
+  mcp: have
+  mcp_evidence: compute_fit detail full
+  web: have
+  web_evidence: Stats.tsx Defense
+- id: UI-STAT-RCH
+  name: Recharge panel
+  description: 'Passive shield recharge, active shield boost, armor/hull repair: reinforced vs sustained'
+  pyfa_src: gui/builtinStatsViews/rechargeViewFull.py
+  f: have
+  f_evidence: stats.rs tank raw/sustained
+  mcp: have
+  mcp_evidence: compute_fit
+  web: have
+  web_evidence: Stats.tsx
+- id: UI-STAT-FP
+  name: Firepower panel
+  description: Weapon/drone/total DPS and volley, spool tooltip (min/current/max), toggle to mining yield
+  pyfa_src: gui/builtinStatsViews/firepowerViewFull.py
+  f: partial
+  f_evidence: no min/max spool pair, no mining (ENG-OFF-005/006)
+  mcp: partial
+  mcp_evidence: same
+  web: partial
+  web_evidence: same
+- id: UI-STAT-CAP
+  name: Capacitor panel
+  description: Total GJ, lasts / stable %, recharge time, delta, extra stats (use/regen)
+  pyfa_src: gui/builtinStatsViews/capacitorViewFull.py
+  f: have
+  f_evidence: stats.rs capacitor (stable_percent, depletes_in_s, delta_gj_s)
+  mcp: have
+  mcp_evidence: compute_fit
+  web: have
+  web_evidence: Stats.tsx Capacitor
+- id: UI-STAT-TGT
+  name: Targeting & misc panel
+  description: Targets, range, scan res, sensor str/type, drone range, speed, align, signature, warp speed, max warp distance, warp core strength, probe size, cargo + all special holds, lock times per class,
+    jam chance
+  pyfa_src: gui/builtinStatsViews/targetingMiscViewMinimal.py
+  f: partial
+  f_evidence: special holds / lock-time table partial (ENG-TGT-002/006)
+  mcp: partial
+  mcp_evidence: same
+  web: partial
+  web_evidence: same
+- id: UI-STAT-OUT
+  name: Outgoing (Remote reps) panel
+  description: Shield/armor/hull/cap restored per s
+  pyfa_src: gui/builtinStatsViews/outgoingViewFull.py, outgoingViewMinimal.py
+  f: missing
+  f_evidence: ENG-PROJ-006
+  mcp: missing
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: Remote assistance section depends on backend
+- id: UI-STAT-MIN
+  name: Mining yield panel
+  description: Mining m3/s total, modules/drones
+  pyfa_src: gui/builtinStatsViews/miningyieldViewFull.py
+  f: missing
+  f_evidence: ENG-OFF-006
+  mcp: missing
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: backend-dependent
+- id: UI-STAT-PRC
+  name: Price panel
+  description: Ship, fittings, drones, cargo, character, total
+  pyfa_src: gui/builtinStatsViews/priceViewFull.py, priceViewMinimal.py
+  f: missing
+  f_evidence: PRC-002
+  mcp: missing
+  mcp_evidence: '-'
+  web: have
+  web_evidence: PriceBox.tsx
+- id: UI-STAT-BMB
+  name: Bombing panel
+  description: Bombs to kill per bomb type, covert-ops skill level
+  pyfa_src: gui/builtinStatsViews/bombingViewFull.py
+  f: missing
+  f_evidence: ENG-OFF-007
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: UI-PREF-GEN
+  name: General preferences
+  description: global character / damage pattern, character implants default, color by slot, rack separation/labels, open in new page, reopen fits on startup, ammo change all, additions tab quantity, mutated
+    names, language, theme
+  pyfa_src: gui/builtinPreferenceViews/pyfaGeneralPreferences.py
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: language switch; others not present
+- id: UI-PREF-ENG
+  name: Engine preferences
+  description: Global default spool %, strict skill level requirements, global force reload, RAH
+  pyfa_src: gui/builtinPreferenceViews/pyfaEnginePreferences.py
+  f: partial
+  f_evidence: options.default_spool, factor_reload, rah; strict skill mode not separate (MISSING_SKILL always reported)
+  mcp: have
+  mcp_evidence: options passthrough
+  web: partial
+  web_evidence: EngineSettings.tsx; no e2e (a08d943)
+- id: UI-PREF-MKT
+  name: Market & price preferences
+  description: Default price source/system, totals include drones/cargo/implants, meta button modes, search delay, market shortcuts
+  pyfa_src: gui/builtinPreferenceViews/pyfaMarketPreferences.py
+  f: missing
+  f_evidence: '-'
+  mcp: missing
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: UI-PREF-CTX
+  name: Context menu preferences
+  description: Enable/disable individual context menus
+  pyfa_src: gui/builtinPreferenceViews/pyfaContextMenuPreferences.py
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: n/a
+  web_evidence: no configurable menus
+- id: UI-PREF-STV
+  name: Stat view preferences
+  description: Per-panel hidden/minimal/full
+  pyfa_src: gui/builtinPreferenceViews/pyfaStatViewPreferences.py
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: '-'
+- id: UI-PREF-DB
+  name: Database preferences
+  description: Paths, delete all damage/target profiles, delete prices
+  pyfa_src: gui/builtinPreferenceViews/pyfaDatabasePreferences.py
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: partial
+  web_evidence: localStorage; clear via browser
+- id: UI-PREF-ESI
+  name: ESI preferences
+  description: SSO server, auto-login, token expiry, export charges/implants/boosters
+  pyfa_src: gui/builtinPreferenceViews/pyfaEsiPreferences.py; service/settings.py EsiSettings
+  f: n/a
+  f_evidence: engine owns only the character/skill input format
+  mcp: n/a
+  mcp_evidence: '-'
+  web: missing
+  web_evidence: web frontend, later (eve4)
+  owner: eve-fit-web (eve4), later; engine owns the character/skill input format
+- id: UI-PREF-NET
+  name: Network/Update/Logging/HTML prefs
+  description: Proxy, update channel, debug logs, HTML export path/minimal
+  pyfa_src: gui/builtinPreferenceViews/pyfaNetworkPreferences.py, pyfaUpdatePreferences.py, pyfaLoggingPreferences.py, pyfaHTMLExportPreferences.py
+  f: n/a
+  f_evidence: '-'
+  mcp: n/a
+  mcp_evidence: '-'
+  web: n/a
+  web_evidence: browser handles network
+- id: ENG-MISC-001
+  name: Smartbombs and bombs
+  description: Smartbomb DPS, bomb launchers (incl. fighter bombs)
+  pyfa_src: module.py getVolleyParameters
+  f: have
+  f_evidence: stats.rs smartbomb (l.283/421); fighterAbilityLaunchBomb
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: engine
+- id: ENG-MISC-002
+  name: Utility modules without stats
+  description: Salvagers, tractor beams, hacking/data analyzers, cynos, cloaks, point defense, lightning weapon — Pyfa effects with no stat output
+  pyfa_src: eos/effects.py (salvaging, tractorBeamCan, doHacking, pointDefense, lightningWeapon)
+  f: partial
+  f_evidence: 'probe tools/probe_pyfa_effects.py: not named in F src; no stats expected except pointDefense/lightningWeapon damage'
+  mcp: have
+  mcp_evidence: engine
+  web: have
+  web_evidence: engine
+- id: ENG-MISC-003
+  name: Titan/doomsday AoE bubbles and effect generators
+  description: moduleTitanEffectGenerator, doomsdayAOEBubble
+  pyfa_src: eos/effects.py
+  f: partial
+  f_evidence: not named in F src (probe); B19 exct_avatar passes for stats
+  mcp: partial
+  mcp_evidence: engine
+  web: partial
+  web_evidence: engine
+- id: ENG-MISC-004
+  name: Breacher pod damage control interaction
+  description: moduleBonusBreacherPodDamageControl
+  pyfa_src: eos/effects.py
+  f: missing
+  f_evidence: not named in F src (probe); see ENG-MOD-012
+  mcp: partial
+  mcp_evidence: engine
+  web: partial
+  web_evidence: engine
+- id: ENG-MISC-005
+  name: Industrial / compression / ore holds
+  description: Rorqual/Porpoise compression, industrial core, mining holds
+  pyfa_src: effects; targetingMisc holds
+  f: partial
+  f_evidence: effects apply; hold capacities not output
+  mcp: partial
+  mcp_evidence: engine
+  web: partial
   web_evidence: '-'

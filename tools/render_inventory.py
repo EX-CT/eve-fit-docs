@@ -12,7 +12,7 @@ AREAS = [("ENG-CORE", "Engine core"), ("ENG-MOD", "Modules"), ("ENG-SHIP", "Ship
          ("ENG-DRN", "Drones"), ("ENG-FTR", "Fighters"), ("ENG-IMP", "Implants and boosters"),
          ("ENG-CAP", "Capacitor"), ("ENG-DEF", "Defense / tank"), ("ENG-OFF", "Offense / mining"),
          ("ENG-NAV", "Navigation"), ("ENG-TGT", "Targeting / sensors / misc"), ("ENG-PROJ", "Projection / remote effects"),
-         ("ENG-FLT", "Fleet / command"), ("ENG-ENV", "Environment"), ("ENG-VAL", "Validation / restrictions"),
+         ("ENG-FLT", "Fleet / command"), ("ENG-ENV", "Environment"), ("ENG-VAL", "Validation / restrictions"), ("ENG-MISC", "Other engine items"),
          ("GRF", "Graphs"), ("CHR", "Characters and skills"), ("PRC", "Prices"), ("FMT", "Import / export"),
          ("ESI", "ESI / SSO"), ("DB", "Persistence / fit library"), ("PRF", "Damage patterns / target profiles"),
          ("MKT", "Market / item info"), ("UI", "GUI panes, columns, menus, preferences"), ("SVC", "Services / misc")]
@@ -53,7 +53,8 @@ def main():
             continue
         out += [f"### {p}: {name}", "", "| id | feature | Pyfa source | F | MCP | WEB |", "|---|---|---|---|---|---|"]
         for i in g:
-            out.append(f"| {i['id']} | **{esc(i['name'])}**: {esc(i['description'])} | `{esc(i['pyfa_src'])}` | "
+            own = f" *Owner: {esc(i['owner'])}.*" if i.get("owner") else ""
+            out.append(f"| {i['id']} | **{esc(i['name'])}**: {esc(i['description'])}{own} | `{esc(i['pyfa_src'])}` | "
                        + " | ".join(f"{SYM[i[c]]}: {esc(i[c + '_evidence'])}" for c in COLS) + " |")
         out.append("")
     md = MD.read_text()
@@ -63,10 +64,10 @@ def main():
     MD.write_text(head + a + "\n" + "\n".join(out) + "\n" + b + tail)
     with CSV.open("w", newline="") as fh:
         w = csv.writer(fh)
-        keys = ["id", "area", "name", "description", "pyfa_src"] + [k for c in COLS for k in (c, c + "_evidence")]
+        keys = ["id", "area", "name", "description", "pyfa_src"] + [k for c in COLS for k in (c, c + "_evidence")] + ["owner"]
         w.writerow(keys)
         for i in items:
-            w.writerow([i["id"], area(i)] + [i[k] for k in keys[2:]])
+            w.writerow([i["id"], area(i)] + [i.get(k, "") for k in keys[2:]])
     print({c: dict(cnt[c]) for c in COLS})
 
 
