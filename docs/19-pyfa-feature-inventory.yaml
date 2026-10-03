@@ -229,7 +229,7 @@ items:
   description: Pure-damage breachers (% HP + flat cap) DPS
   pyfa_src: module.py (isBreacher, getVolleyParameters)
   f: partial
-  f_evidence: 'B19 breacher_kestrel fails: weapon_pure_dps got 0 want 250 (probe)'
+  f_evidence: B19 breacher_kestrel fails on variant-f-perf f5b709f (weapon_pure_dps 0 vs 250); fixed on variant-f-features 7878a41 (B19 331/331, contract 1.4.4 'pure' key), not yet merged
   mcp: partial
   mcp_evidence: depends on engine
   web: partial
@@ -439,7 +439,7 @@ items:
   description: 'Same-slot implants/boosters: Pyfa keeps first; boosters slot rules'
   pyfa_src: fit.py; service/fit.py addImplant/addBooster (replace by slot)
   f: partial
-  f_evidence: MUT combo_two_boosters_dda, slot_booster_* (3), slot_implant_* (2) fail on F (probe 86/93)
+  f_evidence: 'MUT 86/93 on f5b709f: combo_two_boosters_dda, slot_booster_* (3), slot_implant_* (2) fail; fix on variant-f-features 2046757 (first entry per slot wins), not yet merged'
   mcp: partial
   mcp_evidence: engine
   web: partial
@@ -499,7 +499,7 @@ items:
   description: Projected neuts/nos/cap transfers into cap sim
   pyfa_src: fit.py addDrain, iterDrains
   f: partial
-  f_evidence: CAP incoming 15/16, hard 12/14 (void bombs) on f5b709f; fixed on variant-f-capfix 9bf10a4
+  f_evidence: CAP incoming 15/16, hard 12/14 (void bombs) on f5b709f; 150/150 on variant-f-capfix 9bf10a4 / variant-f-features be35345
   mcp: have
   mcp_evidence: engine
   web: have
@@ -829,7 +829,7 @@ items:
   description: Void bomb neut projection
   pyfa_src: effects
   f: partial
-  f_evidence: CAP in_void_bomb, hard_*void_bomb* fail on f5b709f; fixed 9bf10a4
+  f_evidence: CAP in_void_bomb, hard_*void_bomb* fail on f5b709f; fixed on variant-f-capfix 9bf10a4 / variant-f-features be35345 (CAP 150/150), not yet merged
   mcp: partial
   mcp_evidence: engine
   web: partial
