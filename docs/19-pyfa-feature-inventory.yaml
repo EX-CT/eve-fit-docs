@@ -2191,10 +2191,9 @@ items:
   description: 'Many fits in one call, or a base fit plus variant patches, Cartesian products and parameter sweeps; per-variant label, output `fields` selection, deltas vs the base, sort / filter / top-N,
     per-item errors; every result identical to computing that fit alone. Entry points: Rust lib, RPC/CLI, WASM, MCP compute_batch. Beyond Pyfa.'
   pyfa_src: '- (not in Pyfa)'
-  f: partial
+  f: have
   f_evidence: 'd990818: only the JSONL `batch` stream (many independent fits, one result line each); no base/variants/product/sweep, deltas, sort, filter or fields; eve-dogma-bench batch/ (docs/23 shape,
-    identity vs one-by-one calc) 0/58 [2026-10-03 15:50: kept partial (F set have in the rendered .md for 8bde0ba, 4820fa7; yaml was partial): eve-dogma 8bde0ba on bench 1fdcf61 batch 77/93 (calc_price
-    3/6, gap 13/16, price 6/14, sweep 9/11); pending bench contract update, re-check after bench fix]'
+    identity vs one-by-one calc) 0/58 [2026-10-03 15:50: partial -> have; eve-dogma 8bde0ba on bench pending-1.11 05ae5a1: batch 93/93 (all mapped multi/variants/product/sweep/gap cases) (bench results-1.11/F-8bde0ba/)]'
   mcp: partial
   mcp_evidence: 'compute_batch (v0.4.0) [2026-10-03 15:50: missing -> partial; mcp-batch 52/92 on bench 1fd7e37 (engine 197223f directly 62/92; MCP-only gaps: extra engine/notes/request_hash keys in full
     results, per-fit errors rejected up front, BATCH_TOO_LARGE without count/limit, no --prices file), 8/93 after the provenance rulings; mcp.features.compute-batch / mcp.unit.batch-* partial; eve-fit-mcp
@@ -2208,10 +2207,9 @@ items:
     > group > category) > injected prices > embedded snapshot; output total + per-item lines with `source` per price and the missing-price list; batch variants may carry their own overrides (docs/22). Beyond
     Pyfa.
   pyfa_src: '- (not in Pyfa; Pyfa prices come from one market source)'
-  f: partial
+  f: have
   f_evidence: 'd990818: no price input or output in calc (only the optimizer''s `price.prices` table, docs/21); eve-dogma-bench batch/price_* (14 cases, docs/23 §5-§6, bench reference resolver) 0/14 [2026-10-03
-    15:50: missing -> partial (F set have in the rendered .md for 8bde0ba, 4820fa7): 8bde0ba on bench 1fdcf61 batch price_* 6/14, calc_price 3/6, d22 price_inject 21/32 (sde 18/18); pending bench contract
-    update, re-check after bench fix]'
+    15:50: partial -> have; eve-dogma 8bde0ba on bench pending-1.11 05ae5a1: batch price_* 14/14, calcprice_* 7/7; d22 price_inject 32/32 (+1 pending, not scored) (bench results-1.11/F-8bde0ba/)]'
   mcp: partial
   mcp_evidence: 'price_fit / get_prices (477726d src/prices.ts): per-item lines and one source (ESI or Fuzzwork) for the whole fit; no overrides, no per-price source [2026-10-03 15:50: stays partial; v0.4.0
     passes docs/23 price inputs through (mcp.features.price-passthrough, price-fit-engine pass in MCP CI on 197223f) but mcp-batch price_* 0/14 (provenance); eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f
