@@ -128,6 +128,9 @@ categories. The rest are in incoming / hard (void bombs) and sim_options (E).
 
 ## 7. Next steps
 
-1. Engines other than H: floor full cycle times to integer ms as computed; add incoming void bombs (H, E, F show
+1. Variant A fix: [EX-CT/eve-dogma-rs#1](https://github.com/EX-CT/eve-dogma-rs/pull/1) (open, not merged). It folds
+   multipliers like Pyfa and adds incoming void bombs: cap suite 150/150, bench 1.8.0 still 326/326, 11 values change
+   in the last displayed digit, all toward Pyfa.
+2. Other engines: floor full cycle times to integer ms as computed; add incoming void bombs (H, E, F show
    where).
-2. If adopted: freeze the suite as CONTRACT-CAP 1.0 and merge `cap-suite` into a bench release.
+3. If adopted: freeze the suite as CONTRACT-CAP 1.0 and merge `cap-suite` into a bench release.
