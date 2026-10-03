@@ -106,10 +106,11 @@ items:
   web_evidence: grep dependants 0
 - id: ENG-CORE-009
   name: Alpha clone restrictions
-  description: Alpha clone skill caps (alphaCloneID) on character
+  description: 'Alpha clone skill caps (alphaCloneID) on character. Planned for 1.0 (TODO, low priority; user 2026-10-03): eve-character `clone: alpha`, docs/21 §1'
   pyfa_src: eos/saveddata/character.py (alphaCloneID); gui/characterEditor.py
+  deferred: 'planned for 1.0, low priority (user 2026-10-03); needs alpha skill caps from eve-sde-pipeline'
   f: missing
-  f_evidence: request has no clone state; rg alpha src/ 0
+  f_evidence: 'request has no clone state; rg alpha src/ 0. Planned/TODO for 1.0 (until implemented the engine answers clone: alpha with an UNSUPPORTED error)'
   mcp: missing
   mcp_evidence: only pirate-set names match 'alpha'
   web: missing

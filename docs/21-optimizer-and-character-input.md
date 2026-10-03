@@ -4,7 +4,7 @@
 
 - **角色输入**：一个 JSON 对象（`eve-character` v1），包括：
   - 技能等级（按 type_id）；
-  - 克隆状态（alpha / omega；alpha 待 SDE 管线提供技能上限，之前返回 `UNSUPPORTED`）；
+  - 克隆状态（alpha / omega；alpha 计划在 1.0 实现（待办，低优先级），需要 SDE 管线提供技能上限）；
   - 角色植入体；
   - 安全等级。
   它兼容现有 `FitRequest.character`。ESI、EVEMon 和手工输入都映射到这个格式（ESI 登录由网页端负责，以后做）。
@@ -43,7 +43,7 @@ One JSON object. It is used in two ways:
 |---|---|---|---|
 | `skills.levels` | map of skill type_id (string) → 0..5 | trained level; ESI `active_skill_level` | have (`request.rs` `Skills`) |
 | `skills.default_level` | 0..5 or null | level of every skill not listed. Null/absent = 0, both for a profile from ESI/EVEMon and in a bare `FitRequest` (today's engine and Pyfa oracle: absent = all skills 0). | have |
-| `clone` | `"omega"` (default) or `"alpha"` | alpha: each skill capped at the alpha clone limit, and modules that need an omega-only skill level are invalid (ENG-CORE-009) | **TODO**: needs the alpha-clone skill caps from eve-sde-pipeline (eve4). Until they ship, `"alpha"` is rejected with `UNSUPPORTED` (never guessed); `"omega"` works now. |
+| `clone` | `"omega"` (default) or `"alpha"` | alpha: each skill capped at the alpha clone limit, and modules that need an omega-only skill level are invalid (ENG-CORE-009) | **Planned for 1.0 (TODO, low priority)**: Pyfa supports alpha clones and they are in 1.0 scope. Needs the alpha-clone skill caps from eve-sde-pipeline (eve4). Until it is implemented the engine answers `"alpha"` with a runtime `UNSUPPORTED` error (never guessed); `"omega"` works now. |
 | `implants` | type_id list | character implants. They apply to every fit for this character unless the fit lists its own implants for that slot (Pyfa `implantSource`, ENG-IMP-002 / CHR-006). | new |
 | `security_status` | number | as today | have |
 | `skill_points` | map type_id → SP | optional; used only for train-time / plan output (CHR-009). Never changes stats. | new (optional) |
@@ -228,7 +228,8 @@ Expected cost: about 0.06 ms per `calc`, so 20 000 evaluations take ≈1.2 s sin
   - required skills;
   - fitting restriction attributes.
 - Needed from `eve-sde-pipeline` (eve4, docs/20 §2): alpha-clone skill caps; skill rank/SP for train time.
-  **TODO (alpha):** until the caps ship, `clone: "alpha"` is rejected with `UNSUPPORTED` rather than guessed.
+  **Alpha clones: planned for 1.0 (TODO, low priority).** Until implemented, `clone: "alpha"` gets a runtime
+  `UNSUPPORTED` error rather than guessed caps.
 
 ## 5. Tests (docs/20 §5.4)
 
@@ -250,5 +251,6 @@ Expected cost: about 0.06 ms per `calc`, so 20 000 evaluations take ≈1.2 s sin
 1. Is the default objective set right (dps, ehp, tank, speed, cap_stable, price), and should `applied_dps` vs a
    target profile be in v1?
 2. Default candidates: `variations` (fast, predictable) or `all_fittable` (wider, slower)?
-3. Alpha clones in v1 depend on the pipeline's alpha caps (TODO above). Ship v1 omega-only (alpha → `UNSUPPORTED`) if they are late?
+3. ~~Alpha clones in v1?~~ Ruled 2026-10-03: in scope for 1.0, low priority (planned/TODO); the optimizer v1 may ship
+   before them, with the runtime `UNSUPPORTED` error for `clone: "alpha"` meanwhile.
 4. Price source for v1: caller-supplied map only (offline engine), with `eve-prices` later. Is that OK?
