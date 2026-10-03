@@ -15,6 +15,7 @@ AREAS = [("ENG-CORE", "Engine core"), ("ENG-MOD", "Modules"), ("ENG-SHIP", "Ship
          ("ENG-CAP", "Capacitor"), ("ENG-DEF", "Defense / tank"), ("ENG-OFF", "Offense / mining"),
          ("ENG-NAV", "Navigation"), ("ENG-TGT", "Targeting / sensors / misc"), ("ENG-PROJ", "Projection / remote effects"),
          ("ENG-FLT", "Fleet / command"), ("ENG-ENV", "Environment"), ("ENG-VAL", "Validation / restrictions"), ("ENG-MISC", "Other engine items"),
+         ("ENG-BATCH", "Batch compute (extra)"), ("ENG-PRICE", "Engine prices (extra)"),
          ("GRF", "Graphs"), ("CHR", "Characters and skills"), ("PRC", "Prices"), ("FMT", "Import / export"),
          ("ESI", "ESI / SSO"), ("DB", "Persistence / fit library"), ("PRF", "Damage patterns / target profiles"),
          ("MKT", "Market / item info"), ("UI", "GUI panes, columns, menus, preferences"), ("SVC", "Services / misc")]
