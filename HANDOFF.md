@@ -134,16 +134,17 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 When eve-sde-pipeline publishes an `.edp`, run with `SDE_PACK`. eve4 can point `PRICE_RULE_CMD` at the updater.
 Optimizer-bench is still shelved.
 
-### docs/19 + missing/partial cases (updated 2026-10-03 15:00 CST)
-**Current commits:** eve-dogma-bench pending-1.11: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5, 583f912, b34ebb9 (tip b34ebb9). eve-fit-docs: ef6cdb6, 07341e3, eccb194, b6b8a6d, 295694a. Nothing uncommitted; **no wip branches**.
+### docs/19 + missing/partial cases (updated 2026-10-03 15:25 CST)
+**Current commits:** eve-dogma-bench pending-1.11: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5, 583f912, b34ebb9, 455aa53, 1fd7e37 (tip 1fd7e37). eve-fit-docs: ef6cdb6, 07341e3, eccb194, b6b8a6d, 295694a, c35c162. Nothing uncommitted; **no wip branches**.
 
 **Progress**
 - 26 f-missing items: 16 Pyfa-generatable with 68 cases. `ext:` brdc_ (ENG-MISC-004), cimp_ (ENG-IMP-002, CHR-006), alpha_ (ENG-CORE-009), dpb_ (PRF-DMG-001), tpb_ (PRF-TGT-001), src_ (ENG-CORE-007), dep_ (ENG-CORE-008). `ext-rpc:` var_, cmp_, mkt_, srch_, isets_, evemon_, names_, backup_ (ENG-MOD-013, MKT-004, MKT-001, MKT-002, ENG-IMP-005, CHR-004, SVC-005, DB-003). Not generatable: CHR-009, PRC-001..005, UI-STAT-PRC, UI-PREF-MKT, DB-001, DB-008. Oracle opt-in `ORACLE_EXTRA=drafts,sources` + `oracle/pyfa_lookup.py` (default output byte-identical). Draft fields: CONTRACT.md "Draft 1.11: missing-f".
 - F d990818 (binary /workspace/exct-eve/bin/eve-fit-d990818): ext 208/239 (breacher_dc 4/4, char_implants 2/6, others 0), rpc 0/54, effects 2378/2378. Flipped f: ENG-MISC-004 missing -> have, ENG-CORE-003 partial -> have. Results: bench results-1.11/ED-d990818.md.
 - f partial: `ext-rpc:type_*` (23) for MKT-003 / ENG-SHIP-006 / CHR-008 (F 0/23); other f partials are implementation gaps.
 - mcp partial: `tools/mcp_batch.py` (bench suites through compute_fit / compute_graph), suites mcp-bench/-ext/-ext-unit/-cap/-mut/-graphs; 59 mcp items partial -> have (eve-fit-mcp 8c6b93d + F 2da8150). MCP bugs: nested empty `booster_fits: []` rejected (fit.ts:209), projected fighter quantity defaults to 1 (fit.ts:202).
+- eve-fit-mcp v0.3.1 (e7b794a) re-run (bench results-1.11/mcp-v0.3.1.md): engine d990818 core 339/339, ext 208/239, effects 2378/2378, cap 150/150, mut 93/93, graphs 189/192; engine 2da8150 the same except ext 205/239, effects 2352/2378. MCP = engine on every Pyfa case. Graph failures (both engines): err_missing_x, err_missing_x_values, err_missing_y (MCP fills defaults; n/a for MCP is eve's call, left as is). mcp partial -> have: ENG-FTR-002, ENG-PROJ-002/003/004, ENG-FLT-002. ENG-MISC-004 (brdc 4/4) and ENG-CORE-003 (new suite mcp-effects) pass only with engine d990818, so they stay partial until the MCP pins it. New ids mapped (partial): mcp.unit.empty-nested-arrays -> ENG-FLT-002/ENG-PROJ-003, mcp.unit.projected-fighter-default-quantity -> ENG-PROJ-002. mcp.features.contract-error-codes is unmapped (no docs/19 item). mcp column: have 102 / partial 32 / missing 40 / n/a 26 (+3 extras).
 - check_inventory: 0 problems.
 
-**Next step:** (1) re-run mcp-* on the MCP's current main (engine bumped by eve4) and flip the 6 remaining engine items when fixed; (2) web partials need a web-side runner (wasm in headless Chrome, eve-fit-web CI); (3) re-score new F commits with `ext/tools/score.py` + `ext/tools/score_rpc.py` and flip f items at full pass.
+**Next step:** (1) when eve-fit-mcp pins engine >= d990818, re-run tools/mcp_batch.py and flip ENG-MISC-004 / ENG-CORE-003 mcp; eve decides on the 3 graph err_missing_* cases; (2) web partials need a web-side runner (wasm in headless Chrome, eve-fit-web CI); (3) re-score new F commits with `ext/tools/score.py` + `ext/tools/score_rpc.py` and flip f items at full pass.
 **wip branches:** none.
 
