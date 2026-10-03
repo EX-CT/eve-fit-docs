@@ -115,7 +115,7 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 
 ## eve3 / bench (executor bot; updated 2026-10-03 15:15 CST)
 
-### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 14:46 CST
+### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 14:53 CST
 **Current commits** (everything pushed)
 - eve-dogma-bench pending-1.11:
   - Gate + baseline: `98419df`, `b3a0957`, `07245e8`, `c2229b2`, `88ed590`, `32981f5`.
@@ -124,6 +124,10 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
   - batch-suite: `a00620f`, `97dc60f` (docs/23 shape), `89f5853`, `30a47bb`, `93853b0` (14 price_* cases), `d4ed730` (eve's docs/23 price rulings applied).
     `dfb4f49`: 34 gap cases (gap 15, gap_error 12, calc_price 6, calc_price_embedded 1) + `batch/data/` price files.
     92 cases; self-test 92/92; d990818 0/92 (no `batch` method; calc has no price block / no `--prices`).
+  - `48b1cb6`: embedded-snapshot batch case sets options.price.
+  - d22 suites `04f9ba5` (docs/22; provisional adapter `d22/adapter.py`): sde 22, price_inject 33, price_rule 21.
+    d990818: sde 0/17 (+5 pending, need `SDE_PACK`), price_inject 0/32 (+1 pending); price_rule targets the
+    updater (eve4), not F, and runs only with `PRICE_RULE_CMD`.
   - optimizer-bench WIP: `13cb0d9`..`d48bbab`.
 - wip branches: `wip/eve3-batch-prices` (already merged).
 
@@ -137,7 +141,7 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 2. docs/22 suites: embedded SDE version/hash and `--sde`; the price rule on synthetic order books; injection
    precedence. Then add them to run_all_suites and the gate.
 
-Steps 0 (`d4ed730`) and 1 (`dfb4f49`) done. **Next step:** 2 (docs/22 suites).
+Steps 0 (`d4ed730`) and 1 (`dfb4f49`) done; step 2 suites written (`04f9ba5`). **Next step:** add sde / price_inject (and price_rule when `PRICE_RULE_CMD` is set) to run_all_suites.sh and the gate at F's count.
 
 ### docs/19 + missing/partial cases (updated 2026-10-03 15:00 CST)
 **Current commits:** eve-dogma-bench pending-1.11: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5, 583f912, b34ebb9 (tip b34ebb9). eve-fit-docs: ef6cdb6, 07341e3, eccb194, b6b8a6d, 295694a. Nothing uncommitted; **no wip branches**.
