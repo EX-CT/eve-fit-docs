@@ -49,7 +49,7 @@ Response `meta` echoes `engine_version`, `schema_version`, `sde_build`, `dataset
   "options": {
     "factor_reload": false,
     "default_spool": { "type": "spool_scale", "amount": 1.0 },
-    "rah": "adapt",                 // adapt | static
+    "rah": "adapt",                 // adapt | disable ("disable" = unadapted RAH)
     "include_attributes": "none",   // none | ship | all
     "sources": false,
     "validate": true,
