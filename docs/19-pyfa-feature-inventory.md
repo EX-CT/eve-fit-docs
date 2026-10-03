@@ -191,7 +191,7 @@ These are ordered by user impact. Effort and owners are in docs/20 §4.
 
 | column | have | partial | missing | n/a |
 |---|---|---|---|---|
-| F engine/CLI/WASM (eve-dogma) | 104 | 24 | 26 | 46 |
+| F engine/CLI/WASM (eve-dogma) | 105 | 24 | 25 | 46 |
 | eve-fit-mcp | 97 | 37 | 40 | 26 |
 | eve-fit-web | 84 | 81 | 29 | 6 |
 | eve-fit-formats (FMT-* only) | 10 | 1 | 2 | 1 |
@@ -215,7 +215,7 @@ Per area (have/partial/missing, n/a not counted):
 | ENG-FLT Fleet / command | 2 | 2/0/0 | 1/1/0 | 1/1/0 | - |
 | ENG-ENV Environment | 4 | 4/0/0 | 4/0/0 | 4/0/0 | - |
 | ENG-VAL Validation / restrictions | 7 | 6/1/0 | 6/1/0 | 1/6/0 | - |
-| ENG-MISC Other engine items | 5 | 1/3/1 | 1/4/0 | 1/4/0 | - |
+| ENG-MISC Other engine items | 5 | 2/3/0 | 1/4/0 | 1/4/0 | - |
 | GRF Graphs | 19 | 18/0/0 | 10/0/8 | 11/8/0 | - |
 | CHR Characters and skills | 9 | 2/3/3 | 3/2/3 | 3/3/3 | - |
 | PRC Prices | 5 | 0/0/5 | 2/0/3 | 0/2/3 | - |
@@ -414,7 +414,7 @@ Extras beyond Pyfa (3 items, `extra: true`; see the header rule):
 | ENG-MISC-001 | **Smartbombs and bombs**: Smartbomb DPS, bomb launchers (incl. fighter bombs) | `module.py getVolleyParameters` | ✅ have: stats.rs smartbomb (l.283/421); fighterAbilityLaunchBomb | ✅ have: engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 1/1 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150] | ✅ have: engine |
 | ENG-MISC-002 | **Utility modules without stats**: Salvagers, tractor beams, hacking/data analyzers, cynos, cloaks, point defense, lightning weapon — Pyfa effects with no stat output | `eos/effects.py (salvaging, tractorBeamCan, doHacking, pointDefense, lightningWeapon)` | 🟡 partial: probe tools/probe_pyfa_effects.py: not named in F src; no stats expected except pointDefense/lightningWeapon damage | 🟡 partial: engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] | 🟡 partial: engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] |
 | ENG-MISC-003 | **Titan/doomsday AoE bubbles and effect generators**: moduleTitanEffectGenerator, doomsdayAOEBubble | `eos/effects.py` | 🟡 partial: not named in F src (probe); B19 exct_avatar passes for stats | 🟡 partial: engine | 🟡 partial: engine |
-| ENG-MISC-004 | **Breacher pod damage control interaction**: moduleBonusBreacherPodDamageControl | `eos/effects.py` | ❌ missing: not named in F src (probe); see ENG-MOD-012; Pyfa-backed bench pending-1.11 cases ext:brdc_* 4 (0/4) on eve-dogma 2da8150 (stays missing until F passes) | 🟡 partial: engine [2026-10-03 14:40: mcp-* suites 0/4 on eve-fit-mcp 8c6b93d; F fails too] | 🟡 partial: engine |
+| ENG-MISC-004 | **Breacher pod damage control interaction**: moduleBonusBreacherPodDamageControl | `eos/effects.py` | ✅ have: eve-dogma d990818: Breach Control sets ship breacherPodDamageResistance (options.include_attributes); bench pending-1.11 ext:brdc_* 4/4 (2da8150: 1/4) [2026-10-03 14:55: missing -> have] | 🟡 partial: engine [2026-10-03 14:40: mcp-* suites 0/4 on eve-fit-mcp 8c6b93d; F fails too] | 🟡 partial: engine |
 | ENG-MISC-005 | **Industrial / compression / ore holds**: Rorqual/Porpoise compression, industrial core, mining holds | `effects; targetingMisc holds` | 🟡 partial: effects apply; hold capacities not output | 🟡 partial: engine | 🟡 partial: - |
 
 ### GRF: Graphs
