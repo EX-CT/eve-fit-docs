@@ -1,12 +1,21 @@
 # 13 — Engine round 2 evaluation (graphs, variants G1–G4)
 
 > **Status: DRAFT SKELETON.** Placeholders (`⟨…⟩`) are filled from `eve-dogma-bench@graphs-round2`
-> `results/evaluation-graphs.{md,json}` after the round-2 run (planned ≈ 11:00 CST, 2026-10-03). The plan is in
+> `results/evaluation-graphs.{md,json}` after the round-2 run (cutoff 11:00 CST, 2026-10-03). The plan is in
 > [10-round-2-graphs-plan.md](10-round-2-graphs-plan.md); round 1 is in [09](09-engine-round-1-evaluation.md).
 >
 > 中文摘要：第二轮评测 Pyfa 图表（graphs）子系统的 4 个方案 G1–G4。门槛：图表合同 0.2 全部 178 个 case 正确（各接口一致），
 > 且该分支的引擎仍通过 bench 1.8.0 的 326 个属性 case。过门槛后按 速度 40%、可维护性 35%、功能 15%、可移植性 10% 计分。
 > 许可证按评测提交中的实际 LICENSE 文件判定；G1 基于 GPL 的方案 E，不能并入 LGPL 主线。
+
+**Confirmed round-2 rules (eve, 2026-10-03):**
+1. Cutoff `--as-of 2026-10-03T11:00:00+08:00` (Asia/Shanghai).
+2. Graph contract **0.2** pinned @ `0397d95` (178 cases); the 0.3 draft is not used.
+3. Gate = **all 178** contract-0.2 cases pass through every interface offered — including `ecm_burst` and the error
+   cases, not only the nine Pyfa graphs — **and** the branch's underlying stats engine passes bench **1.8.0 326/326**.
+   Weights: speed 40 / maintainability 35 / features 15 / portability 10.
+4. **No fresh clones; build time is not measured for scoring** (recorded for information only). Unlike round 1,
+   the command has no `--fresh-clones`.
 
 ## 1. Goal
 
@@ -19,7 +28,7 @@ Pick the graph implementation (or the ideas from several) that becomes the graph
 One command in `EX-CT/eve-dogma-bench`, branch `graphs-round2`:
 
 ```bash
-python3 tools/evaluate_graphs.py --as-of ⟨cutoff⟩ --runs 3      # results/evaluation-graphs.{md,json}
+python3 tools/evaluate_graphs.py --as-of 2026-10-03T11:00:00+08:00 --runs 3      # results/evaluation-graphs.{md,json}
 ```
 
 1. **Version rule:** each variant (`EX-CT/eve-dogma-lab` branches `graphs-g1..g4`) at its branch HEAD as of the cutoff
@@ -27,7 +36,8 @@ python3 tools/evaluate_graphs.py --as-of ⟨cutoff⟩ --runs 3      # results/ev
 2. **Pins:** graph corpus, expected values, `run_graphs.py` and `CONTRACT-GRAPHS.md` from `0397d95` (contract
    revision 0.2, 178 graph cases / 2 437 values); stats gate from bench 1.8.0 `3da9671` (326 cases). Both extracted with
    `git archive`, independent of the branch head (the unreleased 0.3 draft is not used).
-3. **Build** with the variant's own command (`bench.yaml`, or inferred from its `score*.sh`, flagged).
+3. **Build** with the variant's own command (`bench.yaml`, or inferred from its `score*.sh`, flagged). No fresh
+   clones; build time is informational only and not part of the score.
 4. **Correctness** with the official scorer over every interface the variant offers (graph-batch, RPC `graph`,
    single `graph`); the interfaces must agree. Stats gate: `run.py` on the branch's round-1 engine commands.
 5. **Perf** (medians over runs, loadavg per run): batch points/s (start-up excluded), cold start; **dense latency**
@@ -36,7 +46,8 @@ python3 tools/evaluate_graphs.py --as-of ⟨cutoff⟩ --runs 3      # results/ev
 
 ## 3. Scoring rules (as implemented in `tools/evaluate_graphs.py`)
 
-- **Gate:** all graph cases fully correct through every interface offered, and 326/326 bench-1.8.0 stats cases.
+- **Gate:** all 178/178 contract-0.2 cases (incl. `ecm_burst` and error cases) fully correct through every interface
+  offered, and 326/326 bench-1.8.0 stats cases. Both are required; a run with `--no-stats-gate` is marked unofficial.
 - **Total = 0.40·Speed + 0.35·Maintainability + 0.15·Features + 0.10·Portability**,
   `L(x, best, span) = clamp(1 − log10(x/best)/log10(span), 0, 1)`.
 - **Speed** = 0.4·L(1/points·s⁻¹, 100) + 0.4·L(dense latency ms, 100) + 0.2·L(cold ms, 100).

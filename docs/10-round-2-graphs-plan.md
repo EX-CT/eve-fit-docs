@@ -154,9 +154,10 @@ engine path, G2's evaluator for the web UI, and G4's spec catalogue as the sourc
 
 ## 8. Evaluation for round 2
 
-1. Gate: 1 649 / 1 649 graph sample values and 1.8.0 stats corpus 100 %.
+1. Gate (confirmed 2026-10-03, see [13](13-engine-round-2-evaluation.md)): 0.2 全部用例 — all 178 cases of graph
+   contract 0.2 @ `0397d95` (incl. `ecm_burst` and the error cases) — plus the 1.8.0 stats corpus 326/326.
 2. Score (proposal, same spirit as round 1): speed 40 % (points/s batch, dense interactive latency, cold start),
-   maintainability 35 %, feature coverage 15 % (all nine graphs, optional extras such as 2-D grids or spec
+   maintainability 35 %, feature coverage 15 % (0.2 全部用例 / all contract 0.2 cases, optional extras such as 2-D grids or spec
    catalogue), portability 10 % (WASM/browser evaluator).
 3. Corpus growth before scoring: more fighter / bomb / breacher / vorton cases, target fits with MWD + source scram,
    drone movement modes, ECM bursts, Standup weapons, and `%`-axis convenience checks.
