@@ -145,3 +145,17 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 2. Not covered yet: `in` / `not_null` filters, `delta_ref`, numeric sweeps, `swap_type`, `BATCH_TOO_LARGE`,
    `BAD_PRICE_OVERRIDE`, `--prices` files, `calc`'s own price block, `use_snapshot`, L4 snapshot.
 3. optimizer-bench: score.py, greedy/random baselines and README (plan in `optimizer/README.md`).
+
+### docs/19 + missing/partial cases (updated 2026-10-03 15:00 CST)
+**Current commits:** eve-dogma-bench pending-1.11: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5, 583f912, b34ebb9 (tip b34ebb9). eve-fit-docs: ef6cdb6, 07341e3, eccb194, b6b8a6d, 295694a. Nothing uncommitted; **no wip branches**.
+
+**Progress**
+- 26 f-missing items: 16 Pyfa-generatable with 68 cases. `ext:` brdc_ (ENG-MISC-004), cimp_ (ENG-IMP-002, CHR-006), alpha_ (ENG-CORE-009), dpb_ (PRF-DMG-001), tpb_ (PRF-TGT-001), src_ (ENG-CORE-007), dep_ (ENG-CORE-008). `ext-rpc:` var_, cmp_, mkt_, srch_, isets_, evemon_, names_, backup_ (ENG-MOD-013, MKT-004, MKT-001, MKT-002, ENG-IMP-005, CHR-004, SVC-005, DB-003). Not generatable: CHR-009, PRC-001..005, UI-STAT-PRC, UI-PREF-MKT, DB-001, DB-008. Oracle opt-in `ORACLE_EXTRA=drafts,sources` + `oracle/pyfa_lookup.py` (default output byte-identical). Draft fields: CONTRACT.md "Draft 1.11: missing-f".
+- F d990818 (binary /workspace/exct-eve/bin/eve-fit-d990818): ext 208/239 (breacher_dc 4/4, char_implants 2/6, others 0), rpc 0/54, effects 2378/2378. Flipped f: ENG-MISC-004 missing -> have, ENG-CORE-003 partial -> have. Results: bench results-1.11/ED-d990818.md.
+- f partial: `ext-rpc:type_*` (23) for MKT-003 / ENG-SHIP-006 / CHR-008 (F 0/23); other f partials are implementation gaps.
+- mcp partial: `tools/mcp_batch.py` (bench suites through compute_fit / compute_graph), suites mcp-bench/-ext/-ext-unit/-cap/-mut/-graphs; 59 mcp items partial -> have (eve-fit-mcp 8c6b93d + F 2da8150). MCP bugs: nested empty `booster_fits: []` rejected (fit.ts:209), projected fighter quantity defaults to 1 (fit.ts:202).
+- check_inventory: 0 problems.
+
+**Next step:** (1) re-run mcp-* on the MCP's current main (engine bumped by eve4) and flip the 6 remaining engine items when fixed; (2) web partials need a web-side runner (wasm in headless Chrome, eve-fit-web CI); (3) re-score new F commits with `ext/tools/score.py` + `ext/tools/score_rpc.py` and flip f items at full pass.
+**wip branches:** none.
+
