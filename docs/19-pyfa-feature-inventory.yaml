@@ -63,7 +63,8 @@ items:
     new suite mcp-effects: eve-fit-mcp v0.3.1 2378/2378 with engine d990818, 2352/2378 with the pinned 2da8150; stays partial until the engine pin is bumped] [2026-10-03 15:50: partial -> have; mcp-effects
     2378/2378; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: 'engine pass-through [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  web_evidence: 'engine pass-through [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 16:00:
+    stays partial; web-effects 2353/2378 (wasm F 20aa425 predates the effects fixes); eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-CORE-004
   name: Skills as modifier sources
   description: Skill levels drive skill effects; per-skill level; character-wide skill bonuses
@@ -135,8 +136,9 @@ items:
   f_evidence: B19 overheat_order*, e_fz_offline_* (FZ)
   mcp: have
   mcp_evidence: schema modules[].state
-  web: partial
-  web_evidence: click/right-click state cycle; no e2e check (eve4 a08d943)
+  web: have
+  web_evidence: 'click/right-click state cycle; no e2e check (eve4 a08d943) [2026-10-03 16:00: partial -> have; mapped web-* cases 4/4 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench
+    c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-MOD-002
   name: Charges / ammo
   description: Loaded charge modifies module; charge capacity, numCharges, valid charges per launcher/turret
@@ -166,8 +168,9 @@ items:
   mcp: have
   mcp_evidence: 'options passthrough [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40:
     partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 20/20 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: options tab; no e2e (a08d943)
+  web: have
+  web_evidence: 'options tab; no e2e (a08d943) [2026-10-03 16:00: partial -> have; mapped web-* cases 20/20 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in
+    Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-MOD-005
   name: Spool-up weapons/remote reps
   description: 'Triglavian disintegrators, mutadaptive reps: spool type/amount; default spool pref; per-module spool menu'
@@ -208,9 +211,10 @@ items:
   f_evidence: MUT 86/93 (mm_*, mwd_*, edge_*, drone_* pass; 7 combo_/slot_ booster/implant cases fail, see ENG-IMP-004)
   mcp: have
   mcp_evidence: v0.3.0 mcp.features.mutated-fighters (mutation part)
-  web: partial
+  web: have
   web_evidence: 'sliders (e2e tools/e2e.mjs: ''mutated module imported'', ''mutated module EFT round trip'') [2026-10-03 14:00 strict gate: have -> partial, web tests are weak (web.e2e.mutated-module-import,
-    eft-export-mutated: text only) or partial (web.unit.builtin-eft-mutation: no stat check)]'
+    eft-export-mutated: text only) or partial (web.unit.builtin-eft-mutation: no stat check)] [2026-10-03 16:00: partial -> have; mapped web-* cases 51/51 pass in the browser; eve-fit-web CI run 37104154159
+    (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-MOD-009
   name: Mutation stats view
   description: 'Item stats Mutator tab: roll range/percentage per attribute'
@@ -240,8 +244,9 @@ items:
   mcp: have
   mcp_evidence: 'via compute_fit [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40:
     partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 14/14 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: 'capacitorUse column [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  web: have
+  web_evidence: 'capacitorUse column [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 16:00:
+    partial -> have; mapped web-* cases 14/14 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-MOD-012
   name: Breacher pods
   description: Pure-damage breachers (% HP + flat cap) DPS
@@ -250,8 +255,9 @@ items:
   f_evidence: ED core breacher_kestrel pass (core 339/339)
   mcp: have
   mcp_evidence: 'depends on engine [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 1/1 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: depends on engine
+  web: have
+  web_evidence: 'depends on engine [2026-10-03 16:00: partial -> have; mapped web-* cases 1/1 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench
+    results-1.11/web-fdbb014.md)]'
 - id: ENG-MOD-013
   name: Module variations / meta swap
   description: Switch module to meta variation (itemVariationChange), market group siblings
@@ -281,8 +287,9 @@ items:
   mcp: have
   mcp_evidence: 'mode_type_id (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on
     eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: mode selector; no e2e (a08d943)
+  web: have
+  web_evidence: 'mode selector; no e2e (a08d943) [2026-10-03 16:00: partial -> have; mapped web-* cases 2/2 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in
+    Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-SHIP-002
   name: T3C subsystems
   description: Subsystem slot, slot/hardpoint additions
@@ -292,8 +299,9 @@ items:
   mcp: have
   mcp_evidence: 'subsystems (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 3/3 pass on eve-fit-mcp
     8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: subsystem slots; no e2e (a08d943)
+  web: have
+  web_evidence: 'subsystem slots; no e2e (a08d943) [2026-10-03 16:00: partial -> have; mapped web-* cases 3/3 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425
+    in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-SHIP-003
   name: Structures / citadels
   description: Citadel fits, service slots, structure rigs, standup modules, fuel
@@ -314,8 +322,9 @@ items:
   mcp: have
   mcp_evidence: 'character.security_status (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py)
     1/1 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: Character page; no e2e (a08d943)
+  web: have
+  web_evidence: 'Character page; no e2e (a08d943) [2026-10-03 16:00: partial -> have; mapped web-* cases 1/1 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in
+    Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-SHIP-005
   name: System security
   description: High/low/null/WH system effects (e.g. Cynosural, Upwell modules)
@@ -356,8 +365,8 @@ items:
   f_evidence: ED ext mining_porpoise_drones, rr_vexor_light_bots pass (mining 11/11, outgoing 25/25)
   mcp: have
   mcp_evidence: 'engine [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: engine
+  web: have
+  web_evidence: 'engine [2026-10-03 16:00: partial -> have; mapped web-* cases 2/2 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-DRN-003
   name: Drone EHP and shield regen columns
   description: droneEhp/droneRegen view columns
@@ -377,8 +386,9 @@ items:
   mcp: have
   mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
     -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: 'drone pane [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  web: have
+  web_evidence: 'drone pane [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 16:00: partial
+    -> have; mapped web-* cases 2/2 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-DRN-005
   name: Split/merge drone stacks
   description: droneAddStack/SplitStack
@@ -472,8 +482,8 @@ items:
   f_evidence: ED mutated-suite 93/93 (slot_*, combo_two_boosters_dda_*)
   mcp: have
   mcp_evidence: 'engine [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 11/11 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: engine
+  web: have
+  web_evidence: 'engine [2026-10-03 16:00: partial -> have; mapped web-* cases 11/11 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-IMP-005
   name: Implant sets (saved + precalculated)
   description: Implant Set Editor, apply/save set to fit, precalc faction sets
@@ -590,8 +600,9 @@ items:
   mcp: have
   mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
     -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: options tab RAH; no e2e (a08d943)
+  web: have
+  web_evidence: 'options tab RAH; no e2e (a08d943) [2026-10-03 16:00: partial -> have; mapped web-* cases 2/2 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425
+    in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-DEF-005
   name: Ancillary repairers (charged)
   description: AAR/ASB with paste/charges, reload
@@ -653,8 +664,9 @@ items:
   f_evidence: stats.rs vs_target_profile
   mcp: have
   mcp_evidence: evaluate_profiles
-  web: partial
-  web_evidence: 'Profiles [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  web: have
+  web_evidence: 'Profiles [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 16:00: partial
+    -> have; mapped web-* cases 11/11 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-OFF-004
   name: Doomsdays / superweapons
   description: Doomsday damage
@@ -685,7 +697,8 @@ items:
   mcp: have
   mcp_evidence: 'no mining metric (src/ grep mining 0) [2026-10-03 15:50: missing -> have; mcp.stats.mining + mcp-ext mining_* 10/10; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: Stats.tsx shows st.mining only if backend provides (D ts-worker), not F
+  web_evidence: 'Stats.tsx shows st.mining only if backend provides (D ts-worker), not F [2026-10-03 16:00: stays partial; web-ext mining_* 10/10 in the browser engine; UI rendering of F''s mining section
+    unverified (Stats.tsx read D''s shape); eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-OFF-007
   name: Bombing panel
   description: Bombs needed per bomb type vs target
@@ -747,8 +760,9 @@ items:
   f_evidence: B19 + FZ e_fz_cloak_wcs_*
   mcp: have
   mcp_evidence: engine
-  web: partial
-  web_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  web: have
+  web_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 16:00: partial
+    -> have; mapped web-* cases 1/1 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-TGT-001
   name: Targeting stats
   description: Max targets, lock range, scan res, sensor strength/type
@@ -790,8 +804,9 @@ items:
   mcp: have
   mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
     -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 10/10 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: 'Stats [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  web: have
+  web_evidence: 'Stats [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 16:00: partial ->
+    have; mapped web-* cases 10/10 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-TGT-005
   name: Drone control range
   description: droneControlRange
@@ -843,8 +858,9 @@ items:
   mcp: have
   mcp_evidence: 'projected[kind=fit] (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: mcp-* suites 0/10 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected
     fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)] [2026-10-03 15:20: partial -> have; mcp-* 10/10 on eve-fit-mcp v0.3.1 e7b794a with eve-dogma 2da8150 (pinned) and d990818 (bench results-1.11/mcp-v0.3.1.md)]'
-  web: partial
-  web_evidence: nested toRequest (fit/model.ts); no e2e (a08d943)
+  web: have
+  web_evidence: 'nested toRequest (fit/model.ts); no e2e (a08d943) [2026-10-03 16:00: partial -> have; mapped web-* cases 10/10 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2,
+    F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-PROJ-004
   name: Projection range (distance)
   description: Range-dependent strength (falloff) for projected items
@@ -877,7 +893,8 @@ items:
   mcp: have
   mcp_evidence: '- [2026-10-03 15:50: missing -> have; mcp.stats.remote-repair(-spool) + mcp-ext rr_* 10/10; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: Stats 'Remote assistance' section only when backend provides
+  web_evidence: 'Stats ''Remote assistance'' section only when backend provides [2026-10-03 16:00: stays partial; web-ext rr_* 10/10 in the browser engine; Remote assistance section rendering with F unverified;
+    eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-PROJ-007
   name: Bombs vs cap (void bomb)
   description: Void bomb neut projection
@@ -886,8 +903,8 @@ items:
   f_evidence: ED cap-suite in_void_bomb pass (150/150)
   mcp: have
   mcp_evidence: 'engine [2026-10-03 14:40: partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 1/1 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: engine
+  web: have
+  web_evidence: 'engine [2026-10-03 16:00: partial -> have; mapped web-* cases 1/1 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-PROJ-008
   name: Target resists column / ignore resists
   description: targetResists column
@@ -917,8 +934,9 @@ items:
   mcp: have
   mcp_evidence: 'fleet.booster_fits (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: mcp-* suites 0/3 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected
     fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)] [2026-10-03 15:20: partial -> have; mcp-* 3/3 on eve-fit-mcp v0.3.1 e7b794a with eve-dogma 2da8150 (pinned) and d990818 (bench results-1.11/mcp-v0.3.1.md)]'
-  web: partial
-  web_evidence: booster-fit picker; no e2e (a08d943)
+  web: have
+  web_evidence: 'booster-fit picker; no e2e (a08d943) [2026-10-03 16:00: partial -> have; mapped web-* cases 3/3 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425
+    in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-ENV-001
   name: Wormhole effects
   description: Pulsar/Magnetar/Black hole/WR/Cataclysmic/Red giant classes 1-6
@@ -972,8 +990,9 @@ items:
   mcp: have
   mcp_evidence: 'validate_fit [2026-10-03 14:00 strict gate: have -> partial, only test mcp.integration.suggest-modules is partial (no overflow flagging)] [2026-10-03 14:40: partial -> have, mcp-* suites
     (bench cases through compute_fit, bench tools/mcp_batch.py) 4/4 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: 'Problems section [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  web: have
+  web_evidence: 'Problems section [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 16:00:
+    partial -> have; mapped web-* cases 4/4 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-VAL-002
   name: Slots and hardpoints
   description: Slots per rack, turret/launcher hardpoints
@@ -982,8 +1001,9 @@ items:
   f_evidence: SLOTS_EXCEEDED, TURRET/LAUNCHER_HARDPOINTS
   mcp: have
   mcp_evidence: validate_fit
-  web: partial
-  web_evidence: 'Fitting [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  web: have
+  web_evidence: 'Fitting [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 16:00: partial
+    -> have; mapped web-* cases 4/4 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-VAL-003
   name: canFit restrictions
   description: canFitShipGroup/Type, rig size, maxGroupFitted/Online/Active, maxTypeFitted
@@ -993,8 +1013,9 @@ items:
   mcp: have
   mcp_evidence: 'validate_fit [2026-10-03 14:00 strict gate: have -> partial, only test mcp.unit.can-fit is partial (rig size, no ship restriction)] [2026-10-03 14:40: partial -> have, mcp-* suites (bench
     cases through compute_fit, bench tools/mcp_batch.py) 7/7 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: 'Problems [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  web: have
+  web_evidence: 'Problems [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 16:00: partial
+    -> have; mapped web-* cases 7/7 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-VAL-004
   name: Missing skills (prereqs)
   description: Required skills per item vs character
@@ -1015,7 +1036,8 @@ items:
   mcp_evidence: 'allow_violations [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40:
     partial -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 2/2 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
   web: partial
-  web_evidence: fits always allowed; no strict mode toggle found
+  web_evidence: 'fits always allowed; no strict mode toggle found [2026-10-03 16:00: stays partial; web-ext val_disable_restrictions_stats / unit_val_validate_false pass in the browser engine; UI has no
+    strict-mode toggle; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-VAL-006
   name: Charge validity
   description: Charge group/size/capacity
@@ -1025,8 +1047,9 @@ items:
   mcp: have
   mcp_evidence: 'validate_fit [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: partial
     -> have, mcp-* suites (bench cases through compute_fit, bench tools/mcp_batch.py) 4/4 pass on eve-fit-mcp 8c6b93d + eve-dogma 2da8150]'
-  web: partial
-  web_evidence: 'charge picker filtered [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  web: have
+  web_evidence: 'charge picker filtered [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03
+    16:00: partial -> have; mapped web-* cases 4/4 pass in the browser; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-VAL-007
   name: Fit-level special restrictions
   description: e.g. one cloak, max 1 per group, structure-only modules, T3D/T3C subsystem completeness
@@ -1618,7 +1641,8 @@ items:
   mcp: have
   mcp_evidence: list_presets target
   web: partial
-  web_evidence: 'presets [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  web_evidence: 'presets [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 16:00: stays partial;
+    web-ext tpb_* 2/6 (F missing); eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: PRF-TGT-002
   name: Target profile editor (resists, sig, speed, radius)
   description: targetProfileEditor
@@ -1830,7 +1854,8 @@ items:
   mcp_evidence: 'no graph tool (a08d943 §9) [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs dmg_* 69/69; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f
     (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: 'Graphs.tsx: no attacker/target lists, no per-graph extra inputs (a08d943 §9 gaps)'
+  web_evidence: 'Graphs.tsx: no attacker/target lists, no per-graph extra inputs (a08d943 §9 gaps) [2026-10-03 16:00: stays partial; web-graphs cases pass in the browser engine; the graph option inputs
+    are not exposed in Graphs.tsx; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: GRF-OPT-002
   name: Capacitor graph options
   description: Starting cap amount, use capacitor simulator checkbox (useCapsim)
@@ -1840,7 +1865,8 @@ items:
   mcp: have
   mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs cap_* 13/13; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: Graphs.tsx capacitor; options not exposed
+  web_evidence: 'Graphs.tsx capacitor; options not exposed [2026-10-03 16:00: stays partial; web-graphs cases pass in the browser engine; the graph option inputs are not exposed in Graphs.tsx; eve-fit-web
+    CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: GRF-OPT-003
   name: Mobility graph target inputs
   description: Target mass / inertia factor for bump speed and distance
@@ -1850,7 +1876,8 @@ items:
   mcp: have
   mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs mob_bump* 2/2; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: speed/distance only
+  web_evidence: 'speed/distance only [2026-10-03 16:00: stays partial; web-graphs cases pass in the browser engine; the graph option inputs are not exposed in Graphs.tsx; eve-fit-web CI run 37104154159
+    (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: GRF-OPT-004
   name: Remote reps graph options
   description: Reload ancillary RRs (ancReload), spool
@@ -1860,7 +1887,8 @@ items:
   mcp: have
   mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs rr_* 11/11; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: engine rr graph on g4
+  web_evidence: 'engine rr graph on g4 [2026-10-03 16:00: stays partial; web-graphs cases pass in the browser engine; the graph option inputs are not exposed in Graphs.tsx; eve-fit-web CI run 37104154159
+    (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: GRF-OPT-005
   name: ECM/burst graph options
   description: applyDamps, applyDrones
@@ -1870,7 +1898,8 @@ items:
   mcp: have
   mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs ecm_* + err_ecm* 12/12; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: 40e6044 ECM burst graph present (web.e2e.graph-ecm-burst); option inputs not tested
+  web_evidence: '40e6044 ECM burst graph present (web.e2e.graph-ecm-burst); option inputs not tested [2026-10-03 16:00: stays partial; web-graphs cases pass in the browser engine; the graph option inputs
+    are not exposed in Graphs.tsx; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: GRF-OPT-006
   name: EWAR graph target resistance option
   description: Target resistance checkbox
@@ -1880,7 +1909,8 @@ items:
   mcp: have
   mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs ewar_resist* 2/2; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: '-'
+  web_evidence: '- [2026-10-03 16:00: stays partial; web-graphs cases pass in the browser engine; the graph option inputs are not exposed in Graphs.tsx; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2,
+    F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: GRF-OPT-007
   name: Shield regen graph options
   description: Starting shield amount, effective HP toggle (isEffective)
@@ -1890,7 +1920,8 @@ items:
   mcp: have
   mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs shield_* 5/5; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: shield_pct/regen
+  web_evidence: 'shield_pct/regen [2026-10-03 16:00: stays partial; web-graphs cases pass in the browser engine; the graph option inputs are not exposed in Graphs.tsx; eve-fit-web CI run 37104154159 (fdbb014,
+    bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: GRF-OPT-008
   name: Lock range / ammo picker graph menus
   description: graphLockRange, graphFitAmmoPicker, graphAmmoOptimalApplyProjected/IgnoreResists
@@ -1900,7 +1931,8 @@ items:
   mcp: have
   mcp_evidence: '- [2026-10-03 15:50: missing -> have; compute_graph takes the graph params/settings; mcp-graphs app_* 14/14; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: '-'
+  web_evidence: '- [2026-10-03 16:00: stays partial; web-graphs cases pass in the browser engine; the graph option inputs are not exposed in Graphs.tsx; eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2,
+    F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: UI-STAT-RES
   name: Resources panel
   description: CPU, PG, calibration, drone bandwidth/bay, fighter bay, fighter squadrons active, drones active, turret/launcher hardpoints, cargo
@@ -1974,7 +2006,8 @@ items:
   mcp: have
   mcp_evidence: '- [2026-10-03 15:50: missing -> have; mcp.stats.remote-repair(-spool) + mcp-ext rr_* 10/10; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: Remote assistance section depends on backend
+  web_evidence: 'Remote assistance section depends on backend [2026-10-03 16:00: stays partial; web-ext rr_* 10/10 in the browser engine; Remote assistance section rendering with F unverified; eve-fit-web
+    CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: UI-STAT-MIN
   name: Mining yield panel
   description: Mining m3/s total, modules/drones
@@ -1984,7 +2017,8 @@ items:
   mcp: have
   mcp_evidence: '- [2026-10-03 15:50: missing -> have; mcp.stats.mining + mcp-ext mining_* 10/10; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: backend-dependent
+  web_evidence: 'backend-dependent [2026-10-03 16:00: stays partial; web-ext mining_* 10/10 in the browser engine; UI rendering of F''s mining section unverified; eve-fit-web CI run 37104154159 (fdbb014,
+    bench c2229b2, F wasm 20aa425 in Chrome; bench results-1.11/web-fdbb014.md)]'
 - id: UI-STAT-PRC
   name: Price panel
   description: Ship, fittings, drones, cargo, character, total
@@ -2128,7 +2162,8 @@ items:
   mcp_evidence: 'engine [2026-10-03 14:40: mcp-* suites 0/4 on eve-fit-mcp 8c6b93d; F fails too] [2026-10-03 15:20: eve-fit-mcp v0.3.1: mcp-ext brdc_* 4/4 with engine d990818, 1/4 with the pinned 2da8150;
     stays partial until the MCP pins an engine >= d990818] [2026-10-03 15:50: partial -> have; mcp-ext brdc_* 4/4; eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
   web: partial
-  web_evidence: engine
+  web_evidence: 'engine [2026-10-03 16:00: stays partial; web-ext brdc_* 3/4 (brdc_rifter_online: old expectation at c2229b2); eve-fit-web CI run 37104154159 (fdbb014, bench c2229b2, F wasm 20aa425 in Chrome;
+    bench results-1.11/web-fdbb014.md)]'
 - id: ENG-MISC-005
   name: Industrial / compression / ore holds
   description: Rorqual/Porpoise compression, industrial core, mining holds
