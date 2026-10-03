@@ -25,17 +25,19 @@ only after the user approves.
 ## 2. Target crate layout
 
 The mainline repo is one Cargo workspace. Proposed name: `EX-CT/eve-fit-core`. Reusing `EX-CT/eve-dogma` (frozen at
-`dd97e12`) as a new major version is also possible; **the user decides**. Licence: LGPL-3.0-or-later. Pyfa is used
+`dd97e12`) as a new major version is also possible; **the user decides**. (Decided 2026-10-03: `EX-CT/eve-dogma`; the C++ engine J is kept on its branch `j-backup`.) Licence: LGPL-3.0-or-later. Pyfa is used
 only as a black-box oracle and behaviour reference, never as code.
 
 ```
 crates/
-  eve-sde           dataset model + loader (pipeline release format, versioned); names/i18n, market groups, meta
-                    variations, jargon, conversions (renames); search
-  eve-dogma-codegen build-time generator (today's build.rs): SDE → Rust tables + effect specials; emits the
-                    per-effect coverage manifest (§5.2)
+  eve-sde           static data compiled in (codegen tables.rs): types, attributes, groups, names (en/zh),
+                    mutaplasmids; later the runtime dataset loader for non-hot data (market groups, meta
+                    variations, jargon, conversions, i18n), search. No engine code.            [exists]
+  eve-dogma-codegen build-time generator (today's build.rs): SDE → tables.rs (eve-sde) + effects.rs (eve-dogma,
+                    effect code + specials); emits the per-effect coverage manifest (§5.2)     [exists]
   eve-dogma         engine core: fit graph, modifiers, stacking, skills, specials, projected/fleet/env, RAH,
-                    overrides; feature `trace` records modifier sources (Affected-by / dependants); no I/O
+                    overrides; feature `trace` records modifier sources (Affected-by / dependants); no I/O.
+                    Structured input only (FitRequest + skills): no fit formats.               [exists]
   eve-capsim        capacitor simulator (F capsim.rs + J techniques), used by stats and graphs
   eve-stats         every Pyfa stats panel: resources, defense/tank, offense (+breacher, spool min/max), mining,
                     outgoing RR/cap, drones/fighters (+EHP/regen), navigation, targeting (+lock-time table, holds),
@@ -43,8 +45,12 @@ crates/
   eve-graphs        the 10 Pyfa graphs + options (port of graphs-g4 src/graphs/*)
   eve-fit-model     FitRequest / FitStats schema (serde), fit editing ops (add/remove/state/charge/variation),
                     incremental edit + undo-friendly API, multi-fit context (projected/command fits by id)
-  eve-formats       EFT (+cfg, mutated), DNA (+alt, link), ESI JSON, EVE XML, multibuy, shipstats, EFS, muta text,
-                    HTML, additions lists, auto-detect, multi-fit buffers, file/folder import
+                                                                              [exists: FitRequest types]
+  eve-fit-formats   NOT part of the engine (ruling 2026-10-03). EFT (+cfg, mutated), DNA (+alt, link), ESI JSON,
+                    EVE XML, multibuy, shipstats (stats supplied by the caller), EFS, muta text, HTML, additions
+                    lists, auto-detect, multi-fit buffers, file/folder import, Pyfa saved-fit import. Depends on
+                    eve-fit-model + eve-sde only, never on eve-dogma.                          [exists]
+  eve-fit-formats-wasm  C ABI (alloc/dealloc/rpc) of eve-fit-formats for the frontend          [exists]
   eve-character     skill profiles (All 0/4/5, custom), alpha clone caps, character implants, EVEMon/XML import,
                     skill-plan export, SP/train-time; the character/skill INPUT FORMAT that ESI clients fill in
   eve-profiles      built-in damage patterns, target profiles, implant sets (from the presets pipeline), user libraries
@@ -53,14 +59,30 @@ crates/
                     behind a feature, and a host-supplied fetch callback on wasm
   eve-store         persistence for CLI/desktop/server: fit library (folders/tags), profiles, characters, backup /
                     restore (JSON + EVE XML), Pyfa saveddata import (migration path: more than Pyfa)
-  eve-rpc           one JSON-RPC method table shared by stdio, HTTP and WASM (calc, batch, graph, format_*, search,
-                    type, market, character_*, optimize, price, …), with contract error codes
-  eve-cli           binary `eve-fit`: calc, batch, graph, graph-batch, format, search, type, meta, optimize,
-                    serve-stdio, serve-http, bench
+  eve-rpc           JSON-RPC method tables shared by stdio, HTTP and WASM, with contract error codes: engine table
+                    (calc, batch, graph, search, type, market, character_*, optimize, price, …) and formats table
+                    (eft_parse, eft_export, format_import, format_export); hosts that link both serve both
+  eve-cli           binary `eve-fit` (convenience tool linking engine + formats): calc, batch, graph,
+                    graph-batch, format, eft, search, type, meta, optimize, serve-stdio, serve-http, bench  [exists]
   eve-http          thin HTTP server over eve-rpc (feature-gated deps)
-  eve-wasm          wasm-bindgen typed JS/TS bindings (+ .d.ts generated from the schema) and the existing C ABI;
-                    batch/streaming calls; built for the web worker
+  eve-wasm          engine only: wasm-bindgen typed JS/TS bindings (+ .d.ts generated from the schema) and the
+                    existing C ABI (calc, rpc); batch/streaming calls; built for the web worker   [exists: C ABI]
 ```
+
+Dependency graph as built in `EX-CT/eve-dogma` (2026-10-03, commit 597b7fc; details in its
+`docs/FORMATS-SPLIT.md`):
+
+```
+eve-fit-model ──┬──────────────► eve-fit-formats ──► eve-fit-formats-wasm
+eve-sde ────────┤                        │
+                └──► eve-dogma ──┬───────┴──► eve-cli (eve-fit)
+eve-capsim ──────────►┘          └──► eve-wasm
+eve-dogma-codegen (build-time) ──► eve-sde, eve-dogma
+```
+
+**Formats are not part of the engine** (user ruling, 2026-10-03). The engine takes the structured fit plus skills
+input and only calculates; text formats are converted before (import) or after (export) by `eve-fit-formats`, in the
+CLI/MCP/web layer. CI enforces the boundary with `cargo tree`.
 
 **MCP.** Keep `EX-CT/eve-fit-mcp` (TypeScript, eve4). It talks to `eve-cli serve-stdio` through its existing `rpc`
 adapter, and it gains `graph`, `price` and `market` tools once `eve-rpc` exposes them. A Rust MCP crate is not

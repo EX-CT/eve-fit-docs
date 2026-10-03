@@ -4,7 +4,7 @@
 
 - **角色输入**：一个 JSON 对象（`eve-character` v1），包括：
   - 技能等级（按 type_id）；
-  - 克隆状态（alpha / omega）；
+  - 克隆状态（alpha / omega；alpha 待 SDE 管线提供技能上限，之前返回 `UNSUPPORTED`）；
   - 角色植入体；
   - 安全等级。
   它兼容现有 `FitRequest.character`。ESI、EVEMon 和手工输入都映射到这个格式（ESI 登录由网页端负责，以后做）。
@@ -13,6 +13,7 @@
   - **约束**：CPU / PG / 校准值 / 槽位 / 硬点（始终是硬约束）、角色技能、元等级、属性下限、价格上限。
   - **搜索空间**：模块、弹药、改装件、无人机。
   - 每个候选装配都由引擎真实计算并校验。结果按目标排名，附带与原装配的差值。
+- **格式**：EFT 等装配格式不属于引擎，由独立的 `eve-fit-formats` 处理（CLI / MCP 层转换）；优化器只接收结构化输入。
 - **算法**：候选过滤 → 贪心构造 → 局部搜索（单 / 双替换）+ 束搜索。在给定种子和评估预算下结果确定。
 
 **Status: DRAFT, 2026-10-03 (CST).** Implements docs/20 P0-5 (optimizer) and the input-format part of P0-6
@@ -41,8 +42,8 @@ One JSON object. It is used in two ways:
 | field | type | meaning | today |
 |---|---|---|---|
 | `skills.levels` | map of skill type_id (string) → 0..5 | trained level; ESI `active_skill_level` | have (`request.rs` `Skills`) |
-| `skills.default_level` | 0..5 or null | level of every skill not listed. Null/absent = 0 for a profile from ESI/EVEMon. In a bare `FitRequest` it keeps today's meaning (All V when absent). | have |
-| `clone` | `"omega"` (default) or `"alpha"` | alpha: each skill capped at the alpha clone limit, and modules that need an omega-only skill level are invalid (ENG-CORE-009) | new; needs pipeline data (alpha caps) |
+| `skills.default_level` | 0..5 or null | level of every skill not listed. Null/absent = 0, both for a profile from ESI/EVEMon and in a bare `FitRequest` (today's engine and Pyfa oracle: absent = all skills 0). | have |
+| `clone` | `"omega"` (default) or `"alpha"` | alpha: each skill capped at the alpha clone limit, and modules that need an omega-only skill level are invalid (ENG-CORE-009) | **TODO**: needs the alpha-clone skill caps from eve-sde-pipeline (eve4). Until they ship, `"alpha"` is rejected with `UNSUPPORTED` (never guessed); `"omega"` works now. |
 | `implants` | type_id list | character implants. They apply to every fit for this character unless the fit lists its own implants for that slot (Pyfa `implantSource`, ENG-IMP-002 / CHR-006). | new |
 | `security_status` | number | as today | have |
 | `skill_points` | map type_id → SP | optional; used only for train-time / plan output (CHR-009). Never changes stats. | new (optional) |
@@ -159,7 +160,7 @@ documents only a single metric as stable).
   "results": [
     {
       "rank": 1,
-      "fit": { "...": "FitRequest, ready for calc / eft_export" },
+      "fit": { "...": "FitRequest, ready for calc (and for format_export in eve-fit-formats)" },
       "objective": 412.7,
       "metrics": { "dps": 412.7, "ehp": 26120.4, "max_velocity": 1612.0, "cap_stable": true, "price_isk": 98400000 },
       "delta": { "dps": 61.3, "ehp": -1880.0 },
@@ -176,6 +177,9 @@ documents only a single metric as stable).
 ```
 
 - `stopped_by` is one of `converged`, `evaluations` or `time`.
+- `eft` is optional text added by surfaces that link `eve-fit-formats` (the `eve-fit` CLI / `serve-stdio`, MCP). Formats
+  are not part of the engine (ruling 2026-10-03): `eve_optimizer` itself and the engine WASM return `fit` only; a
+  frontend converts with the `eve-fit-formats` WASM module.
 - `delta` is relative to the base fit (which is evaluated first; if it is invalid its metrics are reported and `delta` is null).
 - **Errors:** contract error codes, plus:
   - `OPT_NO_FEASIBLE` (no fit meets the constraints; returns the closest one with the violated constraints);
@@ -187,8 +191,8 @@ documents only a single metric as stable).
 | surface | form |
 |---|---|
 | Rust | `eve_optimizer::optimize(&OptimizeRequest) -> Result<OptimizeResult, OptError>`; `eve_optimizer::Evaluator` trait (default: `eve_dogma::calc`) so tests can stub it |
-| RPC | `{"method":"optimize","params":OptimizeRequest}` in `serve-stdio`, the WASM `rpc` export, and later HTTP |
-| CLI | `eve-fit optimize < optimize_request.json`; `--eft FILE` to start from an EFT fit; `--character FILE` |
+| RPC | `{"method":"optimize","params":OptimizeRequest}` in `serve-stdio`, the engine WASM (`eve-wasm`) `rpc` export, and later HTTP; structured input only |
+| CLI | `eve-fit optimize < optimize_request.json`; `--eft FILE` to start from an EFT fit (the CLI converts it with `eve-fit-formats` before calling the optimizer); `--character FILE` |
 | MCP | `optimize_fit` (eve4) calls `optimize`; `suggest_*` may use `search.candidates` with a small budget |
 
 ## 3. Algorithm (v1)
@@ -215,15 +219,16 @@ Expected cost: about 0.06 ms per `calc`, so 20 000 evaluations take ≈1.2 s sin
 
 ## 4. Crates and data
 
-- `crates/eve-optimizer` depends on `eve-dogma` only (later on `eve-fit-model` / `eve-rpc` after the split).
+- `crates/eve-optimizer` depends on `eve-dogma` and `eve-fit-model` only, never on `eve-fit-formats` (formats are not
+  part of the engine; EFT in/out is done by the CLI/MCP layer).
 - `crates/eve-character` holds the input format, validation, alpha caps, the requirements/plan helpers and the
-  presets. Until it exists, the types live in `eve-dogma::request` (backward compatible).
+  presets. Until it exists, the types live in `eve-fit-model` (`Character`, `Skills`; re-exported as `eve_dogma::request`).
 - Data the dataset already has:
   - `meta_level`, `meta_group`, `variation_parent`, `market_group`;
   - required skills;
   - fitting restriction attributes.
 - Needed from `eve-sde-pipeline` (eve4, docs/20 §2): alpha-clone skill caps; skill rank/SP for train time.
-  Until then `clone: "alpha"` is rejected with `UNSUPPORTED` rather than guessed.
+  **TODO (alpha):** until the caps ship, `clone: "alpha"` is rejected with `UNSUPPORTED` rather than guessed.
 
 ## 5. Tests (docs/20 §5.4)
 
@@ -245,5 +250,5 @@ Expected cost: about 0.06 ms per `calc`, so 20 000 evaluations take ≈1.2 s sin
 1. Is the default objective set right (dps, ehp, tank, speed, cap_stable, price), and should `applied_dps` vs a
    target profile be in v1?
 2. Default candidates: `variations` (fast, predictable) or `all_fittable` (wider, slower)?
-3. Alpha clones in v1 depend on the pipeline's alpha caps. Ship v1 omega-only if they are late?
+3. Alpha clones in v1 depend on the pipeline's alpha caps (TODO above). Ship v1 omega-only (alpha → `UNSUPPORTED`) if they are late?
 4. Price source for v1: caller-supplied map only (offline engine), with `eve-prices` later. Is that OK?
