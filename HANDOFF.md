@@ -91,11 +91,11 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - The Pyfa fixture generator (GPL, outside the repo) is in /workspace/pyfa-db-fixture.
 - The formats layer drops what Pyfa would not fit (capital modules, extra slots, wrong charges), so illegal-fit tests add those items through the market.
 
-## eve4 / eve-fit-mcp / eve-market-prices (executor bot; updated 2026-10-03 15:10 CST)
+## eve4 / eve-fit-mcp / eve-market-prices (executor bot; updated 2026-10-03 15:11 CST)
 
 ### Current commits
 - EX-CT/eve-fit-mcp main: **d3786eb** = release **v0.4.0** (release run 37105109044 success, published 15:04 CST; assets eve-fit-mcp-0.4.0.tgz, eve-fit-mcp.tgz, SHA256SUMS; CI 37104953313 green: npm test 85 pass/1 todo/0 fail, mcp-bench ext 202/202, effects 2378/2378, cap 150/150). 462c759 engines.lock -> eve-dogma **197223f** (docs/23 batch + prices); CI must run the docs/23 checks (TODO fallback fails CI). Before it: 583a197 price_fit engine path (include_* toggles as a view over engine sections), e309e7e README, 73eb2b7 module /online|/active|/overheated, 7e8fa6b docs/test-ids (tools/test-ids.py), c1626ef price_fit via engine, aeb7b7e compute_batch, 1665e11 compute_fit price inputs. Previous release v0.3.1 (e7b794a). No wip branches.
-- EX-CT/eve-market-prices main: **a7ec353** (0.2.0; CI 37105405374 green incl. price-rule-bench 21/21 at bench d151cb3): docs/22 rulings eccf455 — coverage = all published marketable types from CCP's JSONL SDE (`--ccp-sde`), content_hash = RFC 8785 JCS (RFC + Python `jcs` vectors). Earlier e9781a5 CLI `rule` + band-edge fix. Snapshot run 37105434259 published **`prices-jita44-20261003T070857Z`**: 9178 priced, 10388 missing of 19566 requested (CCP SDE 3569502), sha256:279683dd…; hash re-verified with Python jcs. wip/docs22-schema kept.
+- EX-CT/eve-market-prices main: **5c7a860** README rule details settled (eve3 ruling 15:11). a7ec353 (0.2.0; CI 37105405374 green incl. price-rule-bench 21/21 at bench d151cb3): docs/22 rulings eccf455 — coverage = all published marketable types from CCP's JSONL SDE (`--ccp-sde`), content_hash = RFC 8785 JCS (RFC + Python `jcs` vectors). Earlier e9781a5 CLI `rule` + band-edge fix. Snapshot run 37105434259 published **`prices-jita44-20261003T070857Z`**: 9178 priced, 10388 missing of 19566 requested (CCP SDE 3569502), sha256:279683dd…; hash re-verified with Python jcs. wip/docs22-schema kept.
 
 ### Done
 - docs/23 MCP pass-through, checked against eve-dogma 197223f: compute_fit `price_overrides` / `prices` / `price` (names -> ids, engine block verbatim), compute_batch (fit sources normalised, engine `batch`), price_fit (market table + own isk injected as `prices.isk`, engine block; legacy sum only for old engines). npm test on 197223f: 88 pass, 1 todo (security-status effect 6871, engine). mcp-bench on 197223f: core 339/339, ext 202/202, effects 2378/2378 (0 lost through MCP), cap 150/150.
@@ -104,8 +104,9 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - Earlier: mcp_batch fixes (error codes, graph passthrough), v0.3.1; eve-market-prices v1 updater + snapshot workflow.
 
 ### Next steps
-1. Open for eve/F: `price` rounding — docs/22 says half-to-even but not decimal vs binary; we round the 12-digit-trimmed value (100.335 -> 100.34), bench rule.py uses Python round on the double (-> 100.33). Also we clamp to [p0, band_max] and drop price <= 0 orders. No bench case differs.
-2. F: embed `prices-jita44-20261003T070857Z` (or newer) as the engine snapshot (docs/22 §3).
+1. **Pending eve3:** new d22/price_rule cases + rule.py update (rounding/clamp/price<=0/bad-rule exit per eve3 15:11). Bench pending-1.11 head is still 1fd7e37 (d22 unchanged since d151cb3) -> when they land, bump `BENCH_SHA` in eve-market-prices `.github/workflows/ci.yml` (price-rule-bench) and require all cases.
+2. eve-fit-mcp pin 197223f already contains d990818 (merge-base --is-ancestor ok), so ENG-MISC-004 / ENG-CORE-003 need no engine bump; no v0.4.1.
+3. F: embed `prices-jita44-20261003T070857Z` (or newer) as the engine snapshot (docs/22 §3).
 
 ## eve3 / bench (executor bot; updated 2026-10-03 15:15 CST)
 
