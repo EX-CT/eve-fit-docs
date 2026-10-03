@@ -59,7 +59,8 @@ items:
   f_evidence: 'eve-dogma d990818: effects/ 2378/2378 (every carrier kind full), handler-only 112/112, unverified handler-only 37/37 (bench results-1.11/ED-d990818.md) [2026-10-03 14:58: partial -> have;
     2da8150 was 2352/2378]'
   mcp: partial
-  mcp_evidence: 'engine pass-through [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
+  mcp_evidence: 'engine pass-through [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 15:20:
+    new suite mcp-effects: eve-fit-mcp v0.3.1 2378/2378 with engine d990818, 2352/2378 with the pinned 2da8150; stays partial until the engine pin is bumped]'
   web: partial
   web_evidence: 'engine pass-through [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
 - id: ENG-CORE-004
@@ -402,9 +403,9 @@ items:
   pyfa_src: eos/saveddata/fighterAbility.py; gui/builtinContextMenus/fighterAbilities.py
   f: have
   f_evidence: B19 fighters_*, pfighter_*
-  mcp: partial
+  mcp: have
   mcp_evidence: 'FitRequest abilities (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: mcp-* suites 6/10 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected
-    fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)]'
+    fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)] [2026-10-03 15:20: partial -> have; mcp-* 10/10 on eve-fit-mcp v0.3.1 e7b794a with eve-dogma 2da8150 (pinned) and d990818 (bench results-1.11/mcp-v0.3.1.md)]'
   web: have
   web_evidence: 'Pyfa-default abilities (e2e tools/e2e.mjs: ''disabling an attack ability lowers fighter dps'')'
 - id: ENG-FTR-003
@@ -825,9 +826,9 @@ items:
   pyfa_src: fit.py projectedDrones/Fighters
   f: have
   f_evidence: B19 proj_*drone*, pfighter_* (6)
-  mcp: partial
+  mcp: have
   mcp_evidence: 'FitRequest projected (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: mcp-* suites 2/6 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected
-    fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)]'
+    fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)] [2026-10-03 15:20: partial -> have; mcp-* 6/6 on eve-fit-mcp v0.3.1 e7b794a with eve-dogma 2da8150 (pinned) and d990818 (bench results-1.11/mcp-v0.3.1.md)]'
   web: have
   web_evidence: projected
 - id: ENG-PROJ-003
@@ -836,9 +837,9 @@ items:
   pyfa_src: fit.py projectedFits, getProjectionInfo
   f: have
   f_evidence: B19 projfit_* (10)
-  mcp: partial
+  mcp: have
   mcp_evidence: 'projected[kind=fit] (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: mcp-* suites 0/10 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected
-    fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)]'
+    fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)] [2026-10-03 15:20: partial -> have; mcp-* 10/10 on eve-fit-mcp v0.3.1 e7b794a with eve-dogma 2da8150 (pinned) and d990818 (bench results-1.11/mcp-v0.3.1.md)]'
   web: partial
   web_evidence: nested toRequest (fit/model.ts); no e2e (a08d943)
 - id: ENG-PROJ-004
@@ -847,9 +848,10 @@ items:
   pyfa_src: itemProjectionRange context menu; projectionRange column
   f: have
   f_evidence: projected distance; B19 *_falloff
-  mcp: partial
+  mcp: have
   mcp_evidence: 'engine [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)] [2026-10-03 14:40: mcp-* suites
-    4/6 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)]'
+    4/6 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)] [2026-10-03 15:20: partial -> have; mcp-* 6/6 on
+    eve-fit-mcp v0.3.1 e7b794a with eve-dogma 2da8150 (pinned) and d990818 (bench results-1.11/mcp-v0.3.1.md)]'
   web: have
   web_evidence: projected distance
 - id: ENG-PROJ-005
@@ -909,9 +911,9 @@ items:
   pyfa_src: fit.py commandFits, getCommandInfo; gui/builtinContextMenus/commandFitAdd.py
   f: have
   f_evidence: booster_fits; B19 fleet_two_boosters; stats strongest
-  mcp: partial
+  mcp: have
   mcp_evidence: 'fleet.booster_fits (eve4 draft a08d943: works, no dedicated MCP test) [2026-10-03 14:40: mcp-* suites 0/3 on eve-fit-mcp 8c6b93d; MCP bugs: nested empty booster_fits rejected / projected
-    fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)]'
+    fighter quantity 1 (bench results-1.11/mcp-8c6b93d-F2da8150.md)] [2026-10-03 15:20: partial -> have; mcp-* 3/3 on eve-fit-mcp v0.3.1 e7b794a with eve-dogma 2da8150 (pinned) and d990818 (bench results-1.11/mcp-v0.3.1.md)]'
   web: partial
   web_evidence: booster-fit picker; no e2e (a08d943)
 - id: ENG-ENV-001
@@ -2118,7 +2120,8 @@ items:
   f: have
   f_evidence: 'eve-dogma d990818: Breach Control sets ship breacherPodDamageResistance (options.include_attributes); bench pending-1.11 ext:brdc_* 4/4 (2da8150: 1/4) [2026-10-03 14:55: missing -> have]'
   mcp: partial
-  mcp_evidence: 'engine [2026-10-03 14:40: mcp-* suites 0/4 on eve-fit-mcp 8c6b93d; F fails too]'
+  mcp_evidence: 'engine [2026-10-03 14:40: mcp-* suites 0/4 on eve-fit-mcp 8c6b93d; F fails too] [2026-10-03 15:20: eve-fit-mcp v0.3.1: mcp-ext brdc_* 4/4 with engine d990818, 1/4 with the pinned 2da8150;
+    stays partial until the MCP pins an engine >= d990818]'
   web: partial
   web_evidence: engine
 - id: ENG-MISC-005
