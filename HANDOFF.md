@@ -72,11 +72,11 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - Pyfa-parity rule (eve): match Pyfa including hand-written handler behaviour; only proven Pyfa-data vs SDE drift is an exception, listed for eve, never excluded unilaterally.
 - Commit identity `-c user.name=EXCT-Bot -c user.email=bot@exct.invalid`; never force-push; unfinished work → `wip/*`.
 
-## eve4 / eve-fit-web (executor bot; updated 2026-10-03 14:30 CST)
+## eve4 / eve-fit-web (executor bot; updated 2026-10-03 14:40 CST)
 
 ### Current commits
-- EX-CT/eve-fit-web main: **3eb47ba** (all work pushed; no uncommitted changes; **no wip branches**).
-  Last fully green Pages run: 37102144939 (070dfc3). Run for 3eb47ba (37102759282) was in progress at handoff.
+- EX-CT/eve-fit-web main: **e1afe8d** (all work pushed; no uncommitted changes; **no wip branches**).
+  Pages run 37102734646 (6ac02ba) green: unit, e2e wasm-worker 82/82, http 82/82, ts-worker 72/72, bench 331/331, graphs 178/178, ext 202/202, effects 2353/2378. J (optional) failed only validation-problems there; fa206d1 fixes it. The e1afe8d run is pending.
 - Live (https://ex-ct.github.io/eve-fit-web/) checked at f97501a: e2e wasm-worker 76/76, ts-worker 66/66.
 
 ### Done
