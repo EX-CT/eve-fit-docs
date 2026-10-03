@@ -1,6 +1,6 @@
 # 18 — F vs J: dedicated engine evaluation (Rust codegen + WASM vs C++20)
 
-> **Status: METHOD FIXED, EXECUTION IN PROGRESS.** Placeholders `⟨…⟩` are filled in by later commits. Nothing in this
+> **Status: CANCELLED 2026-10-03 11:09 CST (Rust mainline based on F). Method kept as a record.** Placeholders `⟨…⟩` are filled in by later commits. Nothing in this
 > document merges anything. The final section is a **recommendation only**, pending the user's confirmation.
 >
 > 中文摘要：用户把范围收窄到两个方案：F（Rust，构建期把 SDE 生成为代码，原生 + WASM）和 J（C++20，运行时加载二进制数据镜像，原生 + Emscripten WASM）。
@@ -29,6 +29,13 @@ Unless stated otherwise, all measurements use `dataset-3569502.json.gz` and fres
 (`pgrep -af 'evaluate_graphs|tools/evaluate.py'` must be empty before any compile or benchmark).
 
 ## 1. Method
+
+**已取消—2026-10-03 11:09 用户定 Rust 主线（以 F 为基础）**
+
+> Cancelled 2026-10-03 11:09 CST: the user chose a Rust mainline based on F; J is no longer a candidate and the
+> graphs-j port was stopped. The method below is kept as a record; no exercise, J WASM or J correctness runs were
+> executed, and no exercise branches were created. F's correctness coverage is tracked in
+> `eve-dogma-bench` `results/F-coverage/`.
 
 Seven dimensions, each scored **0–10** on its own. There is deliberately **no single weighted total**: correctness
 is a gate, and the recommendation (§9) argues from the per-dimension table. (For reference only, the round-1 weights
