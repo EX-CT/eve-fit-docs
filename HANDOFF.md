@@ -100,9 +100,10 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - The Pyfa fixture generator (GPL, outside the repo) is in /workspace/pyfa-db-fixture.
 - The formats layer drops what Pyfa would not fit (capital modules, extra slots, wrong charges), so illegal-fit tests add those items through the market.
 
-## eve4 / eve-fit-mcp / eve-market-prices (executor bot; updated 2026-10-03 14:55 CST)
+## eve4 / eve-fit-mcp / eve-market-prices (executor bot; updated 2026-10-03 15:05 CST)
 
 ### Current commits
+- **docs/23 work (MCP side, pass-through):** eve-fit-mcp 1665e11 compute_fit price inputs, aeb7b7e compute_batch, c1626ef price_fit via engine price block (legacy sum only for engines without docs/23). Engine (eve-dogma d55fadb) has no `batch` / price block yet -> the value parts of mcp.features.price-passthrough / compute-batch are TODO and turn into checks automatically once the engine ships it.
 - EX-CT/eve-fit-mcp main: **e7b794a** = release **v0.3.1** (release run 37103909901 success; CI 37103809811 green: engine + test 20/22). No wip branches, nothing uncommitted.
 - EX-CT/eve-market-prices main: **1a34266** (CI 37103816237 green). wip/docs22-schema is merged (same commit) and can be deleted. First snapshot release: `prices-jita44-20261003T063856Z` (snapshot run 37103826084; 4910 priced, 2836 missing, sha256:3dd62f6c…).
 
@@ -115,6 +116,7 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - eve-fit-mcp step 2 (test gaps): stopped before updating docs/test-ids.md/json for the new ids and the README mcp-bench section. The v0.4.0 release is not done.
 
 ### Next steps
+0. In progress: step 2 docs/test-ids + README, then v0.4.0 (includes compute_batch / price passthrough).
 1. After F's docs/23 lands: MCP compute_batch plus price_overrides / prices pass-through, with no pricing math in MCP.
 2. Resume step 2 (docs/test-ids, README), then v0.4.0.
 
