@@ -30,6 +30,7 @@
 | 10 | [round-2-graphs-plan](docs/10-round-2-graphs-plan.md) | Round 2: Pyfa graphs — contract summary, four implementation approaches, bench plug-in (draft) |
 | 12 | [repo-hygiene-audit](docs/12-repo-hygiene-audit.md) | All public repos and branches, full history: licences, Pyfa code, large blobs, secrets, artifacts; rewrite proposals |
 | 13 | [engine-round-2-evaluation](docs/13-engine-round-2-evaluation.md) | Graphs bake-off G1–G4: method, scoring, licensing, results, decision (draft) |
+| 14 | [mutated-modules](docs/14-mutated-modules.md) | Mutated modules (mutaplasmids) + implant/booster combos: Pyfa semantics, request format, `mutated-suite` (93 cases), per-engine changes, scoring (draft) |
 | — | [LICENSING](LICENSING.md) | License decisions (Pyfa GPLv3 / eos LGPL / CCP data) |
 | — | [PROGRESS](PROGRESS.md) | Done / next, for resuming work |
 
