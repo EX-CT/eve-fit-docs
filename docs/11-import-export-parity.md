@@ -4,7 +4,8 @@
 Multibuy、舰船属性文本、变异装备文本、附加列表、自动识别、EFS），说明用 Pyfa 自身代码生成的往返测试集
 （eve-dogma-bench 分支 `formats-suite`：3260 条导出、1304 条往返导入、16 条边界用例），并给出 Pyfa 的实际行为
 与 variant F 的实现/未实现对照表。第 3 轮（导入/导出格式）以 FORMATS 合约 0.1 草案计分（第 5 节）：
-共 4792 行（含 228 行边界/畸形输入），以 Pyfa 实际行为为准；variant F（bc84e2b）得分 4781/4792（原生与 WASM 相同）。
+共 4793 行（4782 行计分，四组各占 25%；Pyfa 自身崩溃、多舰合并粘贴、旧物品名等 11 行仅报告），以 Pyfa 实际行为为准；
+variant F（bc84e2b）得分 98.44%（4774/4782），graphs-g4（22dbeb7）99.98%（4780/4782），原生与 WASM 相同。
 草案尚未冻结，等第 1 轮归档后再定稿。
 
 Status: 2026-10-03, Pyfa client db 3532181, bench cases 1.8.0 (326 fits). Suite: `EX-CT/eve-dogma-bench`
