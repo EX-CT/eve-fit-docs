@@ -109,7 +109,7 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 
 ## eve3 / bench (executor bot; updated 2026-10-03 15:15 CST)
 
-### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 15:16 CST
+### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 15:21 CST
 **Current commits** (everything pushed)
 - eve-dogma-bench pending-1.11:
   - Gate + baseline: `98419df`, `b3a0957`, `07245e8`, `c2229b2`, `88ed590`, `32981f5`, `d151cb3` (d22 suites), `01f39e1` (totals after the rulings).
@@ -131,10 +131,14 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
   SDE_LOAD_FAILED + reason). price_rule `b638e8a` adopts eve4's rule (eve-market-prices e9781a5) as the reference:
   41 cases (the 21 existing ones unchanged), eve4 41/41. The spec is in d22/README.md.
 
-**In progress:** none.
+- F 8bde0ba (batch + prices, CI green) and the contract in eve-fit-docs eccf455. Bench fixes: `df587f0` (JCS
+  content_hash; batch/data and d22/data committed via `.gitignore` `/data/`) and `4783eab` (contract §11 decisions,
+  compact sweep labels, use_snapshot:false on 4 cases). 8bde0ba: batch 93/93, sde 18/18 (+5 pending),
+  price_inject 32/32 (+1 pending).
 
-**Next step:** wait for F's docs/22 / docs/23 updates and change only `batch/adapter.py` / `d22/adapter.py` where
-they differ. eve4 can move the price-rule-bench pin to `b638e8a`.
+**In progress:** full run_all + gate on 8bde0ba, then raise baselines/f.json.
+
+**Next step:** the same.
 
 ### docs/19 + missing/partial cases (updated 2026-10-03 15:25 CST)
 **Current commits:** eve-dogma-bench pending-1.11: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5, 583f912, b34ebb9, 455aa53, 1fd7e37 (tip 1fd7e37). eve-fit-docs: ef6cdb6, 07341e3, eccb194, b6b8a6d, 295694a, c35c162. Nothing uncommitted; **no wip branches**.
