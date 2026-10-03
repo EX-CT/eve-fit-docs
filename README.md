@@ -31,6 +31,7 @@
 | 12 | [repo-hygiene-audit](docs/12-repo-hygiene-audit.md) | All public repos and branches, full history: licences, Pyfa code, large blobs, secrets, artifacts; rewrite proposals |
 | 13 | [engine-round-2-evaluation](docs/13-engine-round-2-evaluation.md) | Graphs bake-off G1–G4: method, scoring, licensing, results, decision (draft) |
 | 14 | [mutated-modules](docs/14-mutated-modules.md) | Mutated modules (mutaplasmids) + implant/booster combos: Pyfa semantics, request format, `mutated-suite` (93 cases), per-engine changes, scoring (draft) |
+| 17 | [fuzzing-and-ci](docs/17-fuzzing-and-ci.md) | Differential fuzz + Pyfa oracle adjudication, pending-case flow, state ruling, nightly CI and Pyfa-free invariants |
 | — | [LICENSING](LICENSING.md) | License decisions (Pyfa GPLv3 / eos LGPL / CCP data) |
 | — | [PROGRESS](PROGRESS.md) | Done / next, for resuming work |
 
