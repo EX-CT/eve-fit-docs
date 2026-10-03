@@ -91,25 +91,21 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 - The Pyfa fixture generator (GPL, outside the repo) is in /workspace/pyfa-db-fixture.
 - The formats layer drops what Pyfa would not fit (capital modules, extra slots, wrong charges), so illegal-fit tests add those items through the market.
 
-## eve4 / eve-fit-mcp / eve-market-prices (executor bot; updated 2026-10-03 15:05 CST)
+## eve4 / eve-fit-mcp / eve-market-prices (executor bot; updated 2026-10-03 15:00 CST)
 
 ### Current commits
-- **docs/23 work (MCP side, pass-through):** eve-fit-mcp 1665e11 compute_fit price inputs, aeb7b7e compute_batch, c1626ef price_fit via engine price block (legacy sum only for engines without docs/23). Engine (eve-dogma d55fadb) has no `batch` / price block yet -> the value parts of mcp.features.price-passthrough / compute-batch are TODO and turn into checks automatically once the engine ships it.
-- EX-CT/eve-fit-mcp main: **e7b794a** = release **v0.3.1** (release run 37103909901 success; CI 37103809811 green: engine + test 20/22). No wip branches, nothing uncommitted.
-- EX-CT/eve-market-prices main: **1a34266** (CI 37103816237 green). wip/docs22-schema is merged (same commit) and can be deleted. First snapshot release: `prices-jita44-20261003T063856Z` (snapshot run 37103826084; 4910 priced, 2836 missing, sha256:3dd62f6c…).
+- EX-CT/eve-fit-mcp main: **462c759** engines.lock -> eve-dogma **197223f** (docs/23 batch + prices); CI must run the docs/23 checks (TODO fallback fails CI). Before it: 583a197 price_fit engine path (include_* toggles as a view over engine sections), e309e7e README, 73eb2b7 module /online|/active|/overheated, 7e8fa6b docs/test-ids (tools/test-ids.py), c1626ef price_fit via engine, aeb7b7e compute_batch, 1665e11 compute_fit price inputs. Last release v0.3.1 (e7b794a). No wip branches.
+- EX-CT/eve-market-prices main: **e9781a5** CLI `rule` (bench d22/price_rule transport) + band-edge fix + CI job price-rule-bench (bench pinned d151cb3; 21/21 locally). wip/docs22-schema kept (same as 1a34266; no branch deletion). Snapshot release `prices-jita44-20261003T063856Z`.
 
 ### Done
-- eve-fit-mcp fixes for eve3's mcp_batch findings (ffc642a, schemas e7b794a). Bugs 1 (empty nested booster_fits) and 2 (projected fighter quantity) were already fixed in 70d463b and are now pinned by tests. Bug 3: tool errors are "Error: CODE: msg" (engine codes verbatim; MCP input errors BAD_REQUEST; unknown types UNKNOWN_TYPE). compute_graph passes explicit x.values / y / resist_mode through to the engine.
-  mcp_batch 8c6b93d -> e7b794a: core 322 -> 339/339; ext 201 -> 207/239 (= engine direct); graphs 176 -> 189/192. err_missing_x, err_missing_x_values and err_missing_y still fail because compute_graph defaults omitted x/y on purpose; suggest marking them mcp n/a.
-- eve-market-prices: TS library + CLI with no dependencies. Rule jita_sell_band_weighted v1 (min_units default 10, band 0.05, both configurable), ESI and Fuzzwork sources, eve-price-snapshot v1 per docs/22 §4, JSON Schema, 26 tests, non-gating live smoke, daily snapshot release workflow (03:17 UTC + manual). docs/22 gaps are listed in the README (hash number form `1240000` vs `1240000.0`, key order, band_max, sde_build required, aggregate clamp).
-
-### Paused
-- eve-fit-mcp step 2 (test gaps): stopped before updating docs/test-ids.md/json for the new ids and the README mcp-bench section. The v0.4.0 release is not done.
+- docs/23 MCP pass-through, checked against eve-dogma 197223f: compute_fit `price_overrides` / `prices` / `price` (names -> ids, engine block verbatim), compute_batch (fit sources normalised, engine `batch`), price_fit (market table + own isk injected as `prices.isk`, engine block; legacy sum only for old engines). npm test on 197223f: 88 pass, 1 todo (security-status effect 6871, engine). mcp-bench on 197223f: core 339/339, ext 202/202, effects 2378/2378 (0 lost through MCP), cap 150/150.
+- Step 2 test gaps (inventory/mcp-web-gaps.md): mcp-bench in CI, silent skips hard-fail, stats/validation value assertions, get_ship traits, utility module states; docs/test-ids.{md,json} (89 ids with inventory item refs).
+- eve-market-prices: d22/price_rule found a real bug (order prices were trimmed to 12 digits before the band compare, so an order one ulp above band_max counted); fixed per docs/22 §4.5.
+- Earlier: mcp_batch fixes (error codes, graph passthrough), v0.3.1; eve-market-prices v1 updater + snapshot workflow.
 
 ### Next steps
-0. In progress: step 2 docs/test-ids + README, then v0.4.0 (includes compute_batch / price passthrough).
-1. After F's docs/23 lands: MCP compute_batch plus price_overrides / prices pass-through, with no pricing math in MCP.
-2. Resume step 2 (docs/test-ids, README), then v0.4.0.
+1. Green CI on 462c759 -> release eve-fit-mcp **v0.4.0** (compute_batch, engine prices, engine pin 197223f).
+2. eve3: price_rule interface notes in the eve4 report (rounding of exact-binary halves, price<=0 orders, clamp).
 
 ## eve3 / bench (executor bot; updated 2026-10-03 15:15 CST)
 
