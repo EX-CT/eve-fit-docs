@@ -114,31 +114,17 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 2. Then (after F's contract, docs/23): MCP `compute_batch` + `price_overrides` / `prices` pass-through only (no pricing math in MCP).
 
 ---
-## eve3 / bench (executor bot; updated 2026-10-03 14:35 CST)
+## eve3 / bench (executor bot; updated 2026-10-03 14:30 CST)
 
-### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started)
-**Current commits** (EX-CT/eve-dogma-bench pending-1.11; everything pushed, no wip branches yet)
-- No-regress gate: `98419df` (`tools/run_all_suites.sh` + `tools/check_no_regress.py`) and `b3a0957`
-  (`baselines/f.json` seeded from eve-dogma 2da8150 + `baselines/README.md`). F wired it into eve-dogma CI (8011d64, d990818).
-- batch-suite: `a00620f` (`batch/`: 44 cases = multi 12, variants 12, product 9, sweep 11; 1024 fits; PROVISIONAL
-  shape in `batch/CONTRACT-BATCH.md`, only `batch/adapter.py` changes when F's contract lands) and `07245e8` (gate runs
-  and collects `batch`; not in f.json yet).
-- optimizer-bench WIP: `13cb0d9`, `e88d0a4`, `d48bbab` (27 cases with exhaustive optima, Pyfa check 27/27). Shelved:
-  score.py, baselines and the full README were not started (plan in `optimizer/README.md`).
+### docs/19 + missing/partial cases
+**Current commits:** eve-dogma-bench pending-1.11 tip 11993f5 (mine: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5); eve-fit-docs: ef6cdb6, 07341e3, eccb194. Nothing uncommitted; no wip branches.
 
 **Progress**
-- Batch check: every result must be byte-identical to `calc` of the same fit run on its own, plus deltas, sort,
-  filter, `fields` and limit. Self-test 44/44. eve-dogma 2da8150 scores 0/44 (`calc_batch` is UNKNOWN_METHOD).
-- No batch contract in EX-CT/eve-dogma yet (checked main d990818, read-only).
-- Baseline 2da8150: core 339, ext 204/239, ext_rpc 0/31, effects 2352/2378, graphs 192, cap 150, mutated 93,
-  formats 4779. docs/19 have counts: f 104, mcp 38, web 84, formats 10.
+- 26 f-missing items triaged: 16 Pyfa-generatable, 68 cases. `ext:` brdc_ (ENG-MISC-004), cimp_ (ENG-IMP-002, CHR-006), alpha_ (ENG-CORE-009), dpb_ (PRF-DMG-001), tpb_ (PRF-TGT-001), src_ (ENG-CORE-007), dep_ (ENG-CORE-008); `ext-rpc:` var_, cmp_, mkt_, srch_, isets_, evemon_, names_, backup_ (ENG-MOD-013, MKT-004, MKT-001, MKT-002, ENG-IMP-005, CHR-004, SVC-005, DB-003). Not generatable: CHR-009, PRC-001..005, UI-STAT-PRC, UI-PREF-MKT, DB-001, DB-008. Oracle opt-in `ORACLE_EXTRA=drafts,sources` + `oracle/pyfa_lookup.py`; default output byte-identical. Draft fields: CONTRACT.md "Draft 1.11: missing-f".
+- F 2da8150: ext new 2/37, rpc 0/54 (incl. 23 `type_*` for f-partial MKT-003 / ENG-SHIP-006 / CHR-008).
+- mcp partials: `tools/mcp_batch.py` (bench suites through compute_fit / compute_graph), suites mcp-bench/-ext/-ext-unit/-cap/-mut/-graphs; 59 mcp items partial -> have. MCP bugs: nested empty `booster_fits: []` rejected (fit.ts:209), projected fighter quantity defaults to 1 (fit.ts:202).
+- check_inventory: 0 problems.
 
-**Next steps**
-1. Add batch to f.json at 0/44 (`--only batch --update`). Once eve-dogma d990818 CI is green, run run_all_suites on
-   it and `--update` f.json (expected: effects 2378, ext 207).
-2. batch-suite price-override cases (docs/22: type > market group (+children) > group > category > injected >
-   snapshot; 0 and multipliers; per-price `source`, missing list, line items sum to total; variants with their own
-   overrides).
-3. docs/19 extras ENG-BATCH-001 (批量计算) and ENG-PRICE-001 (price overrides and price source), extra: true;
-   re-render; check_inventory must report 0 problems.
-4. Switch `batch/adapter.py` to F's contract when it lands.
+**Next step:** re-run ext + rpc on F d990818, flip f items with full passes; then web partials (need a web-side runner, not pushable from bench).
+**wip branches:** none.
+
