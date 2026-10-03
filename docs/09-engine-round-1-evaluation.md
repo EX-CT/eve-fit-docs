@@ -1,7 +1,8 @@
 # 09 — Engine round 1 evaluation (variants A–K)
 
-> **Status: DRAFT SKELETON.** Numbers are placeholders (`⟨…⟩`) until the unified scoring run on 2026-10-03 10:20 CST
-> (bench 1.8.0, frozen at `0969967`). Filled in from `eve-dogma-bench/results/evaluation.{md,json}`.
+> **Status: RESULTS IN, DECISION PENDING.** Filled in from the official run (started 10:16, finished 10:46:56 CST,
+> 2026-10-03; bench 1.8.0 pinned @ `3da9671`, = `0969967` cases) in `eve-dogma-bench/results/evaluation.{md,json}`
+> (commit `579a21a`). §6 Decision is left for eve (coordinator); §7–§8 are drafts.
 >
 > 中文摘要：第一轮 11 个 dogma 引擎方案（A–K）的统一评测。正确性（bench 1.8.0 全部 326 个 case 与 Pyfa 一致）是门槛，
 > 过门槛后按 速度 40%、可维护性 35%、功能覆盖 15%、可移植性 10% 计分。本文记录方法、规则、结果、决定与合并计划。
@@ -17,7 +18,7 @@ which combination of ideas) becomes the core of the EXCT toolkit (CLI, MCP serve
 All measurements come from one command in [EX-CT/eve-dogma-bench](https://github.com/EX-CT/eve-dogma-bench):
 
 ```bash
-python3 tools/evaluate.py --as-of 2026-10-03T10:15:00+08:00 --runs ⟨N⟩ --fresh-clones   # results/evaluation.{md,json}
+python3 tools/evaluate.py --as-of 2026-10-03T10:15:00+08:00 --runs 3 --fresh-clones   # results/evaluation.{md,json}
 ```
 
 0. **Version rule:** every variant is evaluated at its branch HEAD as of **2026-10-03 10:15 CST** (last commit at or
@@ -27,7 +28,7 @@ python3 tools/evaluate.py --as-of 2026-10-03T10:15:00+08:00 --runs ⟨N⟩ --fre
    (directory `variant-<x>/`, commands from its `bench.yaml`). Full commit SHAs are recorded.
 2. **Build** with the variant's own `build` command (time recorded; fresh clone ⇒ fresh build).
 3. **Correctness + speed** with the official scorer (`run.py`, the same code `bench.py` uses) **pinned to bench 1.8.0
-   (`3da9671`, 326 cases)** regardless of upstream main, ⟨N⟩ runs per variant,
+   (`3da9671`, 326 cases)** regardless of upstream main, 3 runs per variant,
    after one untimed warm-up batch; median of perf numbers, `loadavg` before/after every run. **Latency** is measured
    separately: batch command pinned to one CPU, (t_N − t_1)/(N − 1), ≥ 5 independent samples, median, with sanity
    checks (≤ 0, below a 2 µs floor, above t_N/N → invalid; spread > 50 % → re-measure, then flag). Variants run one at a time. Every child run has a hard
@@ -39,7 +40,7 @@ python3 tools/evaluate.py --as-of 2026-10-03T10:15:00+08:00 --runs ⟨N⟩ --fre
    effects special-cased by name in hand-written code (per-effect hard-coding vs data-driven).
 6. **Portability**: evidence of a WASM / browser build in code (1), only documented (0.5), none (0).
 
-Caveat: the box is a shared 8-CPU machine that was under load (loadavg ≈ ⟨…⟩) during the run. Perf numbers are only
+Caveat: the box is a shared 8-CPU machine that was under load (1-min loadavg 1.0–2.8 during the run; per-variant range in the last column of §5). Perf numbers are only
 comparable within the same run; the log scale in the speed formula softens noise.
 
 ## 3. Scoring rules
@@ -63,19 +64,19 @@ The authoritative text is the docstring of `tools/evaluate.py`; if this section 
 
 | | Variant | Language | Core idea | Branch / commit | License | Mergeable into LGPL-3.0-or-later mainline |
 |---|---|---|---|---|---|---|
-| A | eve-dogma-rs (reference) | Rust | lazy memoised modifier graph | `main` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| B | data-oriented | Rust | compile a flat CSR modifier graph, then evaluate | `variant-b` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| C | Go | Go | pull-based modifier registry with selectors | `variant-c` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| D | TypeScript | TypeScript | pull-based attribute graph + typed modifier pipeline | `variant-d` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| E | Pyfa-faithful | Rust | Pyfa eos transpiled to Rust | `variant-e` @ ⟨sha⟩ | GPL-3.0-or-later | **no** (GPL LICENSE text, derived from Pyfa) ⟨confirm⟩ |
-| F | codegen | Rust (+WASM) | SDE compiled into Rust code at build time | `variant-f` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| G | batch | Python + NumPy | vectorised dogma over many fits | `variant-g` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| H | ECS | Rust (hecs) | entities/components/systems | `variant-h` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| I | incremental | Rust (salsa) | memoised demand-driven query graph | `variant-i` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| J | C++20 | C++20 | mmapped POD dataset image, flat attribute tables | `variant-j` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
-| K | .NET | C# (Native AOT) | typed rule book + binary dataset cache | `variant-k` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
+| A | eve-dogma-rs (reference) | Rust | lazy memoised modifier graph | `main` @ 659737b | LGPL-3.0-or-later | yes (confirmed) |
+| B | data-oriented | Rust | compile a flat CSR modifier graph, then evaluate | `variant-b` @ f56dd59 | LGPL-3.0-or-later | yes (confirmed) |
+| C | Go | Go | pull-based modifier registry with selectors | `variant-c` @ d12ff1a | LGPL-3.0-or-later | yes (confirmed) |
+| D | TypeScript | TypeScript | pull-based attribute graph + typed modifier pipeline | `variant-d` @ 5218e0d | LGPL-3.0-or-later | yes (confirmed) |
+| E | Pyfa-faithful | Rust | Pyfa eos transpiled to Rust | `variant-e` @ 5867d53 | GPL-3.0-or-later | **no** (GPL LICENSE text, derived from Pyfa) (confirmed) |
+| F | codegen | Rust (+WASM) | SDE compiled into Rust code at build time | `variant-f` @ bc84e2b | LGPL-3.0-or-later | yes (confirmed) |
+| G | batch | Python + NumPy | vectorised dogma over many fits | `variant-g` @ a07402e | LGPL-3.0-or-later | yes (confirmed) |
+| H | ECS | Rust (hecs) | entities/components/systems | `variant-h` @ b1c7852 | LGPL-3.0-or-later | yes (confirmed) |
+| I | incremental | Rust (salsa) | memoised demand-driven query graph | `variant-i` @ ad9f73e | LGPL-3.0-or-later | yes (confirmed) |
+| J | C++20 | C++20 | mmapped POD dataset image, flat attribute tables | `variant-j` @ 3ab992d | LGPL-3.0-or-later | yes (confirmed) |
+| K | .NET | C# (Native AOT) | typed rule book + binary dataset cache | `variant-k` @ ce381f1 | LGPL-3.0-or-later | yes (confirmed) |
 
-Licenses are provisional (detected 2026-10-03 08:47 CST on current heads from the actual LICENSE texts in the variant
+Licenses were **confirmed by the official run at the evaluated (10:15) commits**: all LGPL-3.0-or-later (LGPL v3 LICENSE + GPL companion text) and mergeable, except E (GPL-3.0-or-later, GPL-3 LICENSE text only ⇒ not mergeable). First detected 2026-10-03 08:47 CST on current heads from the actual LICENSE texts in the variant
 dir and branch root; SPDX metadata / README only refine -only vs -or-later) and are re-detected by the evaluation run (`results/evaluation.md`, "Licensing" table). Mergeable =
 the code can be merged into the LGPL-3.0-or-later mainline (`eve-dogma-rs`): LGPL-3 / permissive → yes, GPL → no,
 nothing found → unknown (the authors must add a license before any merge). Licensing is informational, not scored,
@@ -130,39 +131,73 @@ but it constrains the merge plan (§7).
 
 ## 5. Results
 
-Source: `eve-dogma-bench/results/evaluation.md` (commit ⟨sha⟩), measured ⟨date time⟩ CST, loadavg ⟨…⟩, ⟨N⟩ runs.
+Source: `eve-dogma-bench/results/evaluation.md` (commit `579a21a`), measured 10:16–10:46:56 CST 2026-10-03, 3 runs
+per variant + warm-up, fresh clones (build time scored), total wall time 23.1 min. Commits are the branch heads as of
+10:15 CST (checked against the GitHub push log: no variant pushed between the cutoff and its fetch; variant-i got a
+later push at 10:53 CST, `1dba15e`, a bench-1.9.0 failures.json refresh, after its evaluation — not part of round 1).
+Latency: all 11 variants 5/5 valid samples, spread ≤ 40 %, no flags.
 
-| rank | variant | cases | values | ms/calc | fits/s | cold ms | speed | maint. | features | port. | **total** |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| ⟨…⟩ | A | ⟨…⟩/326 | ⟨…⟩/21 051 | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ | ⟨…⟩ |
-| ⟨…⟩ | B | | | | | | | | | | |
-| ⟨…⟩ | C | | | | | | | | | | |
-| ⟨…⟩ | D | | | | | | | | | | |
-| ⟨…⟩ | E | | | | | | | | | | |
-| ⟨…⟩ | F | | | | | | | | | | |
-| ⟨…⟩ | G | | | | | | | | | | |
-| ⟨…⟩ | H | | | | | | | | | | |
-| ⟨…⟩ | I | | | | | | | | | | |
-| ⟨…⟩ | J | | | | | | | | | | |
-| ⟨…⟩ | K | | | | | | | | | | |
+| rank | variant | commit (CST) | cases | values | ms/calc | fits/s | cold ms | speed | maint | features | port | **total** | load (1m) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | J C++20 | `3ab992d` 10-03 09:07 | 326/326 | 21051/21051 | 0.076 | 28641 | 2.2 | 0.99 | 0.75 | 1.00 | 1.00 | **0.911** | 2.8–2.8 |
+| 2 | F codegen Rust/WASM | `bc84e2b` 10-03 07:34 | 326/326 | 21051/21051 | 0.101 | 21783 | 1.8 | 0.95 | 0.64 | 1.00 | 1.00 | **0.854** | 1.3–1.6 |
+| 3 | B data-oriented Rust | `f56dd59` 10-03 09:45 | 326/326 | 21051/21051 | 0.099 | 19268 | 4.7 | 0.90 | 0.70 | 1.00 | 0.50 | **0.805** | 1.6–1.7 |
+| 4 | A eve-dogma-rs (Rust ref) | `659737b` 10-03 09:31 | 326/326 | 21051/21051 | 0.120 | 4847 | 8.0 | 0.77 | 0.66 | 1.00 | 1.00 | **0.790** | 1.0–1.2 |
+| 5 | H Rust ECS | `b1c7852` 10-03 08:46 | 326/326 | 21051/21051 | 0.231 | 3240 | 5.2 | 0.69 | 0.69 | 1.00 | 1.00 | **0.770** | 1.2–1.2 |
+| 6 | C Go | `d12ff1a` 10-03 07:27 | 326/326 | 21051/21051 | 0.234 | 12794 | 27.1 | 0.71 | 0.83 | 1.00 | 0.00 | **0.723** | 2.1–2.7 |
+| 7 | E Pyfa-faithful Rust | `5867d53` 10-03 07:34 | 326/326 | 21051/21051 | 0.120 | 4377 | 8.8 | 0.76 | 0.74 | 1.00 | 0.00 | **0.712** | 1.2–1.3 |
+| 8 | I Rust salsa | `ad9f73e` 10-03 09:18 | 326/326 | 21051/21051 | 0.124 | 2031 | 17.8 | 0.68 | 0.68 | 1.00 | 0.00 | **0.659** | 1.5–1.6 |
+| 9 | D TypeScript | `5218e0d` 10-03 08:13 | 326/326 | 21051/21051 | 1.827 | 1168 | 109.3 | 0.27 | 0.68 | 1.00 | 1.00 | **0.596** | 1.3–1.8 |
+| 10 | G Python+NumPy | `a07402e` 10-03 06:51 | 326/326 | 21051/21051 | 2.288 | 382 | 104.2 | 0.17 | 0.79 | 1.00 | 0.00 | **0.496** | 1.3–1.8 |
+| 11 | K C#/.NET AOT | `ce381f1` 10-03 08:18 | 326/326 | 21051/21051 | 1.139 | 1017 | 59.9 | 0.34 | 0.57 | 1.00 | 0.00 | **0.484** | 2.1–2.8 |
+
+All 11 variants passed the gate (326/326 cases, 21 051/21 051 values in every run, deterministic). Gaps in the
+total come from speed (log scale, 100× span) and maintainability; features are 1.00 for everyone (EFT export
+byte-exact 326/326, `eft_parse` 20/20, RPC/search/type probes all pass).
+
+### Per-variant notes
+
+- **J (C++20) — 1st, 0.911.** Fastest latency (0.076 ms/calc) and batch (28.6 k fits/s), cold start 2.2 ms (mmapped
+  POD image), WASM build in code. Maintainability 0.75: 7 251 core LOC, 123 ctest tests passing, 2 deps, 7.3 s build.
+- **F (codegen Rust/WASM) — 2nd, 0.854.** Best cold start (1.8 ms, dataset baked in), 0.101 ms/calc, 21.8 k fits/s,
+  WASM in code. Maintainability 0.64 is the weak spot: no own tests (0 tests found), 78.8 s build, generated code.
+- **B (data-oriented Rust) — 3rd, 0.805.** 0.099 ms/calc (≈ F), 19.3 k fits/s; 51 tests; WASM only documented (0.5).
+- **A (eve-dogma-rs reference) — 4th, 0.790.** 0.120 ms/calc but low batch (4.8 k fits/s) and 8 ms cold start; 10 tests,
+  8 deps; WASM in code. The incumbent; good merge target.
+- **H (Rust ECS) — 5th, 0.770.** 0.231 ms/calc, 3.2 k fits/s; 35 tests, 10 deps (most); WASM in code.
+- **C (Go) — 6th, 0.723.** Highest maintainability (0.83: 361 tests, 0 deps, 0.8 s build) and good batch (12.8 k fits/s),
+  but 27 ms cold start and no WASM/browser path (portability 0).
+- **E (Pyfa-faithful Rust) — 7th, 0.712.** Most data-driven (26 hard-coded effect names vs 92–98 elsewhere, ratio 0.992,
+  transpiled Pyfa handlers), 0.120 ms/calc; only 1 test, no WASM. **GPL-3.0-or-later ⇒ not mergeable** into the
+  LGPL mainline; valuable as an independent Pyfa oracle.
+- **I (Rust salsa) — 8th, 0.659.** 0.124 ms/calc single-shot, 2.0 k fits/s, 17.8 ms cold; incremental-session strengths
+  are not exercised by the stateless bench. 0 tests found, no WASM.
+- **D (TypeScript) — 9th, 0.596.** 1.83 ms/calc, 109 ms cold start (Node), but zero deps and runs in browser (port. 1.0);
+  test count not parsed (npm suite passed).
+- **G (Python + NumPy) — 10th, 0.496.** Slowest single-fit (2.29 ms/calc, 382 fits/s); smallest core (3 845 LOC), 0.3 s
+  build, maint 0.79. Batch design does not pay off on 326 fits.
+- **K (C#/.NET AOT) — 11th, 0.484.** 1.14 ms/calc, 60 ms cold start; no own test suite found (Tests 0), no WASM.
 
 Maintainability detail (core LOC per language, tests, deps, build time, docs, license, hard-coded effects) and the
 per-run table with loadavg: see `results/evaluation.md`.
 
-Not ranked (failed the gate) and why: ⟨…⟩
+Not ranked (failed the gate): none.
 
 ## 6. Decision
 
-⟨To be written after the 10:20 run.⟩ Questions to answer:
+⟨Left for eve (coordinator).⟩ Questions to answer:
 - Which variant becomes the core engine (`eve-dogma-rs` main) for the CLI / MCP / web UI?
 - Is the winner also the WASM/browser engine, or is a second engine kept for the browser (D or F)?
 - Do we keep a second independent implementation as a cross-check oracle (differential testing)?
 
 ## 7. Merge plan
 
-⟨To be written.⟩ Template:
+**DRAFT (depends on §6).** Template, with first proposals from the results:
 1. Ideas to port into the chosen core (per idea: source variant, expected gain, owner, acceptance = bench 326/326 + no
-   perf regression).
+   perf regression). Candidates: J's precomputed relevance tables / mmapped POD dataset image and streaming writer
+   (latency, cold start); F's build-time specialisation of effects and baked dataset (cold start, WASM size); B's CSR
+   flat modifier graph (Rust-native, near-F latency); C's selector-tagged pull registry and its 361-test suite as test
+   material; E's transpiled Pyfa handlers only as a GPL oracle for differential testing (not merged).
 2. Repository moves (which branch becomes which repo / crate). Licensing gate: only code marked *mergeable = yes*
    enters the LGPL-3.0-or-later core; E (GPL-3.0-or-later, derived from Pyfa) can only contribute ideas or stay a
    separate GPL cross-check tool. All other variants currently ship LGPL v3 LICENSE texts (re-checked at the 10:15 commit).
@@ -171,7 +206,17 @@ Not ranked (failed the gate) and why: ⟨…⟩
 
 ## 8. Lessons learned
 
-⟨To be written.⟩ Prompts:
+**DRAFT.** First observations from the run (to be extended by the teams):
+- Correctness converged: all 11 designs reached 326/326 on the frozen 1.8.0 bench, so the ranking is decided by
+  speed and maintainability — the shared bench/oracle and frozen versions worked.
+- Dataset loading dominates cold start (1.8–2.2 ms for baked/mmapped images vs 8–110 ms for parse-at-start).
+- Several variants report no own tests (F, I, K) or unparsed counts (D, G); require a machine-readable test summary.
+- Per-effect hard-coding is similar (92–98 names) except E (26): transpiling Pyfa is the data-driven outlier.
+- Measurement: shared loaded machine (loadavg up to 2.8); own single-CPU latency kept spreads ≤ 40 %; next time run on
+  an idle host. Freeze the cutoff by **push time** (GitHub push log), not commit time — variant-i had commits dated
+  09:52–09:53 that were only pushed at 10:53.
+
+Prompts:
 - Correctness: which Pyfa quirks were hardest, and how did the shared oracle/bench shape the work?
 - Performance: what actually mattered (dataset loading/caching, allocation, skill pruning, batch parallelism)?
 - Process: 11 parallel bots, frozen bench versions (1.5 → 1.8), contract rulings; what to change for round 2?
