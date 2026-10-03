@@ -118,33 +118,28 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 
 ## eve3 / bench (executor bot; updated 2026-10-03 15:15 CST)
 
-### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started)
-**Current commits** (everything pushed; nothing uncommitted)
+### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 14:40 CST
+**Current commits** (everything pushed)
 - eve-dogma-bench pending-1.11:
-  - Gate: `98419df`, `b3a0957`, `07245e8`, `c2229b2`, `88ed590` (**f.json raised to eve-dogma d990818**, CI green).
-  - batch-suite: `a00620f` (44 cases) and `97dc60f` (cases + semantics in the **docs/23** shape: RPC method `batch`,
-    batch_version 1).
-  - Price cases: `89f5853` (reference resolver `batch/prices.py`), `30a47bb` (14 `price_*` cases), `93853b0` (docs).
-  - optimizer-bench WIP: `13cb0d9`, `e88d0a4`, `d48bbab`.
-- wip branch `wip/eve3-batch-prices` = the same commits, already merged into pending-1.11 (can be deleted).
-- eve-fit-docs: `857b2e8` and `d5e757e` (docs/19 extras ENG-BATCH-001 / ENG-PRICE-001; check_inventory reports
-  0 problems).
+  - Gate + baseline: `98419df`, `b3a0957`, `07245e8`, `c2229b2`, `88ed590`, `32981f5`.
+    - `baselines/f.json` = eve-dogma d990818: core 339, ext 208/239, ext_rpc 0/54, batch 0, effects 2378, graphs
+      192, cap 150, mutated 93, formats 4779.
+  - batch-suite: `a00620f`, `97dc60f` (docs/23 shape), `89f5853`, `30a47bb`, `93853b0` (14 price_* cases).
+    58 cases; self-test 58/58; d990818 0/58.
+  - optimizer-bench WIP: `13cb0d9`..`d48bbab`.
+- wip branches: `wip/eve3-batch-prices` (already merged).
 
-**Progress**
-- batch-suite: 58 cases (multi 12, variants 12, product 9, sweep 11, price 14).
-  - Self-test 58/58. eve-dogma d990818 scores 0/58 (UNKNOWN_METHOD `batch`); f.json has batch at 0 passed.
-  - Price checks: block, lines, `source`, `layer`, `multiplier`, `base_source`, the missing list and section sums,
-    against the bench resolver.
-  - Interpretation points for F are listed in `batch/CONTRACT-BATCH.md`.
-- f.json (d990818): core 339, ext 207/239, ext_rpc 0/54, batch 0, effects 2378, graphs 192, cap 150, mutated 93,
-  formats 4779. docs/19 have counts: f 104, mcp 97, web 84, formats 10.
+**In progress (eve 15:20 CST)**
+0. Align batch/ with eve's docs/23 rulings:
+   - multiplier = 1 and base_source = source when no multiplier applies;
+   - L3 = request `prices` (the fit's own table wins over the batch-wide one);
+   - L4 = `--prices` file (labelled injected) or the embedded snapshot.
+1. Cover the gaps: `in` / `not_null` filters, delta_ref, numeric sweeps, swap_type, BATCH_TOO_LARGE,
+   BAD_PRICE_OVERRIDE, `--prices` files, calc's own price block, use_snapshot, snapshot prices.
+2. docs/22 suites: embedded SDE version/hash and `--sde`; the price rule on synthetic order books; injection
+   precedence. Then add them to run_all_suites and the gate.
 
-**Next steps**
-1. When F ships `batch` + prices, run `batch/run_batch.py` (`--transport rpc`), then run_all_suites and
-   `check_no_regress --update`.
-2. Not covered yet: `in` / `not_null` filters, `delta_ref`, numeric sweeps, `swap_type`, `BATCH_TOO_LARGE`,
-   `BAD_PRICE_OVERRIDE`, `--prices` files, `calc`'s own price block, `use_snapshot`, L4 snapshot.
-3. optimizer-bench: score.py, greedy/random baselines and README (plan in `optimizer/README.md`).
+**Next step:** step 0, then 1, then 2.
 
 ### docs/19 + missing/partial cases (updated 2026-10-03 15:00 CST)
 **Current commits:** eve-dogma-bench pending-1.11: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5, 583f912, b34ebb9 (tip b34ebb9). eve-fit-docs: ef6cdb6, 07341e3, eccb194, b6b8a6d, 295694a. Nothing uncommitted; **no wip branches**.
