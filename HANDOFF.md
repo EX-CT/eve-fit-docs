@@ -118,13 +118,13 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 
 ## eve3 / bench (executor bot; updated 2026-10-03 15:15 CST)
 
-### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 14:40 CST
+### batch-suite, no-regress gate, optimizer-bench (shelved at d48bbab, score.py not started) — updated 2026-10-03 14:41 CST
 **Current commits** (everything pushed)
 - eve-dogma-bench pending-1.11:
   - Gate + baseline: `98419df`, `b3a0957`, `07245e8`, `c2229b2`, `88ed590`, `32981f5`.
     - `baselines/f.json` = eve-dogma d990818: core 339, ext 208/239, ext_rpc 0/54, batch 0, effects 2378, graphs
       192, cap 150, mutated 93, formats 4779.
-  - batch-suite: `a00620f`, `97dc60f` (docs/23 shape), `89f5853`, `30a47bb`, `93853b0` (14 price_* cases).
+  - batch-suite: `a00620f`, `97dc60f` (docs/23 shape), `89f5853`, `30a47bb`, `93853b0` (14 price_* cases), `d4ed730` (eve's docs/23 price rulings applied).
     58 cases; self-test 58/58; d990818 0/58.
   - optimizer-bench WIP: `13cb0d9`..`d48bbab`.
 - wip branches: `wip/eve3-batch-prices` (already merged).
@@ -139,7 +139,7 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 2. docs/22 suites: embedded SDE version/hash and `--sde`; the price rule on synthetic order books; injection
    precedence. Then add them to run_all_suites and the gate.
 
-**Next step:** step 0, then 1, then 2.
+Step 0 done (`d4ed730`). **Next step:** 1 (batch gaps), then 2.
 
 ### docs/19 + missing/partial cases (updated 2026-10-03 15:00 CST)
 **Current commits:** eve-dogma-bench pending-1.11: 443ee69, 5b6051c, d7ba4d9, 113415b, 5dc739d, a319f0f, 11993f5, 583f912, b34ebb9 (tip b34ebb9). eve-fit-docs: ef6cdb6, 07341e3, eccb194, b6b8a6d, 295694a. Nothing uncommitted; **no wip branches**.
