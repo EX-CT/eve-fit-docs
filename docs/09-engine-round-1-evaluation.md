@@ -26,8 +26,11 @@ python3 tools/evaluate.py --as-of 2026-10-03T10:15:00+08:00 --runs ⟨N⟩ --fre
 1. **Fetch** the head as of the cutoff for each variant: A = `EX-CT/eve-dogma-rs@main`; B–K = `EX-CT/eve-dogma-lab@variant-<x>`
    (directory `variant-<x>/`, commands from its `bench.yaml`). Full commit SHAs are recorded.
 2. **Build** with the variant's own `build` command (time recorded; fresh clone ⇒ fresh build).
-3. **Correctness + speed** with the official scorer (`run.py`, the same code `bench.py` uses), ⟨N⟩ runs per variant,
-   after one untimed warm-up batch; median of perf numbers, `loadavg` before/after every run. Variants run one at a time. Every child run has a hard
+3. **Correctness + speed** with the official scorer (`run.py`, the same code `bench.py` uses) **pinned to bench 1.8.0
+   (`3da9671`, 326 cases)** regardless of upstream main, ⟨N⟩ runs per variant,
+   after one untimed warm-up batch; median of perf numbers, `loadavg` before/after every run. **Latency** is measured
+   separately: batch command pinned to one CPU, (t_N − t_1)/(N − 1), ≥ 5 independent samples, median, with sanity
+   checks (≤ 0, below a 2 µs floor, above t_N/N → invalid; spread > 50 % → re-measure, then flag). Variants run one at a time. Every child run has a hard
    timeout, so one broken variant cannot stall the evaluation.
 4. **Features** through the variant's `serve-stdio` RPC: EFT export (Pyfa byte-exact check), `eft_parse` round-trip,
    `calc` over RPC equal to the CLI, `meta`, unknown-method error, `search` (interim spec) and `type` probes.
@@ -45,7 +48,8 @@ comparable within the same run; the log scale in the speed formula softens noise
 - **Gate:** a variant is ranked only if it builds, runs and passes **all 326 cases** (21 051 values) in every run.
 - **Total = 0.40·Speed + 0.35·Maintainability + 0.15·Features + 0.10·Portability** (each sub-score in [0, 1]).
 - `L(x, best, span) = clamp(1 − log10(x / best) / log10(span), 0, 1)` for lower-is-better `x`.
-- **Speed** = 0.5·L(latency ms/calc, 100) + 0.3·L(1 / batch fits·s⁻¹, 100) + 0.2·L(cold start ms, 100).
+- **Bench pin:** 1.8.0 @ `3da9671` (326 cases, 21 051 values); bench SHA and case count recorded in the output.
+- **Speed** = 0.5·L(single-CPU latency ms/calc, 100) + 0.3·L(1 / batch fits·s⁻¹, 100) + 0.2·L(cold start ms, 100).
 - **Maintainability** = 0.25·Tests + 0.20·DataDriven + 0.20·Size + 0.15·Docs + 0.10·Deps + 0.10·Build
   (Tests: passing suite 0.6 + 0.4·min(1, log10(1+n)/2), failing 0.2, timeout 0.3, none 0; DataDriven: L(h+10, h_min+10, 10)
   with h = effects special-cased by name; Size: L(core LOC, min, 10); Docs: 0.4 README + 0.4 DESIGN + 0.2 LICENSE;
@@ -57,19 +61,25 @@ The authoritative text is the docstring of `tools/evaluate.py`; if this section 
 
 ## 4. Variants
 
-| | Variant | Language | Core idea | Branch / commit | License |
-|---|---|---|---|---|---|
-| A | eve-dogma-rs (reference) | Rust | lazy memoised modifier graph | `main` @ ⟨sha⟩ | LGPL-3.0-or-later |
-| B | data-oriented | Rust | compile a flat CSR modifier graph, then evaluate | `variant-b` @ ⟨sha⟩ | ⟨…⟩ |
-| C | Go | Go | pull-based modifier registry with selectors | `variant-c` @ ⟨sha⟩ | ⟨…⟩ |
-| D | TypeScript | TypeScript | pull-based attribute graph + typed modifier pipeline | `variant-d` @ ⟨sha⟩ | ⟨…⟩ |
-| E | Pyfa-faithful | Rust | Pyfa eos transpiled to Rust | `variant-e` @ ⟨sha⟩ | GPL-3.0-or-later |
-| F | codegen | Rust (+WASM) | SDE compiled into Rust code at build time | `variant-f` @ ⟨sha⟩ | ⟨…⟩ |
-| G | batch | Python + NumPy | vectorised dogma over many fits | `variant-g` @ ⟨sha⟩ | ⟨…⟩ |
-| H | ECS | Rust (hecs) | entities/components/systems | `variant-h` @ ⟨sha⟩ | ⟨…⟩ |
-| I | incremental | Rust (salsa) | memoised demand-driven query graph | `variant-i` @ ⟨sha⟩ | ⟨…⟩ |
-| J | C++20 | C++20 | mmapped POD dataset image, flat attribute tables | `variant-j` @ ⟨sha⟩ | ⟨…⟩ |
-| K | .NET | C# (Native AOT) | typed rule book + binary dataset cache | `variant-k` @ ⟨sha⟩ | ⟨…⟩ |
+| | Variant | Language | Core idea | Branch / commit | License | Mergeable into LGPL-3.0-or-later mainline |
+|---|---|---|---|---|---|---|
+| A | eve-dogma-rs (reference) | Rust | lazy memoised modifier graph | `main` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
+| B | data-oriented | Rust | compile a flat CSR modifier graph, then evaluate | `variant-b` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
+| C | Go | Go | pull-based modifier registry with selectors | `variant-c` @ ⟨sha⟩ | none found | unknown (no LICENSE / metadata) ⟨confirm⟩ |
+| D | TypeScript | TypeScript | pull-based attribute graph + typed modifier pipeline | `variant-d` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
+| E | Pyfa-faithful | Rust | Pyfa eos transpiled to Rust | `variant-e` @ ⟨sha⟩ | GPL-3.0-or-later | **no** (GPL, derived from Pyfa) ⟨confirm⟩ |
+| F | codegen | Rust (+WASM) | SDE compiled into Rust code at build time | `variant-f` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
+| G | batch | Python + NumPy | vectorised dogma over many fits | `variant-g` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
+| H | ECS | Rust (hecs) | entities/components/systems | `variant-h` @ ⟨sha⟩ | none found | unknown (no LICENSE / metadata) ⟨confirm⟩ |
+| I | incremental | Rust (salsa) | memoised demand-driven query graph | `variant-i` @ ⟨sha⟩ | LGPL-3.0-or-later | yes ⟨confirm⟩ |
+| J | C++20 | C++20 | mmapped POD dataset image, flat attribute tables | `variant-j` @ ⟨sha⟩ | LGPL-3.0-or-later (README only) | yes, add LICENSE file ⟨confirm⟩ |
+| K | .NET | C# (Native AOT) | typed rule book + binary dataset cache | `variant-k` @ ⟨sha⟩ | LGPL-3.0 | yes ⟨confirm⟩ |
+
+Licenses are provisional (detected 2026-10-03 08:30 CST on current heads; package metadata > LICENSE file > README
+"License" section) and are re-detected by the evaluation run (`results/evaluation.md`, "Licensing" table). Mergeable =
+the code can be merged into the LGPL-3.0-or-later mainline (`eve-dogma-rs`): LGPL-3 / permissive → yes, GPL → no,
+nothing found → unknown (the authors must add a license before any merge). Licensing is informational, not scored,
+but it constrains the merge plan (§7).
 
 ### Approaches (from each variant's README / DESIGN.md)
 
@@ -153,8 +163,9 @@ Not ranked (failed the gate) and why: ⟨…⟩
 ⟨To be written.⟩ Template:
 1. Ideas to port into the chosen core (per idea: source variant, expected gain, owner, acceptance = bench 326/326 + no
    perf regression).
-2. Repository moves (which branch becomes which repo / crate; licensing check — E and any variant importing GPL
-   code stay GPL; the core stays LGPL-3.0-or-later).
+2. Repository moves (which branch becomes which repo / crate). Licensing gate: only code marked *mergeable = yes*
+   enters the LGPL-3.0-or-later core; E (GPL-3.0-or-later, derived from Pyfa) can only contribute ideas or stay a
+   separate GPL cross-check tool; C and H need a license from their authors first; J needs a LICENSE file.
 3. Variants archived (branch kept, README pointer to this document).
 4. Bench: unfreeze, apply `pending-1.9.0.md`, re-run the evaluation for the merged engine.
 
