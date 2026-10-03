@@ -14,8 +14,9 @@ columns:
     tools/check_inventory.py); engine passthrough alone is partial.'
   web: 'EX-CT/eve-fit-web 40e6044 (Pages run 37098282654 success: e2e 64/64 on wasm-worker = F eve-dogma 597b7fc, 54/54 ts-worker; vitest 33/33). have = a non-weak e2e/unit test or a browser bench suite
     exists.'
-  formats: 'EX-CT/eve-dogma crates/eve-fit-formats @ 2da8150 (there is no EX-CT/eve-fit-formats repo; the crate lives in eve-dogma, outside the engine). Tests: eve-dogma-bench formats-suite (CONTRACT-FORMATS
-    0.1) 4779/4779 via eve-fit serve-stdio; the crate has no unit tests of its own (eve-cli/tests/formats_static_fit.rs; CI formats-wasm parity). Only FMT-* items have this column.'
+  formats: 'eve-fit-formats: a separate crate inside the EX-CT/eve-dogma workspace (crates/eve-fit-formats, 2da8150), outside the engine. There is no separate repo, by decision (eve 2026-10-03). F will
+    add the crate''s own unit tests. Current tests: eve-dogma-bench formats-suite (CONTRACT-FORMATS 0.1) 4779/4779 via eve-fit serve-stdio, eve-cli/tests/formats_static_fit.rs and the CI formats-wasm parity
+    check. Only FMT-* items have this column.'
 evidence_keys:
   B19: eve-dogma-bench v1.9.0 (331 cases)
   CAP: cap-suite d80cc38 (150)
@@ -199,8 +200,9 @@ items:
   f_evidence: MUT 86/93 (mm_*, mwd_*, edge_*, drone_* pass; 7 combo_/slot_ booster/implant cases fail, see ENG-IMP-004)
   mcp: have
   mcp_evidence: v0.3.0 mcp.features.mutated-fighters (mutation part)
-  web: have
-  web_evidence: 'sliders (e2e tools/e2e.mjs: ''mutated module imported'', ''mutated module EFT round trip'')'
+  web: partial
+  web_evidence: 'sliders (e2e tools/e2e.mjs: ''mutated module imported'', ''mutated module EFT round trip'') [2026-10-03 14:00 strict gate: have -> partial, web tests are weak (web.e2e.mutated-module-import,
+    eft-export-mutated: text only) or partial (web.unit.builtin-eft-mutation: no stat check)]'
 - id: ENG-MOD-009
   name: Mutation stats view
   description: 'Item stats Mutator tab: roll range/percentage per attribute'
@@ -405,8 +407,9 @@ items:
   name: Fighter EHP / regen
   description: fighter.py hp/ehp/calculateShieldRecharge
   pyfa_src: fighter.py hp, ehp
-  f: partial
-  f_evidence: ED outputs fighters[].hp / ehp / shield_peak_recharge_hp_s, but no scored case (ext dehp_* are drones only), so not have
+  f: have
+  f_evidence: 'ED 2da8150 ext fighter_ehp 15/15 (fehp_*: Thanatos, Archon, Chimera, Nidhoggur, Nyx, Aeon, Wyvern, Hel; light/support/heavy squadrons, Fighter Support Unit II, skills 0 / Fighters 1, damage
+    patterns, inactive squadron) + pool_fighter_ehp_fsweep06420; fighters[].hp/ehp/shield_peak_recharge_hp_s vs Pyfa'
   mcp: missing
   mcp_evidence: '-'
   web: missing
@@ -677,8 +680,8 @@ items:
   pyfa_src: fit.py maxSpeed, alignTime
   f: have
   f_evidence: B19 max_velocity/align_time_s
-  mcp: have
-  mcp_evidence: engine
+  mcp: partial
+  mcp_evidence: 'engine [2026-10-03 14:00 strict gate: have -> partial, only test mcp.integration.what-if is partial (velocity only)]'
   web: have
   web_evidence: Stats navigation
 - id: ENG-NAV-002
@@ -717,8 +720,8 @@ items:
   pyfa_src: fit.py maxTargets, maxTargetRange, scanStrength, scanType
   f: have
   f_evidence: stats.rs targeting
-  mcp: have
-  mcp_evidence: engine
+  mcp: partial
+  mcp_evidence: 'engine [2026-10-03 14:00 strict gate: have -> partial, only test mcp.features.compute-graph-stats is partial (lock time only)]'
   web: have
   web_evidence: Stats targeting
 - id: ENG-TGT-002
@@ -917,8 +920,8 @@ items:
   pyfa_src: fit.py cpuUsed, pgUsed, calibrationUsed, droneBandwidthUsed
   f: have
   f_evidence: validate CPU/POWER/CALIBRATION/DRONE_BANDWIDTH; FZ e_fz_cpu_round_tie_*
-  mcp: have
-  mcp_evidence: validate_fit
+  mcp: partial
+  mcp_evidence: 'validate_fit [2026-10-03 14:00 strict gate: have -> partial, only test mcp.integration.suggest-modules is partial (no overflow flagging)]'
   web: partial
   web_evidence: 'Problems section [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
 - id: ENG-VAL-002
@@ -937,8 +940,8 @@ items:
   pyfa_src: module.py fits; fit.py canFit
   f: have
   f_evidence: SHIP_RESTRICTION, RIG_SIZE, MAX_GROUP_*, MAX_TYPE_FITTED
-  mcp: have
-  mcp_evidence: validate_fit
+  mcp: partial
+  mcp_evidence: 'validate_fit [2026-10-03 14:00 strict gate: have -> partial, only test mcp.unit.can-fit is partial (rig size, no ship restriction)]'
   web: partial
   web_evidence: 'Problems [2026-10-03 13:50: have -> partial, no test in this column (rule: have needs a non-weak test; proposals in eve-dogma-bench inventory/mcp-web-gaps.md)]'
 - id: ENG-VAL-004
@@ -1244,7 +1247,7 @@ items:
   web: have
   web_evidence: src/fit/formats.ts parseEft/exportEft
   formats: have
-  formats_evidence: formats-suite eft export/edge 100%
+  formats_evidence: formats-suite eft export/edge 100% (eve-fit-formats crate in eve-dogma; crate unit tests to come from F)
 - id: FMT-EFT-002
   name: EFT config (.cfg) import
   description: EFT cfg file import
@@ -1256,7 +1259,7 @@ items:
   web: missing
   web_evidence: '-'
   formats: have
-  formats_evidence: formats-suite edge eftcfg (Rifter.cfg, NotAShip.cfg, empty)
+  formats_evidence: formats-suite edge eftcfg (Rifter.cfg, NotAShip.cfg, empty) (eve-fit-formats crate in eve-dogma; crate unit tests to come from F)
 - id: FMT-EFT-003
   name: EFT export options
   description: Implants/mutations/cargo/loaded charges toggles (copySelectDialog)
@@ -1268,7 +1271,7 @@ items:
   web: partial
   web_evidence: '-'
   formats: partial
-  formats_evidence: eft_min (minimal) export only; no export option set
+  formats_evidence: eft_min (minimal) export only; no export option set (eve-fit-formats crate in eve-dogma; crate unit tests to come from F)
 - id: FMT-DNA-001
   name: DNA import/export (incl. alt, link)
   description: ship DNA string, dna alt, fitting link
@@ -1280,7 +1283,7 @@ items:
   web: have
   web_evidence: parseDna/exportDna
   formats: have
-  formats_evidence: formats-suite dna, dna_formatted, dna_alt_*, chat links
+  formats_evidence: formats-suite dna, dna_formatted, dna_alt_*, chat links (eve-fit-formats crate in eve-dogma; crate unit tests to come from F)
 - id: FMT-ESI-001
   name: ESI JSON import/export
   description: ESI fitting JSON (exportCharges/Implants/Boosters settings)
@@ -1292,7 +1295,7 @@ items:
   web: have
   web_evidence: exportEsi/parseEsi
   formats: have
-  formats_evidence: formats-suite esi, esi_min
+  formats_evidence: formats-suite esi, esi_min (eve-fit-formats crate in eve-dogma; crate unit tests to come from F)
 - id: FMT-XML-001
   name: XML import/export (EVE client)
   description: Fittings XML, multiple fits, backup
@@ -1304,7 +1307,7 @@ items:
   web: have
   web_evidence: 40e6044 EVE XML export / re-import (web.e2e.xml-export, xml-reimport, web.unit.formats-wasm-xml-roundtrip)
   formats: have
-  formats_evidence: formats-suite xml export/import
+  formats_evidence: formats-suite xml export/import (eve-fit-formats crate in eve-dogma; crate unit tests to come from F)
 - id: FMT-MB-001
   name: Multibuy export
   description: Multibuy text
@@ -1316,7 +1319,7 @@ items:
   web: have
   web_evidence: exportMultibuy
   formats: have
-  formats_evidence: formats-suite multibuy, multibuy_min
+  formats_evidence: formats-suite multibuy, multibuy_min (eve-fit-formats crate in eve-dogma; crate unit tests to come from F)
 - id: FMT-SS-001
   name: Ship stats (exportFitStats) text
   description: Stats summary export
@@ -1328,7 +1331,7 @@ items:
   web: have
   web_evidence: 40e6044 ship stats export (web.e2e.shipstats-export)
   formats: have
-  formats_evidence: formats-suite shipstats (stats from the engine)
+  formats_evidence: formats-suite shipstats (stats from the engine) (eve-fit-formats crate in eve-dogma; crate unit tests to come from F)
 - id: FMT-EFS-001
   name: EFS export
   description: Eve Fitting Stats JSON
@@ -1352,7 +1355,7 @@ items:
   web: have
   web_evidence: 40e6044 mutated EFT/XML import and export (web.unit.builtin-eft-mutation, web.e2e.xml-reimport, eft-export-mutated)
   formats: have
-  formats_evidence: formats-suite edge mutated
+  formats_evidence: formats-suite edge mutated (eve-fit-formats crate in eve-dogma; crate unit tests to come from F)
 - id: FMT-HTML-001
   name: HTML export of all fits
   description: Export fits to HTML (prefs path, options)
@@ -1376,7 +1379,7 @@ items:
   web: partial
   web_evidence: multi-EFT paste; no file/folder
   formats: have
-  formats_evidence: formats-suite edge autodetect, multi, forced, auto_* (files/folders are host-side)
+  formats_evidence: formats-suite edge autodetect, multi, forced, auto_* (files/folders are host-side) (eve-fit-formats crate in eve-dogma; crate unit tests to come from F)
 - id: FMT-CLIP-001
   name: Clipboard to/from
   description: Fit menu To/From Clipboard
@@ -1400,7 +1403,7 @@ items:
   web: missing
   web_evidence: '-'
   formats: have
-  formats_evidence: formats-suite edge additions_* (drones, fighters, implants, boosters, cargo, mixed)
+  formats_evidence: formats-suite edge additions_* (drones, fighters, implants, boosters, cargo, mixed) (eve-fit-formats crate in eve-dogma; crate unit tests to come from F)
 - id: ESI-001
   name: SSO login, multiple characters
   description: ssoLogin, Manage ESI Characters, token refresh, custom app/server settings
@@ -2068,3 +2071,18 @@ items:
   mcp_evidence: engine
   web: partial
   web_evidence: '-'
+- id: UI-CMP-001
+  name: Fit comparison (配装对比)
+  extra: true
+  description: 'Compare several fits side by side: metric table with the best value marked and deltas against the first fit. Beyond Pyfa (Pyfa has no fit comparison view).'
+  pyfa_src: '- (not in Pyfa)'
+  f: n/a
+  f_evidence: front-end feature over per-fit engine stats
+  mcp: have
+  mcp_evidence: 'v0.3.0 compare_fits (mcp.integration.compare-fits: delta table, metric rows)'
+  web: have
+  web_evidence: 40e6044 compare table of 3 fits with best values marked (web.e2e.compare-fits; web.unit.compare-best-delta, compare-ties-missing)
+extras_rule: 'An item with `extra: true` is a feature beyond Pyfa (Pyfa does not have it). It gets a normal id and the same status/test rules (have needs a full test), but it is excluded from the parity
+  totals (the 200 Pyfa items) and counted separately by tools/render_inventory.py and eve-dogma-bench tools/check_inventory.py. Add future extras the same way.'
+test_rule: have requires at least one full test of that column (eve-dogma-bench inventory/tests.yaml, checked by tools/check_inventory.py). Tests marked partial or weak do not cover have; such an item is
+  partial.
