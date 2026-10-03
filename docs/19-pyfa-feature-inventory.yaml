@@ -2201,7 +2201,9 @@ items:
   mcp: partial
   mcp_evidence: 'compute_batch (v0.4.0) [2026-10-03 15:50: missing -> partial; mcp-batch 52/92 on bench 1fd7e37 (engine 197223f directly 62/92; MCP-only gaps: extra engine/notes/request_hash keys in full
     results, per-fit errors rejected up front, BATCH_TOO_LARGE without count/limit, no --prices file), 8/93 after the provenance rulings; mcp.features.compute-batch / mcp.unit.batch-* partial; eve-fit-mcp
-    v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
+    v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md); 2026-10-03 15:52: stays partial; eve-fit-mcp v0.4.1 447420f + engine 8bde0ba: mcp-batch 71/93 on bench 26e3833 (F 93/93); MCP-only:
+    10 --prices FILE, 3 BATCH_TOO_LARGE without count/limit, 7 full results with extra engine/notes/request_hash, multi_error_in_place rejected up front, multi_ext_mix compute_fit rejects builtin profiles
+    (bench results-1.11/mcp-v0.4.1.md)]'
   web: missing
   web_evidence: no batch / variant view (e1afe8d)
 - id: ENG-PRICE-001
@@ -2214,10 +2216,11 @@ items:
   f: have
   f_evidence: 'd990818: no price input or output in calc (only the optimizer''s `price.prices` table, docs/21); eve-dogma-bench batch/price_* (14 cases, docs/23 §5-§6, bench reference resolver) 0/14 [2026-10-03
     15:50: partial -> have; eve-dogma 8bde0ba on bench pending-1.11 05ae5a1: batch price_* 14/14, calcprice_* 7/7; d22 price_inject 32/32 (+1 pending, not scored) (bench results-1.11/F-8bde0ba/)]'
-  mcp: partial
+  mcp: have
   mcp_evidence: 'price_fit / get_prices (477726d src/prices.ts): per-item lines and one source (ESI or Fuzzwork) for the whole fit; no overrides, no per-price source [2026-10-03 15:50: stays partial; v0.4.0
     passes docs/23 price inputs through (mcp.features.price-passthrough, price-fit-engine pass in MCP CI on 197223f) but mcp-batch price_* 0/14 (provenance); eve-fit-mcp v0.4.0 d3786eb + pinned engine 197223f
-    (bench results-1.11/mcp-v0.4.0.md)]'
+    (bench results-1.11/mcp-v0.4.0.md); 2026-10-03 15:52: partial -> have; eve-fit-mcp v0.4.1 447420f + pinned engine 8bde0ba on bench pending-1.11 01e6724: mcp-batch price_* 14/14; MCP CI price-passthrough,
+    price-fit-engine, provenance pass; --prices FILE cases (engine global option, no MCP equivalent) left to eve (bench results-1.11/mcp-v0.4.1.md)]'
   web: partial
   web_evidence: 'PriceBox (src/ui/PriceBox.tsx, e1afe8d): ESI average prices; no overrides ("my prices" queued)'
 extras_rule: 'An item with `extra: true` is a feature beyond Pyfa (Pyfa does not have it). It gets a normal id and the same status/test rules (have needs a full test), but it is excluded from the parity
