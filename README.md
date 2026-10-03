@@ -33,6 +33,7 @@
 | 14 | [mutated-modules](docs/14-mutated-modules.md) | Mutated modules (mutaplasmids) + implant/booster combos: Pyfa semantics, request format, `mutated-suite` (93 cases), per-engine changes, scoring (draft) |
 | 15 | [fuzz-triage](docs/15-fuzz-triage.md) | Legal random-fit fuzz (200 fits) A vs Pyfa, E ref: class counts, 5 A bugs with `pending-1.10` repro ids |
 | 17 | [fuzzing-and-ci](docs/17-fuzzing-and-ci.md) | Differential fuzz + Pyfa oracle adjudication, pending-case flow, state ruling, nightly CI and Pyfa-free invariants |
+| 18 | [f-vs-j](docs/18-f-vs-j.md) | Dedicated F (Rust codegen + WASM) vs J (C++20) evaluation: method, correctness suites, speed incl. WASM, maintainability, extensibility exercise, portability, merge recommendation (draft) |
 | — | [LICENSING](LICENSING.md) | License decisions (Pyfa GPLv3 / eos LGPL / CCP data) |
 | — | [PROGRESS](PROGRESS.md) | Done / next, for resuming work |
 
