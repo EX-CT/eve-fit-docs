@@ -102,8 +102,8 @@ text sections `TRAI`, `ENVI`, `NAMZ`).
   "engine": "eve-dogma 0.1.0",
   "sde_build": 3569502, "sde_revision": 5, "sde_release": "2026-10-02T11:08:57Z",
   "sde_hash": "sha256:<content_sha256 of the edp pack, header bytes 24..56, §2.2>", "sde_source": "embedded",
-  "price_source": "snapshot", "snapshot_time": "2026-10-03T06:38:56Z",
-  "price_snapshot_id": "jita44-20261003T063856Z", "price_hash": "sha256:3dd6…"
+  "price_source": "snapshot", "snapshot_time": "2026-10-03T07:08:57Z",
+  "price_snapshot_id": "jita44-20261003T070857Z", "price_hash": "sha256:2796…"
 }
 ```
 
@@ -115,8 +115,11 @@ text sections `TRAI`, `ENVI`, `NAMZ`).
 - `price_source` names only where the **base price table** came from, by precedence: `request` (a `prices.isk`
   table in the request) > `file` (`--prices FILE` or RPC `prices_load`) > `snapshot` (the embedded snapshot) >
   `none`. Overrides never change it (overrides + `--prices` is `file`); overrides show in each price line's `source`
-  (docs/23 §6). `snapshot_time` = the `market_time` of the file / embedded snapshot in use; with `request` or `none`,
-  `snapshot_time`, `price_snapshot_id` and `price_hash` are null. A batch variant whose own FitRequest brings a
+  (docs/23 §6). `snapshot_time`, `price_snapshot_id` and `price_hash` describe the market snapshot (L4) still in use
+  under the base table: the `--prices` / `prices_load` file's (null for a plain map file) or the embedded one's,
+  **also when `price_source` is `request`** (a partial request table falls through to it); null with
+  `use_snapshot: false` (so always null with `none`). (Amended 15:30 to match eve's ruling as encoded in bench d22
+  ef17210.) A batch variant whose own FitRequest brings a
   different table carries its own `provenance`.
 - `eve-fit version` and RPC `version` return the same object without the per-request price fields resolved per
   request (they report the process / session state), plus `pack_format` (`"1.0"`), `snapshot_schema_version` (1) and
@@ -142,7 +145,9 @@ text sections `TRAI`, `ENVI`, `NAMZ`).
 
 ### 3.1 Snapshot embedded per release
 - Source (eve ruling 14:56): eve4's **EX-CT/eve-market-prices** releases (`prices-jita44-<time>`, schema
-  `schema/eve-price-snapshot.v1.schema.json`); first embedded snapshot: `prices-jita44-20261003T063856Z`.
+  `schema/eve-price-snapshot.v1.schema.json`); embedded snapshot: `prices-jita44-20261003T070857Z` (eve-market-prices 0.2.0 a7ec353; `content_hash`
+  `sha256:279683dd…`; 19566 published marketable types of CCP SDE 3569502 requested, 9178 priced; 248 KB gz; first
+  one was `…063856Z`). Snapshots are published daily; a release embeds the newest one.
 - The release workflow takes the newest snapshot published by the updater (§4) at release time, checks it
   (schema, `content_hash`), and embeds it (`EVE_DOGMA_PRICES=path`, `include_bytes!`, gzip JSON). It is parsed
   lazily on first price use.
@@ -151,13 +156,21 @@ text sections `TRAI`, `ENVI`, `NAMZ`).
 ### 3.2 Pricing rule (implemented by the updater; recorded in every snapshot)
 Per type, rule `jita_sell_band_weighted` v1:
 1. Orders: **sell orders only, at Jita IV - Moon 4 - Caldari Navy Assembly Plant, `location_id` 60003760**
-   (region 10000002 The Forge). Buy orders and other stations are ignored.
+   (region 10000002 The Forge). Buy orders and other stations are ignored. Orders whose price is **≤ 0 or not
+   finite are dropped** (bench d22/README, eve3 ruling 15:11).
 2. Drop every order whose remaining units (`volume_remain`) are **fewer than `min_units`**. This filters by unit count
    per order, not by a percentage of the order count.
 3. `p0` = the lowest price among the remaining orders.
 4. Band: all remaining orders with price in **[p0, p0 × (1 + band)]**, `band` default **0.05**.
-5. `price` = unit-weighted average over the band: Σ(price_i × units_i) / Σ units_i, with units = `volume_remain`.
-6. If no order remains after step 2, the type gets no price (listed in `missing`).
+5. `mean` = unit-weighted average over the band: Σ(price_i × units_i) / Σ units_i, with units = `volume_remain`.
+6. **Round** to 0.01 ISK, **half to even, on the 12-significant-digit decimal value** of the mean
+   (`Decimal(f"{mean:.12g}").quantize(Decimal("0.01"), ROUND_HALF_EVEN)`): 100.335 → 100.34, 100.345 → 100.34,
+   2.675 → 2.68, 4.085 → 4.08.
+7. **Clamp** the rounded price into [p0, band_max] (only matters for sub-cent prices: 0.00405 → 0.004).
+8. If no order remains after steps 1–2, the type gets no price (listed in `missing`).
+- `band_max` = p0 × (1 + band) in IEEE double, emitted at **12 significant digits**; it is the inclusive band edge
+  of step 4. Reference implementation and 41 cases: bench `d22/price_rule` (`rule.py`); an invalid rule makes the
+  updater exit non-zero (`RULE_REJECTED`).
 - Parameters `band` and `min_units` are configurable in the updater and written to the snapshot. Default
   `min_units`: **10** (proposed; eve may change it, it is a parameter, not engine code).
 
@@ -171,7 +184,8 @@ Per type, rule `jita_sell_band_weighted` v1:
   override layer the most specific entry wins (type > deepest market group > group > category; tie → lower id); a
   multiplier applies to the price resolved by the next lower layer; a fixed price stops the chain.
 - Output: top-level `price` block with total, per-section lines down to each item, `source` per line
-  (`override:type|market_group|group|category`, `injected`, `snapshot`), `snapshot_time`, and a `missing` list
+  (`override:type|market_group|group|category`, `injected`, `snapshot`) and `snapshot_time` per line (no block-level
+  `snapshot_time`; the snapshot identity is in `provenance`), and a `missing` list
   (supersedes the `*_isk` / `unpriced` sketch). Emitted only when price inputs are present or `options.price` is set,
   so round-1 outputs stay unchanged; `price` is strip-listed for the round-1 identity check anyway.
 - A type without a price in any layer is missing (reported, never guessed).
@@ -249,8 +263,8 @@ approximate the rule it says so in `notes` and sets `rule.exact: false`.
 ### 4.5 Per-type entry
 | field | type | unit | meaning |
 |---|---|---|---|
-| `price` | number | ISK per unit | the snapshot price, rounded to 0.01 ISK (round half to even) |
-| `p0` | number | ISK per unit | lowest price after the `min_units` filter |
+| `price` | number | ISK per unit | §3.2 steps 5–7: the 12-significant-digit mean rounded half-even to 0.01 ISK, then clamped into [p0, band_max] |
+| `p0` | number | ISK per unit | lowest price after dropping price ≤ 0 / non-finite and the `min_units` filter (so p0 > 0) |
 | `band_max` | number | ISK per unit | p0 × (1 + band), computed in IEEE double and **rounded to 12 significant digits** (so 4.0 × 1.05 = 4.2 exactly); stored as that value and used as the inclusive band edge |
 | `units` | integer | units | Σ volume_remain of the orders in the band (the weights) |
 | `orders` | integer | orders | number of orders in the band |
@@ -258,9 +272,17 @@ approximate the rule it says so in `notes` and sets `rule.exact: false`.
 | `orders_considered` | integer | orders | orders left after the `min_units` filter |
 | `orders_total` | integer | orders | sell orders at the location before filtering |
 
-Invariants (validated by engines on load, `PRICE_SNAPSHOT_INVALID` otherwise): `p0 − tol ≤ price ≤ band_max + tol`
-with `tol = max(0.005, 1e-9 × band_max)` (half a cent for the 0.01 rounding of `price`, plus float slack),
-`0 < units ≤ units_considered`, `0 < orders ≤ orders_considered ≤ orders_total`, all numbers finite and ≥ 0.
+Invariants (validated by engines on load, `PRICE_SNAPSHOT_INVALID` otherwise; amended 15:30 to the bench d22/README
+rule, eve3 ruling 15:11):
+- all numbers finite and ≥ 0; **`p0 > 0`** (orders priced ≤ 0 are dropped);
+- **`p0 ≤ price ≤ band_max` exactly** (the price is clamped, so no tolerance; compared as the parsed doubles, which
+  preserve the order of the decimal values);
+- with `rule.band` present: `band_max` equals p0 × (1 + band) rounded to 12 significant digits, within 1e-12 relative
+  (representation slack only);
+- with `rule.exact` true (default): a price that is neither `p0` nor `band_max` is a whole number of cents
+  (|price × 100 − round(price × 100)| ≤ 1e-6 × max(1, price × 100));
+- `0 < units ≤ units_considered`, `0 < orders ≤ orders_considered ≤ orders_total`.
+The engine (F 15:30) applies exactly these checks; both published snapshots (`…063856Z`, `…070857Z`) pass them.
 
 **Type coverage (decision):** a snapshot should price **every published type with a market group** in the CCP SDE
 of `sde_build` (fits carry cargo such as minerals, fuel, ammo stacks), not only the pipeline dataset's type list.
