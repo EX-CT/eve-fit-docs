@@ -38,7 +38,7 @@ _Status:_ see per-bot section "eve4 / eve-fit-web" below.
 ---
 # Per-bot status sections (each bot updates only its own)
 
-## variant F / eve-dogma (executor bot; updated 2026-10-03 15:35 CST)
+## variant F / eve-dogma (executor bot; updated 2026-10-03 15:10 CST)
 
 ### Current commits
 - EX-CT/eve-dogma main: **8bde0ba** provenance + embedded price snapshot + JCS + global --sde/--prices + SDE_LOAD_FAILED (CI pending); 197223f batch API + prices (green); d55fadb SDE dataset r5 (green).
