@@ -39,7 +39,8 @@ items:
   mcp: have
   mcp_evidence: compute_fit passes the full FitRequest to the engine backend (src/schemas.ts)
   web: have
-  web_evidence: FitStats from engine worker (src/engine/adapter.ts)
+  web_evidence: 'FitStats from engine worker (src/engine/adapter.ts) [2026-10-03 15:40: stays have; site tests web-bench esf_* / exct_* pass in the browser; web-effects 2353/2378: the 25 failures are a
+    subset of eve-dogma 2da8150''s 26 and pass on d990818 / 8bde0ba, so the site''s wasm (20aa425) needs bumping; eve-fit-web run 37104154159 (F wasm 20aa425; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-CORE-002
   name: Stacking penalties
   description: Penalised multiplier chains per attribute/operator group, stackable-attribute exemptions, penalty groups
@@ -94,8 +95,9 @@ items:
   mcp: have
   mcp_evidence: 'get_type gives base attrs; fitted values only via compute_fit include_attributes [2026-10-03 15:50: partial -> have; mcp-effects 2378/2378 via compute_fit include_attributes; eve-fit-mcp
     v0.4.0 d3786eb + pinned engine 197223f (bench results-1.11/mcp-v0.4.0.md)]'
-  web: have
-  web_evidence: Market show info with fitted values
+  web: partial
+  web_evidence: 'Market show info with fitted values [2026-10-03 15:40: have -> partial; the site''s only test (web.e2e.show-info-fitted-values) checks presence (> 0 changed rows), no values; web-effects
+    2353/2378 with the stale wasm 20aa425 (needs bumping; native 8bde0ba 2378); eve-fit-web run 37104154159 (F wasm 20aa425; bench results-1.11/web-fdbb014.md)]'
 - id: ENG-CORE-007
   name: Attribute modifier sources (Affected by)
   description: 'Per attribute: which items/skills modified it, operator, value; skill affectors context menu'
@@ -1620,8 +1622,10 @@ items:
   f_evidence: numbers only (MPF C3); Pyfa-backed bench pending-1.11 cases ext:dpb_* 6 (0/6) on eve-dogma 2da8150 (stays missing until F passes)
   mcp: have
   mcp_evidence: list_presets damage
-  web: have
-  web_evidence: presets
+  web: partial
+  web_evidence: 'presets [2026-10-03 15:40: have -> partial; src/data/presets.ts has 15 hand-made patterns, not Pyfa''s 118 builtins (eos/saveddata/damagePattern.py), and their values differ (NPC Guristas
+    0/18/82/0 vs Pyfa [NPC][Asteroid]Guristas 0/1828/7413/0 = 0/19.8/80.2/0); named builtins (ext dpb_*) fail in the browser as in native F (f missing); web.e2e.sde-npc-damage-profile checks only that EHP
+    changes; eve-fit-web run 37104154159 (F wasm 20aa425; bench results-1.11/web-fdbb014.md)]'
 - id: PRF-DMG-002
   name: Damage pattern editor / change
   description: patternEditor, damagePatternChange
